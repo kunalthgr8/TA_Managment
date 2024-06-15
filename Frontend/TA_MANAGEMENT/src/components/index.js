@@ -8,8 +8,10 @@ import Leaves from "./Leaves/Leaves";
 import Loader from "./Loader/Loader";
 import Login from "./Login/Login";
 import Logo from "./Logo/Logo";
+import BaseLogo from "./Logo/BaseLogo";
 import Searchbar from "./Searchbar/Searchbar";
 import Signup from "./Signup/signup";
+// import Button from "./Button/Button";
 
 export {
   Button,
@@ -22,6 +24,8 @@ export {
   Loader,
   Login,
   Logo,
+  BaseLogo,
   Searchbar,
   Signup,
+  // Button,
 };

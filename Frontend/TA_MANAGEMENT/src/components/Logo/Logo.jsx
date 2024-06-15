@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
+import IITLogo from '../../assets/IITLOGO.svg';
 
-function Logo() {
+function Logo({ width = '100px', height = '100px' }) {
   return (
-    <div>Logo</div>
-  )
+    <div>
+      <img src={IITLogo} alt="IITLogo" style={{ width, height }} />
+    </div>
+  );
 }
 
-export default Logo
+Logo.propTypes = {
+  width: PropTypes.string,
+  height: PropTypes.string,
+};
+
+export default Logo;
