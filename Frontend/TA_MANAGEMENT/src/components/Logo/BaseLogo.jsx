@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+// import React from 'react';
+// import PropTypes from 'prop-types';
 import Logo from '../../assets/IITLOGO1.png';
 
 function BaseLogo({ width = '100px', height = '100px' }) {
@@ -10,9 +10,9 @@ function BaseLogo({ width = '100px', height = '100px' }) {
   );
 }
 
-BaseLogo.propTypes = {
-  width: PropTypes.string,
-  height: PropTypes.string,
-};
+// BaseLogo.propTypes = {
+//   width: PropTypes.string,
+//   height: PropTypes.string,
+// };
 
 export default BaseLogo;

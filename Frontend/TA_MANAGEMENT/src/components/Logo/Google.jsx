@@ -1,11 +1,11 @@
 // import React from 'react';
 // import PropTypes from 'prop-types';
-import IITLogo from '../../assets/IITLOGO.svg';
+import Logo from '../../assets/google.png';
 
-function Logo({ width = '100px', height = '100px' }) {
+function GoogleLogo({ width = '100px', height = '100px' }) {
   return (
     <div>
-      <img src={IITLogo} alt="IITLogo" style={{ width, height }} />
+      <img src={Logo} alt="GoogleLogo" style={{ width, height }} />
     </div>
   );
 }
@@ -15,4 +15,4 @@ function Logo({ width = '100px', height = '100px' }) {
 //   height: PropTypes.string,
 // };
 
-export default Logo;
+export default GoogleLogo;

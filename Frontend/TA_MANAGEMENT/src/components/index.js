@@ -9,6 +9,7 @@ import Loader from "./Loader/Loader";
 import Login from "./Login/Login";
 import Logo from "./Logo/Logo";
 import BaseLogo from "./Logo/BaseLogo";
+import GoogleLogo from "./Logo/Google";
 import Searchbar from "./Searchbar/Searchbar";
 import Signup from "./Signup/signup";
 // import Button from "./Button/Button";
@@ -25,7 +26,8 @@ export {
   Login,
   Logo,
   BaseLogo,
+  GoogleLogo,
   Searchbar,
   Signup,
-  // Button,
+  
 };

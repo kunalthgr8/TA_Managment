@@ -1,22 +1,14 @@
-// import React from "react";
+import React from "react";
 
-// function Button({ width = "w-full", children, className = "w-full", ...props }, ref) {
-//   return (
-//     <div className={width}>
-//       <button className={`px-3 py-2 ${className}`} {...props} ref={ref}>
-//         {children}
-//       </button>
-//     </div>
-//   );
-// }
-
-// export default React.forwardRef(Button);
-import React from 'react'
-
-function Button() {
+function Button({width="auto", children, className = "w-full", ...props }) {
   return (
-    <div>ChangePassword</div>
-  )
+    <div className={width}>
+      <button className={`px-3 py-2 transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 bg-button-color hover:bg-text-green ${className}`} {...props} >
+        {children}
+      </button>
+    </div>
+  );
 }
 
-export default Button
+// const NamedButton = React.forwardRef(Button);
+export default Button;
