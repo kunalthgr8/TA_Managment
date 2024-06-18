@@ -58,4 +58,3 @@ function Signup() {
 
 export default Signup
 
-// rounded-xl transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 bg-button-color hover:bg-text-green text-nav-white outline-none focus:bg-gray-50 duration-200 w-full
