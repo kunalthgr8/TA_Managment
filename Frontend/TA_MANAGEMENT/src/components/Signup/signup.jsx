@@ -1,6 +1,6 @@
 // import React from 'react'
 import {Logo,BaseLogo,Button,GoogleLogo} from '../index'
-// import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 function Signup() {
   return (
@@ -17,38 +17,40 @@ function Signup() {
           <form className=''>
             <div className='flex flex-col gap-5 items-center' >
               <input 
-              className=' w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
+              className=' w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
               placeholder='ID Number'
               type='number'
               required
                 />
               <input
-              className='w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
+              className='w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
               placeholder='Username'
               type='text'
               required
               />
               <input
-              className='w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
+              className='w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
               placeholder='Email ID'
               type='email'
               required/>
               <input
-              className='w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold' 
+              className='w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold' 
               placeholder='Phone Number'
               type='number'
               required/>
               <input
-              className='w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
+              className='w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
               placeholder='Password'
               type='password'
               required/>
             </div>
           </form>
           <Button className='w-32 bg-custom-purple rounded-3xl items-center content-center m-5 font-medium  text-white '>Sign Up</Button>
-        {/* <Link to="/signin">Already Have an account?</Link> */}
-          <hr className=' border-purple-800 min-w-60 sm:min-w-72'/>
-          <Button className='bg-gray-300 w-48 rounded-3xl flex items-center content-center m-5 text-gray-700' > <GoogleLogo width='20px' height='20px'/> <p className='ml-3'>Signup by google</p></Button>
+          <div className='w-60 sm:w-72 lg:w-96'>
+            <Link className='text-gray-700' to="/signin">Already Have an account?</Link>
+          </div>
+          <hr className=' border-purple-800 min-w-60 sm:min-w-72 lg:w-96'/>
+          <Button className='bg-gray-300 w-48 rounded-3xl flex items-center content-center m-5 text-gray-700' > <GoogleLogo width='20px' height='20px'/> <p className='ml-3'>Sign Up by google</p></Button>
         
         </div>
       </div>

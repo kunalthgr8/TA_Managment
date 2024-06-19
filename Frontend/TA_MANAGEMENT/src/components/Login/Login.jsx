@@ -1,6 +1,6 @@
 // import React from 'react'
 import {Logo,BaseLogo,Button,GoogleLogo} from '../index'
-// import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 function Login() {
   return (
@@ -17,14 +17,14 @@ function Login() {
           <form className=''>
             <div className='flex flex-col gap-5 items-center' >
               <input 
-              className=' w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
+              className=' w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
               placeholder='ID Number'
               type='number'
               required
                 />
               
               <input
-              className='w-60 sm:w-72 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
+              className='w-60 sm:w-72 lg:w-96 bg-gray-300 text-lg py-2 px-4 rounded-lg text-gray-700 font-semibold'
               placeholder='Password'
               type='password'
               required/>
@@ -33,7 +33,11 @@ function Login() {
           <Button className='w-32 bg-custom-purple rounded-3xl items-center content-center m-5 font-medium  text-white '>Sign In</Button>
           {/* <Button className='w-32 bg-custom-purple rounded-3xl items-center content-center m-5 font-medium  text-white '>Sign In</Button> */}
         {/* <Link to="/signin">Already Have an account?</Link> */}
-          <hr className=' border-purple-800 min-w-60 sm:min-w-72'/>
+        <div className='w-60 sm:w-72 lg:w-96 flex justify-between content-center items-center'>
+            <Link className='text-gray-700 flex content-center items-center' to="/signin">Create New Account</Link>
+            <Link className='text-gray-700  flex content-center items-center' to="/signin">Forgot Password</Link>
+          </div>
+          <hr className=' border-purple-800 min-w-60 sm:min-w-72 lg:w-96'/>
           <Button className='bg-gray-300 w-48 rounded-3xl flex items-center content-center m-5 text-gray-700' > <GoogleLogo width='20px' height='20px'/> <p className='ml-3'>SignIn by google</p></Button>
         
         </div>
