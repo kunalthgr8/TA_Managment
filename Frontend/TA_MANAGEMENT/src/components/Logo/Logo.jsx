@@ -2,10 +2,10 @@
 // import PropTypes from 'prop-types';
 import IITLogo from '../../assets/IITLOGO.svg';
 
-function Logo({ width = '100px', height = '100px' }) {
+function Logo({ width = '100px', height = '100px' , classname = 'w-full' }) {
   return (
     <div>
-      <img src={IITLogo} alt="IITLogo" style={{ width, height }} />
+      <img  className= {classname} src={IITLogo} alt="IITLogo" style={{ width, height }} />
     </div>
   );
 }

@@ -12,6 +12,8 @@ import BaseLogo from "./Logo/BaseLogo";
 import GoogleLogo from "./Logo/Google";
 import Searchbar from "./Searchbar/Searchbar";
 import Signup from "./Signup/signup";
+import ProfileLogo from "./Logo/ProfileLogo";
+import Card from "./Card/Card";
 // import Button from "./Button/Button";
 
 export {
@@ -27,7 +29,9 @@ export {
   Logo,
   BaseLogo,
   GoogleLogo,
+  ProfileLogo,
   Searchbar,
   Signup,
+  Card,
   
 };
