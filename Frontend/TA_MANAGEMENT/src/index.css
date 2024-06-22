@@ -7,3 +7,6 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: "Noto Sans", sans-serif;
+}

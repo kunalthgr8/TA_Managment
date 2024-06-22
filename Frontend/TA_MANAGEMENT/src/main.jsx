@@ -1,13 +1,73 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import {BrowserRouter} from 'react-router-dom'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  ChangePassword,
+  Dashboard,
+  Home,
+  Leaves,
+  Login,
+  Signup,
+} from "./components/index.js";
+import { Provider } from "react-redux";
+import AuthLayout from "./components/AuthLayout.jsx";
+import store from "./store/store.js";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/changePassword",
+        element: (
+          <AuthLayout authentication={true}>
+            <ChangePassword />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/leaves",
+        element: (
+          <AuthLayout authentication={true}>
+            <Leaves />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <AuthLayout authentication={false}>
+            <Login />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/signup",
+        element: (
+          <AuthLayout authentication={false}>
+            <Signup />
+          </AuthLayout>
+        ),
+      },
+    ],
+  },
+]);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>,
-)
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </React.StrictMode>
+);

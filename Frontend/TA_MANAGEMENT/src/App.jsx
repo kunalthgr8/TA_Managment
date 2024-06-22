@@ -1,20 +1,17 @@
-
-import "./App.css";
-// import Signup from "./components/Signup/signup";
-// import signup from index
-import {Signup,Login,Header,Dashboard} from "./components/index";
+import { Outlet } from "react-router-dom";
+import { Header } from "./components";
 
 function App() {
-
   return (
     <>
-      {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
-      {/* <Signup/>
-      <Login/> */}
-      <Header/>
-      <Dashboard/>
-
-
+      <div className="h-screen bg-custom-purple ">
+        <div>
+          <Header />
+        </div>
+        <div className="flex justify-center">
+          <Outlet />
+        </div>
+      </div>
     </>
   );
 }
