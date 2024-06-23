@@ -20,8 +20,8 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-white mt-20 w-3/5 rounded-xl justify-center mb-10 pb-4 text-center self-center border-t-2 border-text-green">
-      <div className="w-full h-full pt-10 md:w-1/2 flex flex-col justify-center gap-2 md:gap-7 md:m-5">
+    <div className="flex flex-col md:flex-row bg-white mt-20 w-3/5 rounded-xl justify-center pb-4 md:m-10 text-center self-center border-t-2 border-text-green">
+      <div className="w-full h-full pt-10 md:w-1/2 flex flex-col justify-center self-center gap-2 md:gap-7 md:m-5">
         <Logo width="200px" height="200px" />
         <h1 className="text-custom-purple mt-2 md:text-4xl sm:text-3xl font-bold tracking-widest">
           IIT BHILAI
@@ -50,7 +50,7 @@ const Signup = () => {
           <Input
             type="email"
             name="emailId"
-            placeholder="EmailId"
+            placeholder="Email Id"
             value={formData.emailId}
             onChange={handleChange}
           />
@@ -77,7 +77,7 @@ const Signup = () => {
         </form>
         <div className="flex justify-start ">
           <Link
-            to="/signup"
+            to="/login"
             className="flex justify-evenly text-sm transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 text-gray-700 hover:text-nav-white"
           >
             Already have an account?
