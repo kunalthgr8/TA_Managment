@@ -5,7 +5,7 @@ import cat from '../../assets/cat.jpg';
 
 function Dashboard() {
   return (
-    <div className='bg-custom-purple h-screen pt-7 overflow-scroll'>
+    <div className='bg-custom-purple h-screen pt-7 overflow-scroll no-scrollbar'>
       <div className='bg-white rounded-2xl m-10'>
         <div className='flex md:flex-row md:items-center justify-around content-center p-10 flex-col gap-5'>
           <ProfileLogo src={cat} width="200px" height="200px" className='rounded-full'/>

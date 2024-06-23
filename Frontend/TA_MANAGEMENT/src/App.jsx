@@ -4,7 +4,7 @@ import { Header } from "./components";
 function App() {
   return (
     <>
-      <div className="h-screen bg-custom-purple ">
+      <div className="min-h-screen  bg-custom-purple">
         <div>
           <Header />
         </div>

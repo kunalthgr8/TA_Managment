@@ -19,7 +19,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-white mt-20 w-3/5 rounded-xl justify-center md:m-10 text-center self-center border-t-2 border-text-green">
+    <div className="flex flex-col md:flex-row bg-white mt-20 w-3/5 rounded-xl justify-center pb-4 md:m-10 text-center self-center border-t-2 border-text-green">
       <div className="w-full h-full pt-10 md:w-1/2 flex flex-col justify-center gap-2 md:gap-7 md:m-5">
         <Logo width="200px" height="200px" />
         <h1 className="text-custom-purple mt-2 md:text-4xl sm:text-3xl font-bold tracking-widest">
