@@ -16,9 +16,11 @@ import ProfileLogo from "./Logo/ProfileLogo";
 import Card from "./Card/Card";
 import AddCourse from "./AddCourse/AddCourse";
 import TaList from "./TAList/TaList";
+import CourseDetail from "./CourseDetail/CourseDetail";
 // import Button from "./Button/Button";
 
 export {
+  CourseDetail,
   TaList,
   AddCourse,
   Button,

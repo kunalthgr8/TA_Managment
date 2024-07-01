@@ -40,15 +40,8 @@ function Header() {
       facultyReq: "Course Added",
     },
     {
-      name: "Login",
+      name: "Register",
       slug: "/login",
-      color: "text-red-500",
-      authenticationReq: false,
-      facultyReq: "either",
-    },
-    {
-      name: "Signup",
-      slug: "/signup",
       color: "text-red-500",
       authenticationReq: false,
       facultyReq: "either",
@@ -65,13 +58,13 @@ function Header() {
   const renderNavItems = () => {
     return navItems.map((item) => {
       if (
-        item.authenticationReq && !isAuthenticated ||
+        (item.authenticationReq && !isAuthenticated) ||
         (item.facultyReq !== "either" && item.facultyReq !== facultyStatus)
       ) {
         return null;
       }
 
-      if ((item.name === "Login" || item.name === "Signup") && isAuthenticated) {
+      if (item.name === "Register" && isAuthenticated) {
         return null;
       }
 

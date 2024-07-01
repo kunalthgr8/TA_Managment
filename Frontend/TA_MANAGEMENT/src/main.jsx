@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   AddCourse,
   ChangePassword,
+  CourseDetail,
   Dashboard,
   Home,
   Leaves,
@@ -75,6 +76,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <TaList />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/course-detail/:courseId",
+        element: (
+          <AuthLayout authentication={true}>
+            <CourseDetail/>
           </AuthLayout>
         ),
       },
