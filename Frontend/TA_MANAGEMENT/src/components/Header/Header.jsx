@@ -1,117 +1,89 @@
 import React from "react";
 import { Logo, ProfileLogo } from "../index";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice";
 import cat from "../../assets/cat.jpg";
 
 function Header() {
-  // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const isAuthenticated = true;
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const location = useLocation();
   const navigate = useNavigate();
-  const facultyStatus = "Not Assigned";
+  const facultyStatus = "Course Added"; // or "Not Assigned"
+  const dispatch = useDispatch();
 
-  const navItemOnAss = [
+  const onLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
+  const navItems = [
     {
       name: "Home",
       slug: "/",
       color: "text-custom-purple",
       authenticationReq: true,
-    },
-    {
-      name: "Courses",
-      slug: "/courses",
-      color: "text-custom-purple",
-      authenticationReq: true,
+      facultyReq: "either",
     },
     {
       name: "TA List",
       slug: "/ta-list",
       color: "text-custom-purple",
       authenticationReq: true,
+      facultyReq: "either",
     },
     {
       name: "Leaves",
       slug: "/leaves",
       color: "text-custom-purple",
       authenticationReq: true,
+      facultyReq: "Course Added",
     },
     {
       name: "Login",
       slug: "/login",
       color: "text-red-500",
       authenticationReq: false,
+      facultyReq: "either",
     },
     {
       name: "Signup",
       slug: "/signup",
       color: "text-red-500",
       authenticationReq: false,
+      facultyReq: "either",
     },
     {
       name: "Logout",
       slug: "/",
       color: "text-red-500",
       authenticationReq: true,
+      facultyReq: "either",
     },
   ];
 
-  const navItemsOnNA = [
-    {
-      name: "Home",
-      slug: "/",
-      color: "text-custom-purple",
-      authenticationReq: true,
-    },
-    {
-      name: "TA List",
-      slug: "/ta-list",
-      color: "text-custom-purple",
-      authenticationReq: true,
-    },
-    {
-      name: "Login",
-      slug: "/login",
-      color: "text-red-500",
-      authenticationReq: false,
-    },
-    {
-      name: "Signup",
-      slug: "/signup",
-      color: "text-red-500",
-      authenticationReq: false,
-    },
-    {
-      name: "Logout",
-      slug: "/",
-      color: "text-red-500",
-      authenticationReq: true,
-    },
-  ];
-
-  const navItems =
-    facultyStatus === "Not Assigned" ? navItemsOnNA : navItemOnAss;
   const renderNavItems = () => {
     return navItems.map((item) => {
-      if (item.authenticationReq && !isAuthenticated) {
-        return <div className="hidden"></div>;
-      }
       if (
-        (item.name === "Login" || item.name === "Signup") &&
-        isAuthenticated
+        item.authenticationReq && !isAuthenticated ||
+        (item.facultyReq !== "either" && item.facultyReq !== facultyStatus)
       ) {
-        return <div className="hidden"></div>;
+        return null;
       }
+
+      if ((item.name === "Login" || item.name === "Signup") && isAuthenticated) {
+        return null;
+      }
+
       const isActive = location.pathname === item.slug;
-      let color =
-        item.name === "Logout" ? "text-red-500" : "text-custom-purple";
       return (
         <Link
           key={item.name}
-          className={`${item.color} font-bold ${
-            isActive ? color : "text-custom-black"
+          className={`${item.color} text-xs sm:text-base font-bold ${
+            isActive ? item.color : "text-custom-black"
           }`}
           to={item.slug}
+          onClick={item.name === "Logout" ? onLogout : undefined}
         >
           {item.name}
         </Link>
@@ -122,7 +94,7 @@ function Header() {
   return (
     <div className="bg-custom-purple h-auto">
       <div className="bg-white flex justify-between items-center rounded-b-xl p-1">
-        <div className="flex sm:w-2/3 lg:w-1/2 justify-between self-center ml-2 gap-5 ">
+        <div className="flex sm:w-2/3 lg:w-1/2 justify-between self-center ml-2 gap-5">
           <div className="ml-3">
             <Logo
               width="60px"
@@ -130,7 +102,7 @@ function Header() {
               className="ml-6 content-center items-center"
             />
           </div>
-          <div className="flex w-4/5 justify-start self-center gap-5">
+          <div className="flex w-4/5 justify-start self-center gap-2 sm:gap-5">
             {renderNavItems()}
           </div>
         </div>

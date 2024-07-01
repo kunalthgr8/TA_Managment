@@ -73,7 +73,7 @@ const router = createBrowserRouter([
       {
         path: "/ta-list",
         element: (
-          <AuthLayout authentication={false}>
+          <AuthLayout authentication={true}>
             <TaList />
           </AuthLayout>
         ),

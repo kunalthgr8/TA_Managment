@@ -16,7 +16,7 @@ function TaList() {
             <div className="flex justify-center self-center w-full">
 
             <Card
-              className="w-4/5 md:w-full sm:m-5 shadow-xl rounded-3xl"
+              className=" w-full sm:w-4/5 md:w-full sm:m-5 shadow-xl rounded-3xl"
               src={cat}
               />
               </div>
