@@ -9,8 +9,9 @@ function Header() {
   const isAuthenticated = true;
   const location = useLocation();
   const navigate = useNavigate();
+  const facultyStatus = "Not Assigned";
 
-  const navItems = [
+  const navItemOnAss = [
     {
       name: "Home",
       slug: "/",
@@ -55,20 +56,60 @@ function Header() {
     },
   ];
 
+  const navItemsOnNA = [
+    {
+      name: "Home",
+      slug: "/",
+      color: "text-custom-purple",
+      authenticationReq: true,
+    },
+    {
+      name: "TA List",
+      slug: "/ta-list",
+      color: "text-custom-purple",
+      authenticationReq: true,
+    },
+    {
+      name: "Login",
+      slug: "/login",
+      color: "text-red-500",
+      authenticationReq: false,
+    },
+    {
+      name: "Signup",
+      slug: "/signup",
+      color: "text-red-500",
+      authenticationReq: false,
+    },
+    {
+      name: "Logout",
+      slug: "/",
+      color: "text-red-500",
+      authenticationReq: true,
+    },
+  ];
+
+  const navItems =
+    facultyStatus === "Not Assigned" ? navItemsOnNA : navItemOnAss;
   const renderNavItems = () => {
     return navItems.map((item) => {
       if (item.authenticationReq && !isAuthenticated) {
         return <div className="hidden"></div>;
       }
-      if((item.name === "Login" || item.name === "Signup") && isAuthenticated){
+      if (
+        (item.name === "Login" || item.name === "Signup") &&
+        isAuthenticated
+      ) {
         return <div className="hidden"></div>;
       }
       const isActive = location.pathname === item.slug;
+      let color =
+        item.name === "Logout" ? "text-red-500" : "text-custom-purple";
       return (
         <Link
           key={item.name}
           className={`${item.color} font-bold ${
-            isActive ? "text-purple-500" : item.color
+            isActive ? color : "text-custom-black"
           }`}
           to={item.slug}
         >

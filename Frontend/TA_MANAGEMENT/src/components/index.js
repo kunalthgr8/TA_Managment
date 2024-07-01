@@ -14,9 +14,13 @@ import Searchbar from "./Searchbar/Searchbar";
 import Signup from "./Signup/signup";
 import ProfileLogo from "./Logo/ProfileLogo";
 import Card from "./Card/Card";
+import AddCourse from "./AddCourse/AddCourse";
+import TaList from "./TAList/TaList";
 // import Button from "./Button/Button";
 
 export {
+  TaList,
+  AddCourse,
   Button,
   ChangePassword,
   Dashboard,
@@ -33,5 +37,4 @@ export {
   Searchbar,
   Signup,
   Card,
-  
 };

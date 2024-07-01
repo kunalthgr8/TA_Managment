@@ -4,12 +4,14 @@ import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
+  AddCourse,
   ChangePassword,
   Dashboard,
   Home,
   Leaves,
   Login,
   Signup,
+  TaList,
 } from "./components/index.js";
 import { Provider } from "react-redux";
 import AuthLayout from "./components/AuthLayout.jsx";
@@ -57,6 +59,22 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={false}>
             <Signup />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/addCourse",
+        element: (
+          <AuthLayout authentication={false}>
+            <AddCourse />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/ta-list",
+        element: (
+          <AuthLayout authentication={false}>
+            <TaList />
           </AuthLayout>
         ),
       },
