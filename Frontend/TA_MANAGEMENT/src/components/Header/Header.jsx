@@ -9,7 +9,8 @@ function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const location = useLocation();
   const navigate = useNavigate();
-  const facultyStatus = "Course Added"; // or "Not Assigned"
+  const facultyStatus = "Course Added"; // or
+  // const facultyStatus =  "Not Assigned";
   const dispatch = useDispatch();
 
   const onLogout = () => {
@@ -21,21 +22,21 @@ function Header() {
     {
       name: "Home",
       slug: "/",
-      color: "text-custom-purple",
+      color: "text-custom-black",
       authenticationReq: true,
       facultyReq: "either",
     },
     {
       name: "TA List",
       slug: "/ta-list",
-      color: "text-custom-purple",
+      color: "text-custom-black",
       authenticationReq: true,
       facultyReq: "either",
     },
     {
       name: "Leaves",
       slug: "/leaves",
-      color: "text-custom-purple",
+      color: "text-custom-black",
       authenticationReq: true,
       facultyReq: "Course Added",
     },
@@ -73,7 +74,7 @@ function Header() {
         <Link
           key={item.name}
           className={`${item.color} text-xs sm:text-base font-bold ${
-            isActive ? item.color : "text-custom-black"
+            isActive ? "text-custom-purple" : "text-custom-black"
           }`}
           to={item.slug}
           onClick={item.name === "Logout" ? onLogout : undefined}
@@ -88,7 +89,7 @@ function Header() {
     <div className="bg-custom-purple h-auto">
       <div className="bg-white flex justify-between items-center rounded-b-xl p-1">
         <div className="flex sm:w-2/3 lg:w-1/2 justify-between self-center ml-2 gap-5">
-          <div className="ml-3">
+          <div className="ml-3" onClick={()=>navigate("/")}>
             <Logo
               width="60px"
               height="70px"
