@@ -14,6 +14,7 @@ import {
   Login,
   Signup,
   TaList,
+  TaPublicView,
 } from "./components/index.js";
 import { Provider } from "react-redux";
 import AuthLayout from "./components/AuthLayout.jsx";
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
             <FacultyDashboard />
           </AuthLayout>
         ),
+      },
+      {
+        path: "/taPublicView",
+        element: <TaPublicView />,
       },
     ],
   },

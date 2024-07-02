@@ -18,9 +18,22 @@ import AddCourse from "./AddCourse/AddCourse";
 import TaList from "./TAList/TaList";
 import CourseDetail from "./CourseDetail/CourseDetail";
 import FacultyDashboard from "./FacultyDashboard/FacultyDashboard";
-// import Button from "./Button/Button";
+import TaPublicView from "./TaPublicView/TaPublicView";
+import TaEducation from "./TaPublicView/TaEducation";
+import TaIndustryExp from "./TaPublicView/TaIndustryExp";
+import TaProjects from "./TaPublicView/TaProjects";
+import TaAbout from "./TaPublicView/TaAbout";
+import TaProfile from "./TaPublicView/TaProfile";
+import TaSkills from "./TaPublicView/TaSkills";
 
 export {
+  TaEducation,
+  TaIndustryExp,
+  TaProjects,
+  TaAbout,
+  TaProfile,
+  TaSkills,
+  TaPublicView,
   FacultyDashboard,
   CourseDetail,
   TaList,

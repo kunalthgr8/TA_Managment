@@ -1,6 +1,8 @@
 import { Button } from "../index";
+import { useNavigate } from "react-router-dom";
 
 function Card({ width = "100px", height = "100px", className = "", src = "" }) {
+  const navigate = useNavigate();
   return (
     <div
       className={`flex flex-col md:flex-row justify-center self-center bg-slate-100 rounded-lg p-5 gap-4 w-4/5 ${className}`}
@@ -36,6 +38,7 @@ function Card({ width = "100px", height = "100px", className = "", src = "" }) {
           <Button
             width="flex justify-center self-center w-full"
             className="bg-custom-gray font-bold rounded-3xl p-2 w-11/12 text-custom-purple shadow-lg"
+            onClick={() => navigate("/taPublicView")}
           >
             Details
           </Button>
