@@ -53,7 +53,7 @@ function AddCourse() {
 
   return (
     <>
-      <div className="bg-white flex flex-col justify-center self-center w-3/4 rounded-lg p-5">
+      <div className="bg-white flex flex-col justify-center self-center w-3/4 rounded-lg p-5 mt-8">
         <div className="flex flex-col text-center justify-center self-center m-5 mt-2 p-2">
           <h1 className="text-custom-purple font-bold text-2xl tracking-wider">
             Add New Course

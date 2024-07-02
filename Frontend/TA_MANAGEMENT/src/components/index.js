@@ -17,9 +17,11 @@ import Card from "./Card/Card";
 import AddCourse from "./AddCourse/AddCourse";
 import TaList from "./TAList/TaList";
 import CourseDetail from "./CourseDetail/CourseDetail";
+import FacultyDashboard from "./FacultyDashboard/FacultyDashboard";
 // import Button from "./Button/Button";
 
 export {
+  FacultyDashboard,
   CourseDetail,
   TaList,
   AddCourse,

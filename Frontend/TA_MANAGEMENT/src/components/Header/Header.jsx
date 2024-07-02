@@ -101,7 +101,7 @@ function Header() {
         </div>
         <div
           className="flex flex-col items-center mr-4 cursor-pointer"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/faculty-dashboard")}
         >
           <ProfileLogo
             width="50px"

@@ -8,6 +8,7 @@ import {
   ChangePassword,
   CourseDetail,
   Dashboard,
+  FacultyDashboard,
   Home,
   Leaves,
   Login,
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
       {
         path: "/addCourse",
         element: (
-          <AuthLayout authentication={false}>
+          <AuthLayout authentication={true}>
             <AddCourse />
           </AuthLayout>
         ),
@@ -83,7 +84,15 @@ const router = createBrowserRouter([
         path: "/course-detail/:courseId",
         element: (
           <AuthLayout authentication={true}>
-            <CourseDetail/>
+            <CourseDetail />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/faculty-dashboard",
+        element: (
+          <AuthLayout authentication={true}>
+            <FacultyDashboard />
           </AuthLayout>
         ),
       },
