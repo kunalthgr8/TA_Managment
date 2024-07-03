@@ -27,8 +27,24 @@ import TaProfile from "./TaPublicView/TaProfile";
 import TaSkills from "./TaPublicView/TaSkills";
 import ExperienceCard from "./TaPublicView/ExperienceCard";
 import ProjectCard from "./TaPublicView/ProjectCard";
+import EducationCard from "./TaPublicView/EducationCard";
+import TaForm from "./Home/TaForm";
+import TaAboutForm from "./Home/TaInfo/TaAboutForm";
+import TaEducationForm from "./Home/TaInfo/TaEducationForm";
+import TaExperienceForm from "./Home/TaInfo/TaExperienceForm";
+import TaProjectForm from "./Home/TaInfo/TaProjectForm";
+import TaSkillsForm from "./Home/TaInfo/TaSkillsForm";
+import TaSocialInfo from "./Home/TaInfo/TaSocialInfo";
 
 export {
+  TaAboutForm,
+  TaExperienceForm,
+  TaProjectForm,
+  TaSkillsForm,
+  TaSocialInfo,
+  TaEducationForm,
+  TaForm,
+  EducationCard,
   ProjectCard,
   ExperienceCard,
   TaEducation,

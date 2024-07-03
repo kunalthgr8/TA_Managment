@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 function TaProfile() {
   return (
     <div className="flex flex-col md:flex-row w-4/5 justify-center gap-5 self-center bg-white p-8 rounded-lg border-2 border-custom-gray shadow-slate-700">
-      <div>
+      <div className="flex justify-center self-center">
         <img src={Cat} alt="TA Profile Picture" className="rounded-xl" />
       </div>
-      <div className="w-3/4 flex flex-col m-5">
+      <div className="w-3/4 flex flex-col m-5 bg-custom-gray p-4 rounded-xl">
         <h1 className="text-2xl font-bold text-custom-black">Kunal Singla (He/Him)</h1>
         <h2 className="text-base font-medium text-gray-500 mt-3">
           {" "}
@@ -46,7 +46,7 @@ function TaProfile() {
               className="text-base flex justify-center self-center cursor-pointer text-gray-500"
               title="Portfolio"
             >
-              portfolio.com
+              Website
             </Link>
           </div>
           <div className="flex flex-row justify-start self-center gap-3 text-lg mt-2 ">

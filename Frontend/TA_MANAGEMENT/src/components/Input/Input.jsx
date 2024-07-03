@@ -5,13 +5,13 @@ function Input({ label, type = "text", className = "", ...props }, ref) {
   return (
     <div className="w-full">
       {label && (
-        <label className="inline-block mb-1 pl-1" htmlFor={id}>
+        <label className="inline-block mb-1 pl-1 font-bold text-custom-black" htmlFor={id}>
           {label}
         </label>
       )}
       <input
         type={type}
-        className={`px-3 py-2 rounded-xl bg-gray-300 text-gray-700 outline-none focus:bg-gray-50 duration-200 border border-gray-200 w-full ${className}`}
+        className={`px-3 py-2 rounded-xl text-custom-black bg-custom-gray outline-none focus:bg-gray-50 duration-200 border border-gray-200 w-full ${className}`}
         ref={ref}
         {...props}
         id={id}

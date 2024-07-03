@@ -2,10 +2,10 @@ import React from 'react'
 
 function ProjectCard() {
   return (
-    <div className='w-3/4 mt-2 mb-3 '>
+    <div className='w-full mt-2 mb-3 bg-custom-gray p-4 rounded-xl '>
         <div className='flex flex-row justify-between'>
         <h1 className='text-custom-black text-lg font-semibold tracking-wide'>Project Name</h1>
-        <div className='flex justify-evenly self-center text-sm gap-3 text-blue-400'>
+        <div className='flex justify-evenly self-center font-medium text-sm gap-3 text-custom-purple'>
             <p className='cursor-pointer'>Link1</p>
             <p className='cursor-pointer'>Link2</p>
             <p className='cursor-pointer'>Link3</p>

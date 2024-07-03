@@ -12,6 +12,7 @@ function Header() {
   const facultyStatus = "Course Added"; // or
   // const facultyStatus =  "Not Assigned";
   const dispatch = useDispatch();
+  const isFaculty = useSelector((state) => state.auth.isFaculty);
 
   const onLogout = () => {
     dispatch(logout());
@@ -56,8 +57,47 @@ function Header() {
     },
   ];
 
+  const navItemsForTa = [
+    {
+      name: "Home",
+      slug: "/",
+      color: "text-custom-black",
+      authenticationReq: true,
+      facultyReq: "either",
+    },
+    {
+      name: "TA List",
+      slug: "/ta-list",
+      color: "text-custom-black",
+      authenticationReq: true,
+      facultyReq: "either",
+    },
+    {
+      name: "Leave",
+      slug: "/leaves",
+      color: "text-custom-black",
+      authenticationReq: true,
+      facultyReq: "Course Added",
+    },
+    {
+      name: "Logout",
+      slug: "/",
+      color: "text-red-500",
+      authenticationReq: true,
+      facultyReq: "either",
+    },
+    {
+      name: "Register",
+      slug: "/login",
+      color: "text-red-500",
+      authenticationReq: false,
+      facultyReq: "either",
+    },
+  ]
+  const finalNavItems = isFaculty ? navItems : navItemsForTa;
+
   const renderNavItems = () => {
-    return navItems.map((item) => {
+    return finalNavItems.map((item) => {
       if (
         (item.authenticationReq && !isAuthenticated) ||
         (item.facultyReq !== "either" && item.facultyReq !== facultyStatus)
