@@ -25,8 +25,12 @@ import TaProjects from "./TaPublicView/TaProjects";
 import TaAbout from "./TaPublicView/TaAbout";
 import TaProfile from "./TaPublicView/TaProfile";
 import TaSkills from "./TaPublicView/TaSkills";
+import ExperienceCard from "./TaPublicView/ExperienceCard";
+import ProjectCard from "./TaPublicView/ProjectCard";
 
 export {
+  ProjectCard,
+  ExperienceCard,
   TaEducation,
   TaIndustryExp,
   TaProjects,
