@@ -21,9 +21,11 @@ function TaForm() {
         <hr className="border-2 border-custom-gray" />
         <TaExperienceForm />
         <hr className="border-2 border-custom-gray" />
+        <TaSocialInfo />
+        <hr className="border-2 border-custom-gray" />
         <TaAboutForm />
         <TaSkillsForm />
-        <TaSocialInfo />
+        
       </div>
     </div>
   );
