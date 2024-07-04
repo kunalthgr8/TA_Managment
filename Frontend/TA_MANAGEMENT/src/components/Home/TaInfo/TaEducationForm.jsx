@@ -82,12 +82,12 @@ function TaEducationForm() {
   };
 
   return (
-    <div className="flex flex-col gap-5 m-5">
+    <div className="flex flex-col gap-5 m-2 lg:m-5">
       <h1 className="text-lg font-bold text-gray-800 pl-4">Education</h1>
       {educations.map((education, index) => (
         <div
           key={index}
-          className="flex flex-row justify-center self-center gap-4 w-3/4 bg-custom-gray rounded-xl p-4"
+          className="flex flex-row justify-center self-center gap-4 w-4/5 lg:w-3/4 bg-custom-gray rounded-xl p-4"
         >
           <div className="flex justify-center self-center m-4">
             <GiGraduateCap className="text-7xl text-custom-purple" />

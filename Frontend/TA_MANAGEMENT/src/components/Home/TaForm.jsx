@@ -10,16 +10,18 @@ import {
 
 function TaForm() {
   return (
-    <div className="w-11/12 flex flex-col justify-center self-center gap-10">
+    <div className=" w-full lg:w-11/12 flex flex-col justify-center self-center gap-5">
       <h1 className="text-center text-white font-bold tracking-wider text-2xl">
         Create Your Profile
       </h1>
-      <div className="w-4/5 flex flex-col self-center justify-center bg-white p-4 m-5 mt-5 rounded-lg ">
+      <div className=" w-full lg:w-4/5 flex flex-col self-center justify-center bg-white p-2 lg:p-4 m-5 mt-5 rounded-lg ">
         <TaEducationForm />
         <hr className="border-2 border-custom-gray" />
-        <TaAboutForm />
-        <TaExperienceForm />
         <TaProjectForm />
+        <hr className="border-2 border-custom-gray" />
+        <TaExperienceForm />
+        <hr className="border-2 border-custom-gray" />
+        <TaAboutForm />
         <TaSkillsForm />
         <TaSocialInfo />
       </div>
