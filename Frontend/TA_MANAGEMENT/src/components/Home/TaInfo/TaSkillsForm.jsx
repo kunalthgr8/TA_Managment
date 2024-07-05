@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { Input, Button } from "../../index";
 
 function TaSkillsForm() {
-
+  
   const [skills, setSkills] = useState({
     area_of_specialization: ["Python","Java"],
     primary_programming_skills: ["Python","Java"],
@@ -41,12 +41,14 @@ function TaSkillsForm() {
       ...prevSkills,
       [category]: [...prevSkills[category], newSkill],
     }));
+
   };
 
   const handleAddSkill = (category,skill) => {
     const newSkill = skill
     addSkill(category, newSkill);
     setCurrentSkills((prev) => ({ ...prev, [category]: "" }));
+    
   };
 
   const handleRemoveSkill = (category, index) => {
@@ -55,6 +57,10 @@ function TaSkillsForm() {
       [category]: prevSkills[category].filter((_, i) => i !== index),
     }));
   };
+
+  const updateSkills = () => {
+    console.log(skills);
+  }
 
   const handleCancel = () => {
     setIsFormVisible(false)
@@ -80,6 +86,7 @@ function TaSkillsForm() {
       publications: [],
       patents: [],
     });
+    
 
   }
 
@@ -340,6 +347,13 @@ function TaSkillsForm() {
           )
           }
           <div className="flex gap-5 m-5 w-1/2">
+          <Button
+              className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
+              width="w-1/4"
+              onClick={updateSkills}
+            >
+              Save
+            </Button>
             <Button
               className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
               width="w-1/4"
@@ -347,6 +361,7 @@ function TaSkillsForm() {
             >
               Cancel
             </Button>
+            
           </div>
         </div>
       )}
