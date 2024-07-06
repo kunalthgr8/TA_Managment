@@ -89,6 +89,7 @@ function TaSkillsForm() {
       patents: [],
     });
   };
+
   const capitalizeName = (name) =>
     name
       .split(" ")
@@ -114,6 +115,9 @@ function TaSkillsForm() {
                     className="rounded-l-mg rounded-r-none bg-custom-gray"
                     value={currentSkills[category]}
                     onChange={handleChange}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && handleAddSkill(category)
+                    }
                   />
                   <button
                     type="button"

@@ -74,7 +74,7 @@ function Header() {
     },
     {
       name: "Leave",
-      slug: "/leaves",
+      slug: "/taLeaves",
       color: "text-custom-black",
       authenticationReq: true,
       facultyReq: "Course Added",

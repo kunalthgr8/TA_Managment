@@ -35,8 +35,10 @@ import TaExperienceForm from "./Home/TaInfo/TaExperienceForm";
 import TaProjectForm from "./Home/TaInfo/TaProjectForm";
 import TaSkillsForm from "./Home/TaInfo/TaSkillsForm";
 import TaSocialInfo from "./Home/TaInfo/TaSocialInfo";
+import TaLeaves from "./TaLeaves/TaLeaves";
 
 export {
+  TaLeaves,
   TaAboutForm,
   TaExperienceForm,
   TaProjectForm,

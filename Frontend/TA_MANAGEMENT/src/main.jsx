@@ -13,6 +13,7 @@ import {
   Leaves,
   Login,
   Signup,
+  TaLeaves,
   TaList,
   TaPublicView,
 } from "./components/index.js";
@@ -100,6 +101,14 @@ const router = createBrowserRouter([
       {
         path: "/taPublicView",
         element: <TaPublicView />,
+      },
+      {
+        path: "/taLeaves",
+        element: (
+          <AuthLayout authentication={true}>
+            <TaLeaves />
+          </AuthLayout>
+        ),
       },
     ],
   },

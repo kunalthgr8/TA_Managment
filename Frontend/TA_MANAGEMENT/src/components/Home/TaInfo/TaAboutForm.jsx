@@ -4,19 +4,17 @@ import Cat from "../../../assets/cat.jpg";
 // import "./TaAboutForm.css";
 
 function TaAboutForm() {
-  const defaultProject = {
+  const defaultAboutValues = {
     Name: "",
     Gender: "",
     Email: "",
     Phone: "",
     Bio: "",
-    startDate: "",
-    endDate: "",
     image: null,
   };
 
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [experiences, setExperiences] = useState([
+  const [AboutValues, setAboutValues] = useState([
     {
       Name: "Kunal Singla",
       Gender: "Male",
@@ -27,14 +25,14 @@ function TaAboutForm() {
     },
   ]);
 
-  const [currentProject, setCurrentProject] = useState(defaultProject);
+  const [CurrentAboutValues, setCurrentAboutValues] = useState(defaultAboutValues);
   const [editIndex, setEditIndex] = useState(null);
 
   const handleSave = () => {
     if (editIndex !== null) {
-      setExperiences((prevExperiences) =>
-        prevExperiences.map((experience, index) =>
-          index === editIndex ? currentProject : experience
+      setAboutValues((prevAboutValues) =>
+        prevAboutValues.map((experience, index) =>
+          index === editIndex ? CurrentAboutValues : experience
         )
       );
     }
@@ -48,17 +46,17 @@ function TaAboutForm() {
   };
 
   const resetForm = () => {
-    setCurrentProject(defaultProject);
+    setCurrentAboutValues(defaultAboutValues);
     setEditIndex(null);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCurrentProject({ ...currentProject, [name]: value });
+    setCurrentAboutValues({ ...CurrentAboutValues, [name]: value });
   };
 
   const editForm = (index) => {
-    setCurrentProject(experiences[index]);
+    setCurrentAboutValues(AboutValues[index]);
     setEditIndex(index);
     setIsFormVisible(true);
   };
@@ -68,7 +66,7 @@ function TaAboutForm() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setCurrentProject({ ...currentProject, image: reader.result });
+        setCurrentAboutValues({ ...CurrentAboutValues, image: reader.result });
       };
       reader.readAsDataURL(file);
     }
@@ -82,7 +80,7 @@ function TaAboutForm() {
       <div className="flex flex-col justify-center self-center gap-4 w-3/4 bg-custom-gray rounded-xl p-4">
         {!isFormVisible && (
           <>
-            {experiences.map((experience, index) => (
+            {AboutValues.map((experience, index) => (
               <div
                 key={index}
                 className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl"
@@ -147,7 +145,7 @@ function TaAboutForm() {
                 key={field}
                 type="text"
                 name={field}
-                value={currentProject[field]}
+                value={CurrentAboutValues[field]}
                 placeholder={field}
                 className="rounded-md bg-white"
                 label={field}
@@ -164,9 +162,9 @@ function TaAboutForm() {
                 onChange={handleImageChange}
                 className="px-3 py-2 text-custom-black outline-none focus:bg-gray-50 duration-200 border border-gray-200 w-full rounded-lg bg-white"
               />
-              {currentProject.image && (
+              {CurrentAboutValues.image && (
                 <img
-                  src={currentProject.image}
+                  src={CurrentAboutValues.image}
                   alt="Profile"
                   className="mt-2 ml-5 h-20 w-20 rounded-full object-cover"
                 />

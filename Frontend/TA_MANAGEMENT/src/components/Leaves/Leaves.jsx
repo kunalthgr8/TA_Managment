@@ -1,9 +1,11 @@
 import React from "react";
 import NoLeave from "../../assets/NoLeaves.svg";
 import { Button } from "../index";
+import { useSelector } from "react-redux";
 
 function Leaves() {
   const leavesRequest = 2;
+  const isFaculty = useSelector((state) => state.auth.isFaculty);
 
   const noLeaveRequestContent = (
     <div className="flex flex-col justify-center self-center mt-10 gap-5">
