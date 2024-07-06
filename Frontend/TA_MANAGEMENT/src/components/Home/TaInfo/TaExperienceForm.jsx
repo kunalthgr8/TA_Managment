@@ -5,6 +5,8 @@ import { MdOutlineEdit } from "react-icons/md";
 import { VscGithub } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 
+import { MdDelete } from "react-icons/md";
+
 function TaExperienceForm() {
   const [experiences, setexperiences] = useState([
     {
@@ -68,6 +70,11 @@ function TaExperienceForm() {
     setCurrentProject(experiences[index]);
     setEditIndex(index);
   };
+  const deleteExperience = (index) => {
+    const updatedexperiences = [...experiences];
+    updatedexperiences.splice(index, 1);
+    setexperiences(updatedexperiences);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,9 +94,17 @@ function TaExperienceForm() {
           </div>
           <div className="w-full mt-2 mb-3 bg-custom-gray py-3 px-3 rounded-xl">
             <div className="flex justify-between mr-4">
-              <h1 className="text-gray-500 text-lg font-semibold tracking-wide">
-                {project.Company}
-              </h1>
+              <div className="flex w-full justify-between self-center">
+                <h1 className="text-gray-500 text-lg font-semibold tracking-wide">
+                  {project.Company}
+                </h1>
+                <div className="flex justify-center self-center">
+                  <MdDelete
+                    className="text-gray-500 text-lg font-semibold cursor-pointer tracking-wide"
+                    onClick={() => deleteExperience(index)}
+                  />
+                </div>
+              </div>
             </div>
             <h2 className="text-custom-black font-medium text-base">
               {project.Role}

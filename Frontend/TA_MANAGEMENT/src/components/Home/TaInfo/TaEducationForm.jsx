@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input, Button } from "../../index";
 import { GiGraduateCap } from "react-icons/gi";
 import { MdOutlineEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 function TaEducationForm() {
   const [educations, setEducations] = useState([
@@ -36,11 +37,11 @@ function TaEducationForm() {
   };
 
   const handleCancel = () => {
-    if (isEditMode) {
-      const updatedEducations = [...educations];
-      updatedEducations.splice(editIndex, 1);
-      setEducations(updatedEducations);
-    }
+    // if (isEditMode) {
+    //   const updatedEducations = [...educations];
+    //   updatedEducations.splice(editIndex, 1);
+    //   setEducations(updatedEducations);
+    // }
     resetForm();
   };
 
@@ -69,6 +70,12 @@ function TaEducationForm() {
     });
   };
 
+  const deleteEducation = (index) => {
+    const updatedEducations = [...educations];
+    updatedEducations.splice(index, 1);
+    setEducations(updatedEducations);
+  };
+
   const handleEdit = (index) => {
     setIsFormVisible(true);
     setIsEditMode(true);
@@ -93,9 +100,17 @@ function TaEducationForm() {
             <GiGraduateCap className="text-7xl text-custom-purple" />
           </div>
           <div className="w-full mt-2 mb-3 bg-custom-gray py-3 px-3 rounded-xl">
-            <h1 className="text-gray-500 text-lg font-semibold tracking-wide">
-              {education.university}
-            </h1>
+            <div className="flex justify-between self-center">
+              <h1 className="text-gray-500 text-lg font-semibold tracking-wide">
+                {education.university}
+              </h1>
+              <div className="flex justify-center self-center">
+                <MdDelete
+                  className="text-gray-500 text-lg font-semibold cursor-pointer tracking-wide"
+                  onClick={() => deleteEducation(index)}
+                />
+              </div>
+            </div>
             <div className="flex flex-row gap-2 justify-start self-center">
               <h2 className="text-custom-black font-medium text-base flex flex-row gap-2 justify-start self-center">
                 {education.degree}

@@ -4,6 +4,7 @@ import { FaLightbulb } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { VscGithub } from "react-icons/vsc";
 import { Link } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
 
 function TaProjectForm() {
   const [projects, setProjects] = useState([
@@ -92,6 +93,12 @@ function TaProjectForm() {
     });
   };
 
+  const deleteProject = (index) => {
+    const updatedProjects = [...projects];
+    updatedProjects.splice(index, 1);
+    setProjects(updatedProjects);
+  };
+
   const removeTechStackField = (index) => {
     const newTechStack = currentProject.techStack.filter((_, i) => i !== index);
     setCurrentProject({ ...currentProject, techStack: newTechStack });
@@ -110,24 +117,32 @@ function TaProjectForm() {
           </div>
           <div className="w-full mt-2 mb-3 bg-custom-gray py-3 px-3 rounded-xl">
             <div className="flex justify-between mr-4">
-              <h1 className="text-gray-500 text-lg font-semibold tracking-wide">
-                {project.Title}
-              </h1>
-              <div className="flex flex-row justify-start self-center gap-3 text-lg ">
-                <Link
-                  to={project.githubLink}
-                  className="text-lg flex justify-center self-center cursor-pointer text-gray-500"
-                  title="Github"
-                >
-                  <VscGithub />
-                </Link>
-                <Link
-                  to={project.liveLink}
-                  className="text-sm flex justify-center self-center cursor-pointer text-gray-500"
-                  title="Live Link"
-                >
-                  Website
-                </Link>
+              <div>
+                <h1 className="text-gray-500 text-lg font-semibold tracking-wide">
+                  {project.Title}
+                </h1>
+                <div className="flex flex-row justify-start self-center gap-3 text-lg ">
+                  <Link
+                    to={project.githubLink}
+                    className="text-lg flex justify-center self-center cursor-pointer text-gray-500"
+                    title="Github"
+                  >
+                    <VscGithub />
+                  </Link>
+                  <Link
+                    to={project.liveLink}
+                    className="text-sm flex justify-center self-center cursor-pointer text-gray-500"
+                    title="Live Link"
+                  >
+                    Website
+                  </Link>
+                </div>
+              </div>
+              <div className="flex justify-center self-center">
+                <MdDelete
+                  className="text-gray-500 text-lg font-semibold cursor-pointer tracking-wide"
+                  onClick={() => deleteProject(index)}
+                />
               </div>
             </div>
             <h2 className="text-custom-black font-medium text-base">
@@ -137,7 +152,9 @@ function TaProjectForm() {
             <p className="text-gray-500 text-xs">
               <strong>Tech Stack:</strong> {project.techStack.join(", ")}
             </p>
-            <p className="text-gray-500 text-xs">{(project.description).substring(0,40)+"......"}</p>
+            <p className="text-gray-500 text-xs">
+              {project.description.substring(0, 40) + "......"}
+            </p>
             <p
               className="text-right text-custom-purple flex justify-end self-center gap-2 cursor-pointer"
               onClick={() => handleEdit(index)}

@@ -23,8 +23,10 @@ function TaForm() {
         <hr className="border-2 border-custom-gray" />
         <TaExperienceForm />
         <hr className="border-2 border-custom-gray" />
-        <TaSkillsForm />
         <TaSocialInfo />
+        <hr className="border-2 border-custom-gray" />
+        <TaSkillsForm />
+        <hr className="border-2 border-custom-gray" />
       </div>
     </div>
   );
