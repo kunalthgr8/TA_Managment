@@ -15,13 +15,14 @@ function TaForm() {
         Create Your Profile
       </h1>
       <div className=" w-full lg:w-4/5 flex flex-col self-center justify-center bg-white p-2 lg:p-4 m-5 mt-5 rounded-lg ">
+        <TaAboutForm />
+        <hr className="border-2 border-custom-gray" />
         <TaEducationForm />
         <hr className="border-2 border-custom-gray" />
         <TaProjectForm />
         <hr className="border-2 border-custom-gray" />
         <TaExperienceForm />
         <hr className="border-2 border-custom-gray" />
-        <TaAboutForm />
         <TaSkillsForm />
         <TaSocialInfo />
       </div>
