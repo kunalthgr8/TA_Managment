@@ -34,6 +34,26 @@ const taResolver = {
                 console.error("Error adding user:", error);
                 throw new Error("Error adding user");
             }
+        },
+
+        updateUser: async (_, { idNumber, name, email, password, phoneNumber, gender, bio }) => {
+            const updatedUser = await User.findOneAndUpdate(
+              { idNumber: idNumber },
+              { $set: { name, email, password, phoneNumber, gender, bio } },
+              { new: true }
+            );
+            if (!updatedUser) {
+              throw new Error('User not found');
+            }
+            return updatedUser;
+          },
+
+        deleteUser: async (_, { idNumber }) => {
+            const deletedUser = await User.findOneAndDelete({ idNumber: idNumber });
+            if (!deletedUser) {
+                throw new Error('User not found');
+            }
+            return deletedUser;
         }
     }
 };
