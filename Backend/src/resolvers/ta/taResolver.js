@@ -37,16 +37,26 @@ const taResolver = {
                 if (!user) {
                     throw new AuthenticationError('User not found');
                 }
+                // console.log("Generating access token...");
                 const accessToken = user.generateAccessToken();
+                // console.log("Access token generated:", accessToken);
+                
+                // console.log("Generating refresh token...");
                 const refreshToken = user.generateRefreshToken();
+                // console.log("Refresh token generated:", refreshToken);
+                
                 user.refreshToken = refreshToken;
+                // console.log("Saving user with new refresh token...");
                 await user.save({ validateBeforeSave: false });
+                // console.log("User saved with new refresh token.");
+                
                 return { accessToken, refreshToken, user };
             } catch (error) {
+                console.error("Error in generateAccessAndRefreshToken:", error);
                 throw new AuthenticationError('Invalid or expired refresh token');
             }
         },
-        userRegistration: async (parent, args,{res}) => {
+        userRegistration: async (parent, args,context) => {
             try {
                 const {name,idNumber,email,password,phoneNumber} = args;
                 
@@ -79,19 +89,20 @@ const taResolver = {
                 if (!user) {
                     throw new ApiError(500,'User not created');
                 }
+                // console.log("Creating User.....")
                 const { accessToken, refreshToken } = await taResolver.Mutation.generateAccessAndRefreshToken(user);
-
+                // console.log("Acess Token and RefreshToken",{accessToken,refreshToken})
                 const loggedInUser = await User.findById(user._id).select(
                     "-password -refreshToken"
                   );
-
+                // console.log("LoggedIn user....",loggedInUser)
                 const option = {
                     httpOnly: true,
                     secure: true,
                 };
                 //Set Cookies
-                res.cookie('refreshToken',refreshToken,option);
-                res.cookie('accessToken',accessToken,option);
+                context.res.cookie('refreshToken',refreshToken,option);
+                context.res.cookie('accessToken',accessToken,option);
                 return new ApiResponse(201,'User created successfully',{
                     user: loggedInUser
                 });
@@ -101,7 +112,7 @@ const taResolver = {
             }
         },
 
-        userLogin: async (parent, args,{res}) => {
+        userLogin: async (parent, args,context) => {
             try{
                 const {idNumber,password} = args;
                 if (!idNumber || !password) {
@@ -121,12 +132,13 @@ const taResolver = {
                 if (!isPasswordCorrect) {
                     throw new ApiError(401,'Invalid credentials');
                 }
-
+                // console.log("Calling generate access token......",existingUser)
                 const { accessToken, refreshToken } = await taResolver.Mutation.generateAccessAndRefreshToken(existingUser);
-
+                // console.log("Tokens generated",{accessToken,refreshToken})
                 const loggedInUser = await User.findById(existingUser._id).select(
                     "-password -refreshToken"
                   );
+                // console.log("User LoggedIn....",loggedInUser)
 
                 
                 const option = {
@@ -134,8 +146,8 @@ const taResolver = {
                     secure: true,
                 };
                 //Set Cookies
-                res.cookie('refreshToken',refreshToken,option);
-                res.cookie('accessToken',accessToken,option);
+                context.res.cookie('refreshToken',refreshToken,option);
+                context.res.cookie('accessToken',accessToken,option);
             
                 return new ApiResponse(200,'User logged in successfully',{
                     user: loggedInUser

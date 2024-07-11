@@ -20,7 +20,6 @@ async function startApolloServer() {
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        context:({req,res})=>({req,res}),
     });
 
     const app = express();
@@ -29,7 +28,10 @@ async function startApolloServer() {
 
     await server.start();
 
-    app.use("/graphql", expressMiddleware(server));
+    app.use("/graphql", expressMiddleware(server, {
+        context: async ({ req, res }) => ({ req, res })
+    }));
+
     const httpServer = http.createServer(app);
 
     httpServer.listen({ port: 8000 }, () =>
