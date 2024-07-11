@@ -10,7 +10,7 @@ import { ApiResponse } from '../../utils/ApiResponse.js';
 
 const taResolver = {
     Query: {
-        getallUsers: async () => {
+        getAllUsers: async () => {
             try {
                 return await User.find();
             } catch (error) {
