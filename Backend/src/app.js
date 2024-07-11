@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import typeDefs from './schema/index.js';
 import resolvers from './resolvers/index.js';
 import connectDB from './db/index.js';
+import http from 'http';
 
 dotenv.config();
 
@@ -27,9 +28,13 @@ async function startApolloServer() {
 
     await server.start();
 
-    app.use("/graphql", expressMiddleware(server));
+    app.use("/graphql", expressMiddleware(server, {
+        context: async ({ req, res }) => ({ req, res })
+    }));
 
-    app.listen({ port: 8000 }, () =>
+    const httpServer = http.createServer(app);
+
+    httpServer.listen({ port: 8000 }, () =>
         console.log(`🚀 Server ready at http://localhost:8000/graphql`)
     );
 }

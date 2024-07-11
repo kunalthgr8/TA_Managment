@@ -32,7 +32,31 @@ const taResolver = {
         }
     },
     Mutation: {
-        userRegistration: async (parent, args) => {
+        generateAccessAndRefreshToken: async (user) => {
+            try {
+                if (!user) {
+                    throw new AuthenticationError('User not found');
+                }
+                // console.log("Generating access token...");
+                const accessToken = user.generateAccessToken();
+                // console.log("Access token generated:", accessToken);
+                
+                // console.log("Generating refresh token...");
+                const refreshToken = user.generateRefreshToken();
+                // console.log("Refresh token generated:", refreshToken);
+                
+                user.refreshToken = refreshToken;
+                // console.log("Saving user with new refresh token...");
+                await user.save({ validateBeforeSave: false });
+                // console.log("User saved with new refresh token.");
+                
+                return { accessToken, refreshToken, user };
+            } catch (error) {
+                console.error("Error in generateAccessAndRefreshToken:", error);
+                throw new AuthenticationError('Invalid or expired refresh token');
+            }
+        },
+        userRegistration: async (parent, args,context) => {
             try {
                 const {name,idNumber,email,password,phoneNumber} = args;
                 
@@ -65,15 +89,73 @@ const taResolver = {
                 if (!user) {
                     throw new ApiError(500,'User not created');
                 }
+                // console.log("Creating User.....")
+                const { accessToken, refreshToken } = await taResolver.Mutation.generateAccessAndRefreshToken(user);
+                // console.log("Acess Token and RefreshToken",{accessToken,refreshToken})
+                const loggedInUser = await User.findById(user._id).select(
+                    "-password -refreshToken"
+                  );
+                // console.log("LoggedIn user....",loggedInUser)
+                const option = {
+                    httpOnly: true,
+                    secure: true,
+                };
+                //Set Cookies
+                context.res.cookie('refreshToken',refreshToken,option);
+                context.res.cookie('accessToken',accessToken,option);
                 return new ApiResponse(201,'User created successfully',{
-                    idNumber:user.idNumber,
-                    name:user.name,
-                    email:user.email,
-                    phoneNumber:user.phoneNumber
+                    user: loggedInUser
                 });
             } catch (error) {
                 console.error("Error adding user:", error);
                 throw new Error("Error adding user");
+            }
+        },
+
+        userLogin: async (parent, args,context) => {
+            try{
+                const {idNumber,password} = args;
+                if (!idNumber || !password) {
+                    throw new ApiError(400,'Please fill all fields');
+                }
+                validateidNumber(idNumber, 8);
+                validatePassword(password);
+
+                const existingUser = await User.findOne({ idNumber});
+
+                if (!existingUser){
+                    throw new ApiError(404,'User not found');
+                }
+
+                const isPasswordCorrect = await existingUser.isPasswordCorrect(password);
+
+                if (!isPasswordCorrect) {
+                    throw new ApiError(401,'Invalid credentials');
+                }
+                // console.log("Calling generate access token......",existingUser)
+                const { accessToken, refreshToken } = await taResolver.Mutation.generateAccessAndRefreshToken(existingUser);
+                // console.log("Tokens generated",{accessToken,refreshToken})
+                const loggedInUser = await User.findById(existingUser._id).select(
+                    "-password -refreshToken"
+                  );
+                // console.log("User LoggedIn....",loggedInUser)
+
+                
+                const option = {
+                    httpOnly: true,
+                    secure: true,
+                };
+                //Set Cookies
+                context.res.cookie('refreshToken',refreshToken,option);
+                context.res.cookie('accessToken',accessToken,option);
+            
+                return new ApiResponse(200,'User logged in successfully',{
+                    user: loggedInUser
+                });
+
+            }catch(error){
+                console.log("Error logging in user:", error);
+                throw new Error("Error logging in user");
             }
         },
 
@@ -96,24 +178,7 @@ const taResolver = {
             }
             return deletedUser;
         },
-        refreshToken: async (_, { refreshToken }) => {
-            try {
-              const decoded = Jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY);
-              const user = await User.findById(decoded.userId);
-              if (!user) {
-                throw new AuthenticationError('User not found');
-              }
-              const newToken = Jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRES });
-              const newRefreshToken = Jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: process.env.REFRESH_TOKEN_EXPIRES });
-              return {
-                token: newToken,
-                refreshToken: newRefreshToken,
-                user
-              };
-            } catch (error) {
-              throw new AuthenticationError('Invalid or expired refresh token');
-            }
-          }
+        
     }
 };
 
