@@ -7,11 +7,12 @@ const userTypeDefs = `
         password: String!
         gender: String
         bio: String
+        refreshToken: String
     }
 
     type AuthPayload {
-        token: String!
-        refreshToken: String!
+        accessToken: String
+        refreshToken: String
         user: User
     }
 
@@ -24,7 +25,8 @@ const userTypeDefs = `
         userRegistration(idNumber: ID!, name: String!, email: String!, password: String!, phoneNumber: String!): User
         updateUser(idNumber: ID!, name: String, email: String, password: String, phoneNumber: String, gender: String, bio: String): User
         deleteUser(idNumber: ID!): User
-        refreshToken(refreshToken: String!): AuthPayload
+        generateAccessAndRefreshToken(idNumber: ID!): AuthPayload
+        userLogin(idNumber:ID!,password:String!): AuthPayload
     }
 `;
 
