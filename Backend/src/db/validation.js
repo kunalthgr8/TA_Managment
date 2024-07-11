@@ -22,6 +22,13 @@ const validateNumber = (number, length) => {
   }
 }
 
+const validateidNumber = (number, length) => {
+  const numberRegex = /^[0-9]+$/;
+  if (!numberRegex.test(number) || number.length!=length) {
+    throw new Error("Enter a Valid idNumber");
+  }
+}
+
 const validateAlphabet = (input) => {
   const alphabetRegex = /^[A-Za-z]+$/;
   if (!alphabetRegex.test(input)) {
@@ -36,4 +43,4 @@ const validateAlphabetWithOneSpace = (input) => {
   }
 }
 
-export { validatePassword, validateEmail, validateNumber, validateAlphabet, validateAlphabetWithOneSpace };
+export { validatePassword, validateEmail, validateNumber, validateAlphabet, validateAlphabetWithOneSpace,validateidNumber };
