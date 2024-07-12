@@ -32,10 +32,10 @@ const Login = () => {
 
       console.log(response);
       if (response.data.loginUser.status === 201) {
-        dispatch(login(response.data.loginUser.data.user));
+        console.log("Login successful",response.data.loginUser.data);
+        dispatch(login(response.data.loginUser.data));
         setError("Login successful");
         navigate("/")
-        console.log("Login successful",response.data.loginUser.data.user)
       } else {
         setError(response.data.loginUser.message);
       }

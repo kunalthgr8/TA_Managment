@@ -38,6 +38,7 @@ const userTypeDefs = `
         idNumber: ID!
         password: String!
     }
+    
 
     input UpdateInput {
         idNumber: ID!

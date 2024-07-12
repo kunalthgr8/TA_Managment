@@ -4,19 +4,31 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
 import cat from "../../assets/cat.jpg";
+import { useMutation } from "@apollo/client";
+import { LOGOUT_USER } from "../../graphql/mutations/user.mutations";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const navigate = useNavigate();
-  const facultyStatus = "Course Added"; // or
-  // const facultyStatus =  "Not Assigned";
   const dispatch = useDispatch();
   const isFaculty = useSelector((state) => state.auth.isFaculty);
+  const [logoutUser] = useMutation(LOGOUT_USER);
+  const facultyStatus = "Course Added"; // or "Not Assigned"
 
-  const onLogout = () => {
-    dispatch(logout());
-    navigate("/");
+  console.log("User", user);
+
+
+  const onLogout = async () => {
+    try {
+      const { idNumber } = user;
+      await logoutUser({ variables: { idNumber } });
+      dispatch(logout());
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
 
   const navItems = [
@@ -93,7 +105,7 @@ function Header() {
       authenticationReq: false,
       facultyReq: "either",
     },
-  ]
+  ];
   const finalNavItems = isFaculty ? navItems : navItemsForTa;
 
   const renderNavItems = () => {
@@ -129,7 +141,7 @@ function Header() {
     <div className="bg-custom-purple h-auto">
       <div className="bg-white flex justify-between items-center rounded-b-xl p-1">
         <div className="flex sm:w-2/3 lg:w-1/2 justify-between self-center ml-2 gap-5">
-          <div className="ml-3" onClick={()=>navigate("/")}>
+          <div className="ml-3" onClick={() => navigate("/")}>
             <Logo
               width="60px"
               height="70px"
