@@ -1,17 +1,48 @@
 import React, { useState } from "react";
 import { Logo, Button, Input } from "../index";
 import { Link } from "react-router-dom";
+import { useMutation } from '@apollo/client';
+import { REGISTER_USER } from '../graphql/mutations/user.mutations';
+// import { set } from "mongoose";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ idNumber: "", username:"", emailId:"" , phoneNumber:"", password: "" });
   const [error, setError] = useState("");
+  const [registerUser, { data, loading }] = useMutation(REGISTER_USER);
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     // console.log(formData);
     // Perform login logic here
     // If there's an error, set it using setError
     // setError("Signup failed");
+    setError("");
+    try {
+      const response = await registerUser({
+        variables: {
+          input: {
+            idNumber: formData.idNumber,
+            username: formData.username,
+            emailId: formData.emailId,
+            phoneNumber: formData.phoneNumber,
+            password: formData.password,
+          },
+        },
+      });
+      console.log(response);
+      if (response.data.registerUser.status === "success") {
+        // setError("Signup successful");
+        navigate("/")
+        console.log("Signup successful",response.data.registerUser.data.user)
+      } else {
+        setError(response.data.registerUser.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+
   };
 
   const handleChange = (e) => {
