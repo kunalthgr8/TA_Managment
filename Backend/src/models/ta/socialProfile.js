@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const socialProfileSchema = new mongoose.Schema({
   idNumber: { type: String, required: true },
@@ -6,8 +6,9 @@ const socialProfileSchema = new mongoose.Schema({
   linkedin: { type: String },
   github: { type: String },
   twitter: { type: String },
+  kaggle: { type: String },
 });
 
-const SocialProfile = mongoose.model('SocialProfile', socialProfileSchema);
+const SocialProfile = mongoose.model("SocialProfile", socialProfileSchema);
 
 export default SocialProfile;

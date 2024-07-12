@@ -1,12 +1,28 @@
 import User from '../../models/ta/ta.js';
-import Jwt from 'jsonwebtoken';
 import { AuthenticationError } from 'apollo-server';
-import { validateAlphabet, validateAlphabetWithOneSpace, validateEmail, validateidNumber, validateNumber, validatePassword } from '../../db/validation.js';
+import {
+    validateAlphabet,
+    validateEmail,
+    validateIdNumber,
+    validateNumber,
+    validatePassword
+} from '../../db/validation.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { ApiResponse } from '../../utils/ApiResponse.js';
-// import dotenv from 'dotenv';
-// dotenv.config();
 
+const generateTokens = async (user) => {
+    if (!user) {
+        throw new AuthenticationError('User not found');
+    }
+
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken, user };
+};
 
 const taResolver = {
     Query: {
@@ -20,165 +36,128 @@ const taResolver = {
         },
         getUser: async (parent, { idNumber }) => {
             try {
-                const users = await User.find({ idNumber });
-                if (users.length === 0) {
-                    throw new Error("No users found with this ID number");
+                const user = await User.findOne({ idNumber });
+                if (!user) {
+                    throw new ApiError(404, "User not found with this ID number");
                 }
-                return users;
+                return user;
             } catch (error) {
-                console.error("Error fetching users by ID number:", error);
-                throw new Error(error.message || "Error fetching users by ID number");
+                console.error("Error fetching user by ID number:", error);
+                throw new Error(error.message || "Error fetching user by ID number");
             }
         }
     },
     Mutation: {
-        generateAccessAndRefreshToken: async (user) => {
-            try {
-                if (!user) {
-                    throw new AuthenticationError('User not found');
-                }
-                // console.log("Generating access token...");
-                const accessToken = user.generateAccessToken();
-                // console.log("Access token generated:", accessToken);
-                
-                // console.log("Generating refresh token...");
-                const refreshToken = user.generateRefreshToken();
-                // console.log("Refresh token generated:", refreshToken);
-                
-                user.refreshToken = refreshToken;
-                // console.log("Saving user with new refresh token...");
-                await user.save({ validateBeforeSave: false });
-                // console.log("User saved with new refresh token.");
-                
-                return { accessToken, refreshToken, user };
-            } catch (error) {
-                console.error("Error in generateAccessAndRefreshToken:", error);
-                throw new AuthenticationError('Invalid or expired refresh token');
-            }
+        generateAccessAndRefreshToken: async (parent, { idNumber }) => {
+            const user = await User.findOne({ idNumber });
+            return generateTokens(user);
         },
-        userRegistration: async (parent, args,context) => {
+        registerUser: async (parent, args, context) => {
+            const { name, idNumber, email, password, phoneNumber } = args.input;
+
             try {
-                const {name,idNumber,email,password,phoneNumber} = args;
-                
                 if (!name || !idNumber || !email || !password || !phoneNumber) {
-                    throw new ApiError(400,'Please fill all fields');
+                    throw new ApiError(400, 'Please fill all fields');
                 }
 
                 validateAlphabet(name);
                 validateEmail(email);
                 validateNumber(phoneNumber, 10);
                 validatePassword(password);
-                validateidNumber(idNumber, 8);
+                validateIdNumber(idNumber, 8);
 
-                //check if user is already exist or not
-                const userExist = await User.findOne({ 
-                    $or: [{ idNumber: idNumber }, { email: email }, { phoneNumber: phoneNumber }] 
+                const userExist = await User.findOne({
+                    $or: [{ idNumber }, { email }, { phoneNumber }]
                 });
 
                 if (userExist) {
-                    throw new ApiError(400,'User already exist');
+                    throw new ApiError(400, 'User already exists');
                 }
 
-                const user = await User.create({
+                const user = new User({
                     name,
                     idNumber,
                     email,
                     password,
                     phoneNumber
                 });
-                if (!user) {
-                    throw new ApiError(500,'User not created');
-                }
-                // console.log("Creating User.....")
-                const { accessToken, refreshToken } = await taResolver.Mutation.generateAccessAndRefreshToken(user);
-                // console.log("Acess Token and RefreshToken",{accessToken,refreshToken})
-                const loggedInUser = await User.findById(user._id).select(
-                    "-password -refreshToken"
-                  );
-                // console.log("LoggedIn user....",loggedInUser)
-                const option = {
-                    httpOnly: true,
-                    secure: true,
-                };
-                //Set Cookies
-                context.res.cookie('refreshToken',refreshToken,option);
-                context.res.cookie('accessToken',accessToken,option);
-                return new ApiResponse(201,'User created successfully',{
-                    user: loggedInUser
-                });
+
+                await user.save();
+
+                const { accessToken, refreshToken } = await generateTokens(user);
+                const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+                const options = { httpOnly: true, secure: true };
+                context.res.cookie('refreshToken', refreshToken, options);
+                context.res.cookie('accessToken', accessToken, options);
+
+                return new ApiResponse(201, 'User created successfully', { user: loggedInUser });
             } catch (error) {
                 console.error("Error adding user:", error);
                 throw new Error("Error adding user");
             }
         },
-
-        userLogin: async (parent, args,context) => {
-            try{
-                const {idNumber,password} = args;
+        loginUser: async (parent, { idNumber, password }, context) => {
+            try {
                 if (!idNumber || !password) {
-                    throw new ApiError(400,'Please fill all fields');
+                    throw new ApiError(400, 'Please fill all fields');
                 }
-                validateidNumber(idNumber, 8);
+
+                validateIdNumber(idNumber, 8);
                 validatePassword(password);
 
-                const existingUser = await User.findOne({ idNumber});
-
-                if (!existingUser){
-                    throw new ApiError(404,'User not found');
+                const user = await User.findOne({ idNumber });
+                if (!user) {
+                    throw new ApiError(404, 'User not found');
                 }
 
-                const isPasswordCorrect = await existingUser.isPasswordCorrect(password);
-
+                const isPasswordCorrect = await user.isPasswordCorrect(password);
                 if (!isPasswordCorrect) {
-                    throw new ApiError(401,'Invalid credentials');
+                    throw new ApiError(401, 'Invalid credentials');
                 }
-                // console.log("Calling generate access token......",existingUser)
-                const { accessToken, refreshToken } = await taResolver.Mutation.generateAccessAndRefreshToken(existingUser);
-                // console.log("Tokens generated",{accessToken,refreshToken})
-                const loggedInUser = await User.findById(existingUser._id).select(
-                    "-password -refreshToken"
-                  );
-                // console.log("User LoggedIn....",loggedInUser)
 
-                
-                const option = {
-                    httpOnly: true,
-                    secure: true,
-                };
-                //Set Cookies
-                context.res.cookie('refreshToken',refreshToken,option);
-                context.res.cookie('accessToken',accessToken,option);
-            
-                return new ApiResponse(200,'User logged in successfully',{
-                    user: loggedInUser
-                });
+                const { accessToken, refreshToken } = await generateTokens(user);
+                const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-            }catch(error){
-                console.log("Error logging in user:", error);
+                const options = { httpOnly: true, secure: true };
+                context.res.cookie('refreshToken', refreshToken, options);
+                context.res.cookie('accessToken', accessToken, options);
+
+                return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
+            } catch (error) {
+                console.error("Error logging in user:", error);
                 throw new Error("Error logging in user");
             }
         },
-
-        updateUser: async (_, { idNumber, name, email, password, phoneNumber, gender, bio }) => {
-            const updatedUser = await User.findOneAndUpdate(
-              { idNumber: idNumber },
-              { $set: { name, email, password, phoneNumber, gender, bio } },
-              { new: true }
-            );
-            if (!updatedUser) {
-              throw new Error('User not found');
+        updateUser: async (parent, args) => {
+            const { idNumber, name, email, password, phoneNumber, gender, bio } = args.input;
+            try {
+                const updatedUser = await User.findOneAndUpdate(
+                    { idNumber },
+                    { $set: { name, email, password, phoneNumber, gender, bio } },
+                    { new: true }
+                );
+                if (!updatedUser) {
+                    throw new ApiError(404, 'User not found');
+                }
+                return updatedUser;
+            } catch (error) {
+                console.error("Error updating user:", error);
+                throw new Error("Error updating user");
             }
-            return updatedUser;
-          },
-
-        deleteUser: async (_, { idNumber }) => {
-            const deletedUser = await User.findOneAndDelete({ idNumber: idNumber });
-            if (!deletedUser) {
-                throw new Error('User not found');
-            }
-            return deletedUser;
         },
-        
+        deleteUser: async (parent, { idNumber }) => {
+            try {
+                const deletedUser = await User.findOneAndDelete({ idNumber });
+                if (!deletedUser) {
+                    throw new ApiError(404, 'User not found');
+                }
+                return deletedUser;
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                throw new Error("Error deleting user");
+            }
+        }
     }
 };
 

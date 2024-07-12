@@ -1,23 +1,18 @@
-import mongoose from 'mongoose';
-import Education from './education';
+import mongoose from "mongoose";
 
 const skillsSchema = new mongoose.Schema({
-    idNumber: { type: String, required: true },
-    education: [Object],
-    experience: [Object],
-    projects: [Object],
-    areaOfSpecialization: [String],
-    primarySkills: [String],
-    secondarySkills: [String],
-    primaryProgSkills: [String],
-    secondaryProgSkills: [String],
-    softwareTools: [String],
-    hardwareTools: [String],
-    patents: [String],
-    publications: [String],
-
+  idNumber: { type: String, required: true },
+  areaOfSpecialization: [String],
+  primarySkills: [String],
+  secondarySkills: [String],
+  primaryProgSkills: [String],
+  secondaryProgSkills: [String],
+  softwareTools: [String],
+  hardwareTools: [String],
+  patents: [String],
+  publications: [String],
 });
 
-const Skills = mongoose.model('Skills', skillsSchema);
+const Skills = mongoose.model("Skills", skillsSchema);
 
 export default Skills;
