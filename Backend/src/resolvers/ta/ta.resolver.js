@@ -53,27 +53,29 @@ const taResolver = {
             return generateTokens(user);
         },
         registerUser: async (parent, args, context) => {
+            console.log("Register user args:", args);
             const { name, idNumber, email, password, phoneNumber } = args.input;
-
+        
             try {
                 if (!name || !idNumber || !email || !password || !phoneNumber) {
                     throw new ApiError(400, 'Please fill all fields');
                 }
-
+        
                 validateAlphabet(name);
                 validateEmail(email);
                 validateNumber(phoneNumber, 10);
                 validatePassword(password);
                 validateIdNumber(idNumber, 8);
-
+                console.log("Validated user input");
+        
                 const userExist = await User.findOne({
                     $or: [{ idNumber }, { email }, { phoneNumber }]
                 });
-
+                console.log("Checked if user exists");
                 if (userExist) {
                     throw new ApiError(400, 'User already exists');
                 }
-
+        
                 const user = new User({
                     name,
                     idNumber,
@@ -81,22 +83,39 @@ const taResolver = {
                     password,
                     phoneNumber
                 });
-
+        
+                // Save user to database first
                 await user.save();
-
+                console.log("User saved successfully");
+        
+                // Generate tokens after saving the user
                 const { accessToken, refreshToken } = await generateTokens(user);
+                console.log("Generated tokens", accessToken, refreshToken);
+        
+                // Fetch the saved user without sensitive fields
                 const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
-
+        
+                // Check if loggedInUser is null or undefined
+                if (!loggedInUser) {
+                    throw new Error("User not found after saving");
+                }
+        
                 const options = { httpOnly: true, secure: true };
                 context.res.cookie('refreshToken', refreshToken, options);
                 context.res.cookie('accessToken', accessToken, options);
-
-                return new ApiResponse(201, 'User created successfully', { user: loggedInUser });
+                console.log("User logged in successfully");
+        
+                return {
+                    status: "201",
+                    message: 'User created successfully',
+                    data: loggedInUser
+                };
             } catch (error) {
                 console.error("Error adding user:", error);
-                throw new Error("Error adding user");
+                throw new Error(error.message);
             }
         },
+        
         loginUser: async (parent, { idNumber, password }, context) => {
             try {
                 if (!idNumber || !password) {
@@ -123,7 +142,8 @@ const taResolver = {
                 context.res.cookie('refreshToken', refreshToken, options);
                 context.res.cookie('accessToken', accessToken, options);
 
-                return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
+                // return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
+                return loggedInUser
             } catch (error) {
                 console.error("Error logging in user:", error);
                 throw new Error("Error logging in user");

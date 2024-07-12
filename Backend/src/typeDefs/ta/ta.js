@@ -15,6 +15,12 @@ const userTypeDefs = `
         user: User
     }
 
+    type ApiResponse {
+        status: Int
+        message: String
+        data: User
+    }
+
     extend type Query {
         getAllUsers: [User]
         getUser(idNumber: ID!): User
@@ -39,9 +45,9 @@ const userTypeDefs = `
     }
 
     extend type Mutation {
-        registerUser(input: RegisterInput!): User
-        updateUser(input: UpdateInput!): User
-        deleteUser(idNumber: ID!): User
+        registerUser(input: RegisterInput!): ApiResponse
+        updateUser(input: UpdateInput!): ApiResponse
+        deleteUser(idNumber: ID!): ApiResponse
         generateAccessAndRefreshToken(idNumber: ID!): AuthPayload
         loginUser(idNumber: ID!, password: String!): AuthPayload
     }

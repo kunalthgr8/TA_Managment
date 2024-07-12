@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import conf from "../../../conf/conf.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const userSchema = new mongoose.Schema(
   {
@@ -85,8 +87,12 @@ userSchema.methods.generateAccessToken = function () {
       name: this.name,
       phoneNumber: this.phoneNumber,
     },
-    conf.accessTokenSecret,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    // conf.accessTokenSecret,
+    // console.log("Access token secret", process.env.ACCESS_TOKEN_SECRET),
+    // console.log("Access token expiry", process.env.ACCESS_TOKEN_EXPIRY),
+    process.env.ACCESS_TOKEN_SECRET,
+    // { expiresIn:process.env.ACCESS_TOKEN_EXPIRY }
+    { expiresIn: "1d" }
   );
 };
 
@@ -96,8 +102,10 @@ userSchema.methods.generateRefreshToken = function () {
     {
       _id: this._id,
     },
-    conf.accessTokenSecret,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+    // conf.accessTokenSecret,
+    process.env.REFRESH_TOKEN_SECRET,
+    // { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+    { expiresIn: "7d" }
   );
 };
 

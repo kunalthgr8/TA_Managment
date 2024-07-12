@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Logo, Button, Input } from "../index";
 import { Link } from "react-router-dom";
 import { useMutation } from '@apollo/client';
-import { REGISTER_USER } from '../graphql/mutations/user.mutations';
+import { REGISTER_USER } from "../../graphql/mutations/user.mutations";
 // import { set } from "mongoose";
 import { useNavigate } from "react-router-dom";
 
@@ -24,15 +24,15 @@ const Signup = () => {
         variables: {
           input: {
             idNumber: formData.idNumber,
-            username: formData.username,
-            emailId: formData.emailId,
+            name: formData.username,
+            email: formData.emailId,
             phoneNumber: formData.phoneNumber,
             password: formData.password,
           },
         },
       });
       console.log(response);
-      if (response.data.registerUser.status === "success") {
+      if (response.data.registerUser.status === 201) {
         // setError("Signup successful");
         navigate("/")
         console.log("Signup successful",response.data.registerUser.data.user)

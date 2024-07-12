@@ -35,10 +35,11 @@ export async function startApolloServer() {
     app.use(
       "/graphql",
       expressMiddleware(server, {
-        context: async ({ req, res }) => {
-          const user = await authentication(req);
-          return { req, res, user };
-        },
+        // context: async ({ req, res }) => {
+        //   const user = await authentication(req);
+        //   return { req, res, user };
+        // },
+        context: async ({req, res}) => ({req, res}),
       })
     );
 
@@ -46,7 +47,8 @@ export async function startApolloServer() {
 
     const PORT = process.env.PORT || 8000;
     httpServer.listen(PORT, () => {
-      console.log(`🚀 Server ready at http://localhost:${conf.port}/graphql`);
+      // console.log(`🚀 Server ready at http://localhost:${conf.port}/graphql`);
+      console.log(`🚀 Server ready at http://localhost:${process.env.PORT}/graphql`);
     });
   } catch (error) {
     console.error("Error starting Apollo Server:", error);
