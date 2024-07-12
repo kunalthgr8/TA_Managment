@@ -1,4 +1,4 @@
-import taResolver from './ta/taResolver.js';
+import taResolver from './ta/ta.resolver.js';
 
 const resolvers = {
     Query: {
