@@ -5,12 +5,15 @@ import { useMutation } from '@apollo/client';
 import { REGISTER_USER } from "../../graphql/mutations/user.mutations";
 // import { set } from "mongoose";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../../store/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ idNumber: "", username:"", emailId:"" , phoneNumber:"", password: "" });
   const [error, setError] = useState("");
   const [registerUser, { data, loading }] = useMutation(REGISTER_USER);
+  const dispatch = useDispatch();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ const Signup = () => {
       console.log(response);
       if (response.data.registerUser.status === 201) {
         setError("Signup successful");
+        dispatch(login(response.data.registerUser.data.user));
         navigate("/")
         console.log("Signup successful",response.data.registerUser.data.user)
       } else {
