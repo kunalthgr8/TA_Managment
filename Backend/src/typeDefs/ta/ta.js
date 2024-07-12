@@ -55,6 +55,7 @@ const userTypeDefs = `
         deleteUser(idNumber: ID!): ApiResponse
         generateAccessAndRefreshToken(idNumber: ID!): AuthPayload
         loginUser(input: LoginInput!): ApiResponse
+        logoutUser(idNumber: ID!): ApiResponse
     }
 `;
 
