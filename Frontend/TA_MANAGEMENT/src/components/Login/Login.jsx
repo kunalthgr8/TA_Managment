@@ -1,24 +1,20 @@
 import React, { useState } from "react";
 import { Logo, Button, Input } from "../index";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from "../../graphql/mutations/user.mutations";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ idNumber: "", password: "" });
   const [error, setError] = useState("");
-  const [loginUser, { data, loading }] = useMutation(LOGIN_USER);
+  const [loginUser, { loading }] = useMutation(LOGIN_USER);
   const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // Perform login logic here
-    // If there's an error, set it using setError
-    // setError("Login failed");
     setError("");
     try {
       const response = await loginUser({
@@ -30,18 +26,17 @@ const Login = () => {
         },
       });
 
-      console.log(response);
       if (response.data.loginUser.status === 201) {
-        console.log("Login successful",response.data.loginUser.data);
+        console.log("Login successful", response.data.loginUser.data);
         dispatch(login(response.data.loginUser.data));
         setError("Login successful");
-        navigate("/")
+        navigate("/");
       } else {
         setError(response.data.loginUser.message);
       }
     } catch (error) {
-      console.log(error);
-      setError(error.message);
+      console.error("Error logging in:", error);
+      setError("An error occurred while logging in. Please try again.");
     }
   };
 
@@ -70,6 +65,7 @@ const Login = () => {
             placeholder="ID Number"
             value={formData.idNumber}
             onChange={handleChange}
+            required
           />
           <Input
             type="password"
@@ -77,10 +73,12 @@ const Login = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
+            required
           />
           <Button
             type="submit"
             className="rounded-xl transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 bg-custom-purple hover:bg-text-green text-white outline-none focus:bg-gray-50 duration-200 w-full"
+            disabled={loading}
           >
             Submit
           </Button>

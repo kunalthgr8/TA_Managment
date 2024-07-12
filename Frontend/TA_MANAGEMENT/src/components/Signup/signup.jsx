@@ -1,26 +1,20 @@
 import React, { useState } from "react";
 import { Logo, Button, Input } from "../index";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from '@apollo/client';
 import { REGISTER_USER } from "../../graphql/mutations/user.mutations";
-// import { set } from "mongoose";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ idNumber: "", username:"", emailId:"" , phoneNumber:"", password: "" });
+  const [formData, setFormData] = useState({ idNumber: "", username: "", emailId: "", phoneNumber: "", password: "" });
   const [error, setError] = useState("");
-  const [registerUser, { data, loading }] = useMutation(REGISTER_USER);
+  const [registerUser, { loading }] = useMutation(REGISTER_USER);
   const dispatch = useDispatch();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    // console.log(formData);
-    // Perform login logic here
-    // If there's an error, set it using setError
-    // setError("Signup failed");
     setError("");
     try {
       const response = await registerUser({
@@ -34,19 +28,16 @@ const Signup = () => {
           },
         },
       });
-      console.log(response);
+
       if (response.data.registerUser.status === 201) {
-        setError("Signup successful");
-        dispatch(login(response.data.registerUser.data.user));
-        navigate("/")
-        console.log("Signup successful",response.data.registerUser.data.user)
+        dispatch(login(response.data.registerUser.data));
+        navigate("/");
       } else {
         setError(response.data.registerUser.message);
       }
     } catch (error) {
       setError(error.message);
     }
-
   };
 
   const handleChange = (e) => {
@@ -62,7 +53,7 @@ const Signup = () => {
           IIT BHILAI
         </h1>
       </div>
-      <div className="border border-nav-white mt-2 "></div>
+      <div className="border border-nav-white mt-2"></div>
       <div className="w-4/5 h-full m-auto mt-10 md:w-1/2 flex flex-col justify-evenly gap-7 md:m-5">
         <h2 className="text-nav-white mt-1 sm:mt-2 text-2xl md:text-2xl sm:text-2xl font-bold tracking-widest">
           SIGNUP {error && <span className="text-red-500">{error}</span>}
@@ -74,13 +65,15 @@ const Signup = () => {
             placeholder="ID Number"
             value={formData.idNumber}
             onChange={handleChange}
+            required
           />
           <Input
             type="text"
             name="username"
-            placeholder="UserName"
+            placeholder="Username"
             value={formData.username}
             onChange={handleChange}
+            required
           />
           <Input
             type="email"
@@ -88,6 +81,7 @@ const Signup = () => {
             placeholder="Email Id"
             value={formData.emailId}
             onChange={handleChange}
+            required
           />
           <Input
             type="number"
@@ -95,6 +89,7 @@ const Signup = () => {
             placeholder="Phone Number"
             value={formData.phoneNumber}
             onChange={handleChange}
+            required
           />
           <Input
             type="password"
@@ -102,22 +97,23 @@ const Signup = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
+            required
           />
           <Button
             type="submit"
             className="rounded-xl transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 bg-custom-purple hover:bg-text-green text-white outline-none focus:bg-gray-50 duration-200 w-full"
+            disabled={loading}
           >
             Submit
           </Button>
         </form>
-        <div className="flex justify-start ">
+        <div className="flex justify-start">
           <Link
             to="/login"
             className="flex justify-evenly text-sm transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 text-gray-700 hover:text-nav-white"
           >
             Already have an account?
           </Link>
-          
         </div>
         <hr className="border-nav-white" />
         <Button className="p-4 rounded-full bg-gray-300 font-semibold text-gray-700 text-sm">
