@@ -22,7 +22,7 @@ const validateNumber = (number, length) => {
   }
 };
 
-const validateidNumber = (number, length) => {
+const validateIdNumber = (number, length) => {
   const numberRegex = /^[0-9]+$/;
   if (!numberRegex.test(number) || number.length !== length) {
     throw new Error(`Enter a Valid ID Number of length ${length}`);
@@ -49,5 +49,5 @@ export {
   validateNumber,
   validateAlphabet,
   validateAlphabetWithOneSpace,
-  validateidNumber,
+  validateIdNumber,
 };

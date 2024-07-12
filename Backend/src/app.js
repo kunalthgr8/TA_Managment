@@ -8,12 +8,12 @@ import http from "http";
 import typeDefs from "./typeDefs/index.js";
 import resolvers from "./resolvers/index.js";
 import connectDB from "./db/index.js";
-import authentication from "./middlewares/authentication.js";
+import authentication from "./middlewares/authentication.middleware.js";
 import conf from "../conf/conf.js";
 
 dotenv.config();
 
-async function startApolloServer() {
+export async function startApolloServer() {
   try {
     // Connect to MongoDB
     await connectDB();
@@ -26,7 +26,10 @@ async function startApolloServer() {
     await server.start();
 
     const app = express();
-    app.use(cors());
+    app.use(cors({
+      origin:process.env.CORS_ORIGIN,
+      credentials:true
+    }));
     app.use(bodyParser.json());
 
     app.use(
@@ -51,4 +54,4 @@ async function startApolloServer() {
   }
 }
 
-startApolloServer();
+// export default startApolloServer();

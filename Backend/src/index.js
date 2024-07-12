@@ -1,3 +1,3 @@
-import startApolloServer from './app.js';
+import {startApolloServer} from './app.js';
 
 startApolloServer();
