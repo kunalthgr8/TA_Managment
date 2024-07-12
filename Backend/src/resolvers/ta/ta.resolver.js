@@ -116,7 +116,8 @@ const taResolver = {
             }
         },
         
-        loginUser: async (parent, { idNumber, password }, context) => {
+        loginUser: async (parent, args, context) => {
+            const { idNumber, password } = args.input;
             try {
                 if (!idNumber || !password) {
                     throw new ApiError(400, 'Please fill all fields');
@@ -143,10 +144,13 @@ const taResolver = {
                 context.res.cookie('accessToken', accessToken, options);
 
                 // return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
-                return loggedInUser
+                return {
+                    status: 201,
+                    message: 'User logged in successfully',
+                    data:loggedInUser}
             } catch (error) {
                 console.error("Error logging in user:", error);
-                throw new Error("Error logging in user");
+                throw new Error(error.message);
             }
         },
         updateUser: async (parent, args) => {

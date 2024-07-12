@@ -33,7 +33,7 @@ const Signup = () => {
       });
       console.log(response);
       if (response.data.registerUser.status === 201) {
-        // setError("Signup successful");
+        setError("Signup successful");
         navigate("/")
         console.log("Signup successful",response.data.registerUser.data.user)
       } else {

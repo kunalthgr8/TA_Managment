@@ -1,16 +1,42 @@
 import React, { useState } from "react";
 import { Logo, Button, Input } from "../index";
 import { Link } from "react-router-dom";
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from "../../graphql/mutations/user.mutations";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ idNumber: "", password: "" });
   const [error, setError] = useState("");
+  const [loginUser, { data, loading }] = useMutation(LOGIN_USER);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     // Perform login logic here
     // If there's an error, set it using setError
     // setError("Login failed");
+    setError("");
+    try {
+      const response = await loginUser({
+        variables: {
+          input: {
+            idNumber: formData.idNumber,
+            password: formData.password,
+          },
+        },
+      });
+      console.log(response);
+      if (response.data.loginUser.status === 201) {
+        setError("Login successful");
+        navigate("/")
+        console.log("Login successful",response.data.loginUser.data.user)
+      } else {
+        setError(response.data.loginUser.message);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const handleChange = (e) => {

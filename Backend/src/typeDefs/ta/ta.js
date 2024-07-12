@@ -34,6 +34,11 @@ const userTypeDefs = `
         phoneNumber: String!
     }
 
+    input LoginInput {
+        idNumber: ID!
+        password: String!
+    }
+
     input UpdateInput {
         idNumber: ID!
         name: String
@@ -49,7 +54,7 @@ const userTypeDefs = `
         updateUser(input: UpdateInput!): ApiResponse
         deleteUser(idNumber: ID!): ApiResponse
         generateAccessAndRefreshToken(idNumber: ID!): AuthPayload
-        loginUser(idNumber: ID!, password: String!): AuthPayload
+        loginUser(input: LoginInput!): ApiResponse
     }
 `;
 
