@@ -5,7 +5,8 @@ import conf from "../../conf/conf.js"
 const connectDB = async () => {
   try {
     const connectionInstance = await mongoose.connect(
-      `${conf.mongodbUri}/${DB_NAME}`
+      // `${conf.mongodbUri}/${DB_NAME}`
+      `${process.env.MONGODB_URI}/${DB_NAME}`
     );
     console.log("Connected to the database", connectionInstance.connections[0].name);
   } catch (error) {

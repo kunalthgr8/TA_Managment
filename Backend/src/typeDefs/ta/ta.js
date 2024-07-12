@@ -6,6 +6,7 @@ const userTypeDefs = `
         phoneNumber: String!
         gender: String
         bio: String
+        refreshToken: String
     }
 
     type AuthPayload {
@@ -41,7 +42,7 @@ const userTypeDefs = `
         registerUser(input: RegisterInput!): User
         updateUser(input: UpdateInput!): User
         deleteUser(idNumber: ID!): User
-        generateTokens(idNumber: ID!): AuthPayload
+        generateAccessAndRefreshToken(idNumber: ID!): AuthPayload
         loginUser(idNumber: ID!, password: String!): AuthPayload
     }
 `;
