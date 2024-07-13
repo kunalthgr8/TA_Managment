@@ -50,6 +50,8 @@ const Signup = () => {
       } catch (error) {
         setError(error.message);
       }
+    }else{
+      setError("Faculty Signup is not available yet")
     }
   };
 
