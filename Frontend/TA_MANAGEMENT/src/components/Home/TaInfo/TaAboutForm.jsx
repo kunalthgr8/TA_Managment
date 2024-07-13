@@ -1,32 +1,27 @@
-import React, { useState } from "react";
-import { Input, Button } from "../../index";
+import React, { useEffect, useState } from "react";
+import { Input, Button, RadioButton } from "../../index";
 import Cat from "../../../assets/cat.jpg";
-// import "./TaAboutForm.css";
 import { useSelector } from "react-redux";
+import { UPDATE_USER } from "../../../graphql/mutations/user.mutations";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_USER } from "../../../graphql/queries/user.queries";
 
 function TaAboutForm() {
-
   const userData = useSelector((state) => state.auth.user);
+
   const defaultAboutValues = {
-    Name: "",
-    Gender: "",
-    Email: "",
-    Phone: "",
-    Bio: "",
+    Name: userData?.name || "User Name",
+    Gender: userData?.gender || "Male", // Default to Male if gender not provided
+    Bio: userData?.bio || "I am a Full Stack Developer",
+    Email: userData?.email || "Email",
+    Phone: userData?.phoneNumber || "Mobile Number",
     image: null,
   };
 
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [AboutValues, setAboutValues] = useState([
-    {
-      Name: userData?.name || "User Name",
-      Gender: "Male",
-      Bio: "I am a Full Stack Developer",
-      Email: userData?.email || "Email",
-      Phone: userData?.phoneNumber || "Mobile Number",
-      image: null,
-    },
-  ]);
+  const [currentAboutValues, setCurrentAboutValues] =
+    useState(defaultAboutValues);
+  const [editIndex, setEditIndex] = useState(null);
 
   const capitalizeName = (name) =>
     name
@@ -34,40 +29,74 @@ function TaAboutForm() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
-  const [CurrentAboutValues, setCurrentAboutValues] = useState(defaultAboutValues);
-  const [editIndex, setEditIndex] = useState(null);
+  const [updateUserMutation] = useMutation(UPDATE_USER);
+  const { data, loading, error } = useQuery(GET_USER, {
+    variables: { idNumber: userData.idNumber },
+  });
 
-  const handleSave = () => {
-    if (editIndex !== null) {
-      setAboutValues((prevAboutValues) =>
-        prevAboutValues.map((experience, index) =>
-          index === editIndex ? CurrentAboutValues : experience
-        )
-      );
+  console.log("Data:", data);
+
+  useEffect(() => {
+    if (data) {
+      setCurrentAboutValues({
+        Name: data.getUser.name,
+        Gender: data.getUser.gender,
+        Bio: data.getUser.bio,
+        Email: data.getUser.email,
+        Phone: data.getUser.phoneNumber,
+        image: null,
+      });
     }
+  }, [data, setIsFormVisible]);
+
+  const handleSave = async () => {
+    try {
+      const { data } = await updateUserMutation({
+        variables: {
+          input: {
+            idNumber: userData.idNumber, // Assuming you have idNumber in userData
+            name: currentAboutValues.Name,
+            gender: currentAboutValues.Gender,
+            bio: currentAboutValues.Bio,
+            email: currentAboutValues.Email,
+            phoneNumber: currentAboutValues.Phone,
+          },
+        },
+      });
+      console.log("Updated user:", data.updateUser);
+      // Handle success, e.g., show a success message or update local state
+    } catch (error) {
+      console.error("Error updating user:", error);
+      // Handle error, e.g., show an error message
+    }
+
+    // Reset form and close it
     resetForm();
     setIsFormVisible(false);
   };
 
   const handleCancel = () => {
+    // Reset form and close it
     resetForm();
     setIsFormVisible(false);
   };
 
   const resetForm = () => {
+    // Reset currentAboutValues and editIndex
     setCurrentAboutValues(defaultAboutValues);
     setEditIndex(null);
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentAboutValues({ ...CurrentAboutValues, [name]: value });
-  };
-
-  const editForm = (index) => {
-    setCurrentAboutValues(AboutValues[index]);
-    setEditIndex(index);
-    setIsFormVisible(true);
+    const { name, value, type } = e.target;
+    if (type === "radio") {
+      setCurrentAboutValues((prevData) => ({
+        ...prevData,
+        Gender: value,
+      }));
+    } else {
+      setCurrentAboutValues({ ...currentAboutValues, [name]: value });
+    }
   };
 
   const handleImageChange = (e) => {
@@ -75,92 +104,133 @@ function TaAboutForm() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setCurrentAboutValues({ ...CurrentAboutValues, image: reader.result });
+        setCurrentAboutValues({ ...currentAboutValues, image: reader.result });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const fields = ["Name", "Gender", "Bio", "Email", "Phone"];
+  const editForm = () => {
+    // Populate form fields with currentAboutValues for editing
+    setIsFormVisible(true);
+  };
 
   return (
     <div className="flex flex-col gap-5 m-2 lg:m-5 mt-4">
       <h1 className="text-lg font-bold text-gray-800 pl-4">About</h1>
       <div className="flex flex-col justify-center self-center gap-4 w-3/4 bg-custom-gray rounded-xl p-4">
-        {!isFormVisible && (
+        {!isFormVisible ? (
           <>
-            {AboutValues.map((experience, index) => (
-              <div
-                key={index}
-                className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl"
-              >
-                <div className="flex justify-center self-center">
-                  <img
-                    src={Cat}
-                    alt="Profile Image"
-                    width="150px"
-                    className=" rounded-full  "
-                  />
-                </div>
-                <div className="flex flex-col gap-2 w-3/4">
-                  <h1 className="text-2xl font-bold text-custom-black">
-                    {capitalizeName(experience.Name)}
-                  </h1>
-                  <p className="text-base font-medium text-gray-500 ">
-                    {experience.Bio}
-                  </p>
-                  <div className="flex flex-row  gap-3 text-lg  ">
-                    <p
-                      className="text-sm text-gray-500 cursor-pointer"
-                      title="Gender"
-                    >
-                      {experience.Gender}
-                    </p>
-                    <p
-                      className="text-sm text-gray-500 cursor-pointer"
-                      title="Mobile Number"
-                    >
-                      {experience.Phone}
-                    </p>
-                    <p
-                      className="text-sm text-gray-500 cursor-pointer"
-                      title="Email"
-                    >
-                      {experience.Email}
-                    </p>
-                  </div>
-                  {experience.image && (
-                    <img
-                      src={experience.image}
-                      alt="Profile"
-                      className="mt-2 ml-5 h-20 w-20 rounded-full object-cover"
-                    />
-                  )}
-                </div>
-                <Button
-                  className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
-                  onClick={() => editForm(index)}
-                >
-                  Edit Profile
-                </Button>
+            <div className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl">
+              <div className="flex justify-center self-center">
+                <img
+                  src={Cat}
+                  alt="Profile Image"
+                  width="150px"
+                  className="rounded-full"
+                />
               </div>
-            ))}
+              <div className="flex flex-col gap-2 w-3/4">
+                <h1 className="text-2xl font-bold text-custom-black">
+                  {capitalizeName(currentAboutValues.Name)}
+                </h1>
+                <p className="text-base font-medium text-gray-500">
+                  {currentAboutValues.Bio}
+                </p>
+                <div className="flex flex-row gap-3 text-lg">
+                  <p
+                    className="text-sm text-gray-500 cursor-pointer"
+                    title="Gender"
+                  >
+                    {currentAboutValues.Gender}
+                  </p>
+                  <p
+                    className="text-sm text-gray-500 cursor-pointer"
+                    title="Mobile Number"
+                  >
+                    {currentAboutValues.Phone}
+                  </p>
+                  <p
+                    className="text-sm text-gray-500 cursor-pointer"
+                    title="Email"
+                  >
+                    {currentAboutValues.Email}
+                  </p>
+                </div>
+                {currentAboutValues.image && (
+                  <img
+                    src={currentAboutValues.image}
+                    alt="Profile"
+                    className="mt-2 ml-5 h-20 w-20 rounded-full object-cover"
+                  />
+                )}
+              </div>
+              <Button
+                className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
+                onClick={editForm}
+              >
+                Edit Profile
+              </Button>
+            </div>
           </>
-        )}
-        {isFormVisible && (
+        ) : (
           <>
-            {fields.map((field) => (
-              <Input
-                key={field}
-                type="text"
-                name={field}
-                value={CurrentAboutValues[field]}
-                placeholder={field}
-                className="rounded-md bg-white"
-                label={field}
+            <Input
+              type="text"
+              name="Name"
+              value={currentAboutValues.Name}
+              placeholder="Name"
+              className="rounded-md bg-white"
+              label="Name"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="Bio"
+              value={currentAboutValues.Bio}
+              placeholder="Bio"
+              className="rounded-md bg-white"
+              label="Bio"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="Email"
+              value={currentAboutValues.Email}
+              placeholder="Email"
+              className="rounded-md bg-white"
+              label="Email"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="Phone"
+              value={currentAboutValues.Phone}
+              placeholder="Phone"
+              className="rounded-md bg-white"
+              label="Phone"
+              onChange={handleChange}
+            />
+            <div className="flex gap-10">
+              <RadioButton
+                id="male"
+                label="Male"
+                name="Gender"
+                value="Male"
                 onChange={handleChange}
+                checked={currentAboutValues.Gender === "Male"}
+                required
               />
-            ))}
+              <RadioButton
+                id="female"
+                label="Female"
+                name="Gender"
+                value="Female"
+                onChange={handleChange}
+                checked={currentAboutValues.Gender === "Female"}
+                required
+              />
+            </div>
             <div className="flex flex-col">
               <label className="inline-block mb-1 pl-1 font-bold text-custom-black">
                 Profile Picture
@@ -171,9 +241,9 @@ function TaAboutForm() {
                 onChange={handleImageChange}
                 className="px-3 py-2 text-custom-black outline-none focus:bg-gray-50 duration-200 border border-gray-200 w-full rounded-lg bg-white"
               />
-              {CurrentAboutValues.image && (
+              {currentAboutValues.image && (
                 <img
-                  src={CurrentAboutValues.image}
+                  src={currentAboutValues.image}
                   alt="Profile"
                   className="mt-2 ml-5 h-20 w-20 rounded-full object-cover"
                 />
@@ -182,7 +252,6 @@ function TaAboutForm() {
             <div className="flex gap-5 m-5 w-1/2 self-center">
               <Button
                 className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
-                width="w-1/4"
                 onClick={handleSave}
               >
                 Save

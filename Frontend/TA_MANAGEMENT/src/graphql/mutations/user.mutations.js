@@ -34,6 +34,24 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($input: UpdateInput!) {
+    updateUser(input: $input) {
+      status
+      message
+      data {
+        idNumber
+        name
+        email
+        phoneNumber
+        gender
+        bio
+      }
+    }
+  }
+`;
+
 export const LOGOUT_USER = gql`
   mutation logoutUser($idNumber: ID!) {
     logoutUser(idNumber: $idNumber) {

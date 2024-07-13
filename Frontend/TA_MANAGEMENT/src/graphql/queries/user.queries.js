@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_EDUCATION_USER = gql`
   query getEducation($idNumber: ID!) {
@@ -34,6 +34,19 @@ export const GET_EXPERIENCE_USER = gql`
           endDate
         }
       }
+    }
+  }
+`;
+export const GET_USER = gql`
+  query GetUser($idNumber: ID!) {
+    getUser(idNumber: $idNumber) {
+      idNumber
+      name
+      email
+      phoneNumber
+      gender
+      bio
+      refreshToken
     }
   }
 `;
