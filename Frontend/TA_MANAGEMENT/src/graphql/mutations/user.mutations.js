@@ -62,19 +62,38 @@ export const EDUCATION_USER = gql`
   }
 `;
 
-export const DELETE_EDUCATION_USER = gql`
-  mutation deleteEducation($idNumber: ID!) {
-    deleteEducation(idNumber: $idNumber) {
+// export const DELETE_EDUCATION_USER = gql`
+//   mutation deleteEducation($idNumber: ID!) {
+//     deleteEducation(idNumber: $idNumber) {
+//       status
+//       message
+//       data {
+//         idNumber
+//         education {
+//           degree
+//           major
+//           college
+//           year
+//           CGPA
+//         }
+//       }
+//     }
+//   }
+// `;
+
+export const EXPERIENCE_USER = gql`
+  mutation createExperience($input: ExperienceDetailInput!) {
+    createExperience(input: $input) {
       status
       message
       data {
         idNumber
-        education {
-          degree
-          major
-          college
-          year
-          CGPA
+        experience {
+          company
+          role
+          description
+          startDate
+          endDate
         }
       }
     }

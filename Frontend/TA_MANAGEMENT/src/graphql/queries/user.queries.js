@@ -18,3 +18,22 @@ export const GET_EDUCATION_USER = gql`
     }
   }
 `;
+
+export const GET_EXPERIENCE_USER = gql`
+  query getExperience($idNumber: ID!) {
+    getExperience(idNumber: $idNumber) {
+      status
+      message
+      data {
+        idNumber
+        experience {
+          company
+          role
+          description
+          startDate
+          endDate
+        }
+      }
+    }
+  }
+`;

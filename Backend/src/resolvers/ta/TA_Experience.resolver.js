@@ -5,10 +5,11 @@ const experienceResolver = {
     getExperience: async (parent, { idNumber }) => {
       try {
         const experience = await Experience.findOne({ idNumber });
-        if (!experience) {
-          throw new Error("Experience not found");
+        return {
+          status: 201,
+          message: "Experience fetched successfully",
+          data: experience,
         }
-        return experience;
       } catch (error) {
         console.error("Error fetching experience:", error);
         throw new Error("Error fetching experience");
@@ -24,10 +25,28 @@ const experienceResolver = {
     }
   },
   Mutation: {
-    createExperience: async (parent, { idNumber, experience }) => {
+    createExperience: async (parent, args) => {
+      const { idNumber, experience } = args.input;
+      console.log("Create experience args:", args.input);
       try {
-        const newExperience = new Experience({ idNumber, experience });
-        return await newExperience.save();
+        // const response = await Education.create({ idNumber, education});
+        const existingExperience = await Experience.findOne({ idNumber });
+        if (existingExperience) {
+          existingExperience.experience = experience;
+          const response = await existingExperience.save({new: true});
+          return {
+            status: 201,
+            message: "Experience Updated Successfully",
+            data: response,
+          };
+        } else {
+          const response = await Experience.create({ idNumber, experience });
+          return {
+            status: 201,
+            message: "Experience Created Successfully",
+            data: response,
+          };
+        }
       } catch (error) {
         console.error("Error creating experience:", error);
         throw new Error("Error creating experience");
