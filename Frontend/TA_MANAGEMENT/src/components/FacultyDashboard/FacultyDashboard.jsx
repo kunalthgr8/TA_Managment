@@ -3,18 +3,20 @@ import { Input, Button } from "../index";
 import { MdModeEdit } from "react-icons/md";
 import Cat from "../../assets/cat.jpg";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function FacultyDashboard() {
-  const userData = null;
+  const userData = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
   const [editAbleUser, setEditAbleUser] = useState(false);
   const [data, setData] = useState({
     email: userData?.email || "No Email Found",
     phoneNumber: userData?.phoneNumber || "No Number Found",
-    fullname: userData?.fullname || "User Name Not Found",
+    fullname: userData?.name || "User Name Not Found",
     idNumber: userData?.idNumber || "xxxxxxxxxx",
   });
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +47,7 @@ function FacultyDashboard() {
           </div>
           <div className="flex flex-col gap-1">
             <h1 className="font-semibold text-nav-color text-base sm:text-xl">
-              {data.fullname}
+              {capitalizeName(data.fullname)}
             </h1>
             <p className="text-black-heading text-xs sm:text-sm italic">
               {data.email}

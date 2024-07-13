@@ -9,7 +9,7 @@ import { LOGOUT_USER } from "../../graphql/mutations/user.mutations";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const user = (useSelector((state) => state.auth.user));
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,7 +17,11 @@ function Header() {
   const [logoutUser] = useMutation(LOGOUT_USER);
   const facultyStatus = "Course Added"; // or "Not Assigned"
 
-
+  const capitalizeName = (name) =>
+    name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
   const onLogout = async () => {
     try {
@@ -162,7 +166,7 @@ function Header() {
             className="rounded-3xl"
             src={cat}
           />
-          <p className="text-xs">Gagan Raj Gupta</p>
+          <p className="text-xs">{isAuthenticated ? capitalizeName(user.name) : "User"}</p>
         </div>
       </div>
     </div>

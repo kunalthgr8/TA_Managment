@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Input, Button } from "../../index";
 import Cat from "../../../assets/cat.jpg";
 // import "./TaAboutForm.css";
+import { useSelector } from "react-redux";
 
 function TaAboutForm() {
+
+  const userData = useSelector((state) => state.auth.user);
   const defaultAboutValues = {
     Name: "",
     Gender: "",
@@ -16,14 +19,20 @@ function TaAboutForm() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [AboutValues, setAboutValues] = useState([
     {
-      Name: "Kunal Singla",
+      Name: userData?.name || "User Name",
       Gender: "Male",
       Bio: "I am a Full Stack Developer",
-      Email: "xyz@gmail.com",
-      Phone: "7973203702",
+      Email: userData?.email || "Email",
+      Phone: userData?.phoneNumber || "Mobile Number",
       image: null,
     },
   ]);
+
+  const capitalizeName = (name) =>
+    name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
   const [CurrentAboutValues, setCurrentAboutValues] = useState(defaultAboutValues);
   const [editIndex, setEditIndex] = useState(null);
@@ -95,7 +104,7 @@ function TaAboutForm() {
                 </div>
                 <div className="flex flex-col gap-2 w-3/4">
                   <h1 className="text-2xl font-bold text-custom-black">
-                    {experience.Name}
+                    {capitalizeName(experience.Name)}
                   </h1>
                   <p className="text-base font-medium text-gray-500 ">
                     {experience.Bio}
