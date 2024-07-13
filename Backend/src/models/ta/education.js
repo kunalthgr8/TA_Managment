@@ -9,7 +9,7 @@ const educationDetailSchema = new mongoose.Schema({
 });
 
 const educationSchema = new mongoose.Schema({
-  idNumber: { type: String, required: true },
+  idNumber: { type: String, required: true, unique: true},
   education: [educationDetailSchema]
 });
 

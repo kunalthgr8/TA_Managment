@@ -17,27 +17,27 @@ const educationTypeDefs = `
     getAllEducation: [Education]
   }
 
+  input EducationDetailInput {
+      idNumber: ID!
+      degree: String
+      major: String
+      college: String
+      year: String
+      CGPA: String
+    }
+
   extend type Mutation {
     createEducation(
-      idNumber: ID!
-      education: [EducationDetailInput]
+      input: EducationDetailInput
     ): Education
 
     updateEducation(
-      idNumber: ID!
-      education: [EducationDetailInput]
+      input: EducationDetailInput
     ): Education
 
     deleteEducation(idNumber: ID!): Education
   }
 
-  input EducationDetailInput {
-    degree: String
-    major: String
-    college: String
-    year: String
-    CGPA: String
-  }
 `;
 
 export default educationTypeDefs;

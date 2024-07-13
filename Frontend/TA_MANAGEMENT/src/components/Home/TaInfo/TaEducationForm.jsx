@@ -3,8 +3,14 @@ import { Input, Button } from "../../index";
 import { GiGraduateCap } from "react-icons/gi";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import { useMutation } from '@apollo/client';
+import { EDUCATION_USER } from "../../graphql/mutations/user.mutations";
+import { useNavigate } from "react-router-dom";
 
 function TaEducationForm() {
+  const navigate = useNavigate();
+  const [createEducation, { data, loading }] = useMutation(EDUCATION_USER);
+  
   const [educations, setEducations] = useState([
     {
       degree: "B.Tech",
