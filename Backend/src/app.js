@@ -35,10 +35,11 @@ export async function startApolloServer() {
     app.use(
       "/graphql",
       expressMiddleware(server, {
-        // context: async ({ req, res }) => {
-        //   const user = await authentication(req);
-        //   return { req, res, user };
-        // },
+        context: async ({ req, res }) => {
+          const user = await authentication(req);
+          console.log("User:", user);
+          return { req, res, user };
+        },
         context: async ({req, res}) => ({req, res}),
       })
     );

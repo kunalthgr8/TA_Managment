@@ -26,6 +26,11 @@ const skillsResolver = {
   Mutation: {
     createSkills: async (parent, args) => {
       try {
+        console.log(args);
+        const existingSkills = await Skills.findOne({ idNumber: args.idNumber });
+        if (existingSkills) {
+          return await skillsResolver.Mutation.updateSkills(parent, args);
+        }        
         const skills = new Skills(args);
         return await skills.save();
       } catch (error) {
