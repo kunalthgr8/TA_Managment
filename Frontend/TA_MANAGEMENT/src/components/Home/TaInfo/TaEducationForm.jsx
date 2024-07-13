@@ -1,25 +1,38 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Input, Button } from "../../index";
 import { GiGraduateCap } from "react-icons/gi";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import { useMutation } from '@apollo/client';
-// import { EDUCATION_USER } from "../../graphql/mutations/user.mutations";
+import { useMutation,useQuery } from '@apollo/client';
+import { EDUCATION_USER } from "../../../graphql/mutations/user.mutations";
+import { GET_EDUCATION_USER } from "../../../graphql/queries/user.queries";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function TaEducationForm() {
   const navigate = useNavigate();
-  // const [createEducation, { data, loading }] = useMutation(EDUCATION_USER);
-  
-  const [educations, setEducations] = useState([
-    {
-      degree: "B.Tech",
-      major: "",
-      university: "Indian Institute Of Technology, Bhilai",
-      year: "2025",
-      cgpa: "7.82",
-    },
-  ]);
+  const [error, setError] = useState("");
+  const userData = useSelector((state) => state.auth.user);
+  const [createEducation, { data, loading }] = useMutation(EDUCATION_USER);
+  const [educations, setEducations] = useState([]);
+  const { data: educationData} = useQuery(GET_EDUCATION_USER,{
+    variables: { idNumber: userData.idNumber },
+    skip: !userData.idNumber,
+  } );
+
+  useEffect(() => {
+    if (educationData && educationData.getEducation && educationData.getEducation.data && educationData.getEducation.data.education) {
+      const mappededucations = educationData.getEducation.data.education.map((education) => ({
+        degree: education.degree,
+        major: education.major,
+        university: education.college,
+        year: education.year,
+        cgpa: education.CGPA,
+      }));
+      setEducations(mappededucations);
+    }
+  }, [educationData]);
+
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentEducation, setCurrentEducation] = useState({
@@ -31,7 +44,7 @@ function TaEducationForm() {
   });
   const [editIndex, setEditIndex] = useState(null);
 
-  const handleSave = () => {
+  const handleSave =  async () => {
     if (isEditMode) {
       const updatedEducations = [...educations];
       updatedEducations[editIndex] = currentEducation;
@@ -39,8 +52,42 @@ function TaEducationForm() {
     } else {
       setEducations([...educations, currentEducation]);
     }
-    resetForm();
+  
   };
+  useEffect(() => {
+    if (educations.length > 0) {
+      // Make sure the state is updated before calling the backend
+      const updateEducationInBackend = async () => {
+        try {
+          const response = await createEducation({
+            variables: {
+              input: {
+                idNumber: userData.idNumber,
+                education: educations.map((education) => ({
+                  degree: education.degree,
+                  major: education.major,
+                  college: education.university,
+                  year: education.year,
+                  CGPA: education.cgpa,
+                })),
+              },
+            },
+          });
+          console.log('Response:', response);
+          if (response.data.createEducation.status === 201) {
+            setError('Education added successfully');
+            console.log('Education added successfully');
+            resetForm();
+            // navigate("/");
+          }
+        } catch (error) {
+          setError(error.message);
+        }
+      };
+
+      updateEducationInBackend();
+    }
+  }, [educations, userData.idNumber, createEducation]);
 
   const handleCancel = () => {
     // if (isEditMode) {

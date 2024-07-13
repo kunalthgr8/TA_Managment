@@ -12,30 +12,40 @@ const educationTypeDefs = `
     education: [EducationDetail]
   }
 
+  type EducationApiResponse {
+    status: Int
+    message: String
+    data: Education
+  }
+
   extend type Query {
-    getEducation(idNumber: ID!): Education
+    getEducation(idNumber: ID!): EducationApiResponse
     getAllEducation: [Education]
+  }
+
+  input EducationInfo {
+    degree: String
+    major: String
+    college: String
+    year: String
+    CGPA: String
   }
 
   input EducationDetailInput {
       idNumber: ID!
-      degree: String
-      major: String
-      college: String
-      year: String
-      CGPA: String
+      education: [EducationInfo]
     }
 
   extend type Mutation {
     createEducation(
       input: EducationDetailInput
-    ): Education
+    ): EducationApiResponse
 
     updateEducation(
       input: EducationDetailInput
     ): Education
 
-    deleteEducation(idNumber: ID!): Education
+    deleteEducation(idNumber: ID!): EducationApiResponse
   }
 
 `;

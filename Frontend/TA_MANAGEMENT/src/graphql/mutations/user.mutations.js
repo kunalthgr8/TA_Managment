@@ -44,17 +44,39 @@ export const LOGOUT_USER = gql`
 `;
 
 export const EDUCATION_USER = gql`
-  mutation createEducation($input: Education) {
+  mutation createEducation($input: EducationDetailInput!) {
     createEducation(input: $input) {
-      idNumber
-      education {
-        degree
-        major
-        college
-        year
-        CGPA
+      status
+      message
+      data {
+        idNumber
+        education {
+          degree
+          major
+          college
+          year
+          CGPA
+        }
       }
     }
   }
 `;
 
+export const DELETE_EDUCATION_USER = gql`
+  mutation deleteEducation($idNumber: ID!) {
+    deleteEducation(idNumber: $idNumber) {
+      status
+      message
+      data {
+        idNumber
+        education {
+          degree
+          major
+          college
+          year
+          CGPA
+        }
+      }
+    }
+  }
+`;

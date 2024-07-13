@@ -4,7 +4,12 @@ const educationResolvers = {
   Query: {
     getEducation: async (parent, { idNumber }) => {
       try {
-        return await Education.findOne({ idNumber });
+        const response = await Education.findOne({ idNumber }); 
+        return {
+          status: 201,
+          message: "Education fetched successfully",
+          data: response,
+        }
       } catch (error) {
         console.error("Error fetching education:", error);
         throw new Error("Error fetching education");
@@ -22,11 +27,28 @@ const educationResolvers = {
   },
   Mutation: {
     createEducation: async (parent, args) => {
-      const { idNumber, degree,major,college,year,CGPA } = args.input;
+      const { idNumber, education } = args.input;
       console.log("Create education args:", args.input)
-      const education = {idNumber:idNumber,degree:degree,major:major,college:college,year:year,CGPA:CGPA}
+      // const education = {idNumber:idNumber,degree:degree,major:major,college:college,year:year,CGPA:CGPA}
       try {
-        return await Education.create({ idNumber, education:[education] });
+        // const response = await Education.create({ idNumber, education});
+        const existingEducation = await Education.findOne({ idNumber });
+        if (existingEducation) {
+          existingEducation.education = education;
+          const response = await existingEducation.save({new: true});
+          return {
+            status: 201,
+            message: "Education Updated Successfully",
+            data: response,
+          };
+        } else {
+          const response = await Education.create({ idNumber, education });
+          return {
+            status: 201,
+            message: "Education Created Successfully",
+            data: response,
+          };
+        }
       } catch (error) {
         console.error("Error creating education:", error);
         throw new Error("Error creating education");
@@ -41,14 +63,19 @@ const educationResolvers = {
         throw new Error("Error updating education");
       }
     },
-    deleteEducation: async (parent, { idNumber }) => {
-      try {
-        return await Education.findOneAndDelete({ idNumber });
-      } catch (error) {
-        console.error("Error deleting education:", error);
-        throw new Error("Error deleting education");
-      }
-    },
+    // deleteEducation: async (parent, { idNumber }) => {
+    //   try {
+    //     const response = await Education.findOneAndDelete({ idNumber });
+    //     return {
+    //       status: 201,
+    //       message: "Education deleted successfully",
+    //       data: response,
+    //     }
+    //   } catch (error) {
+    //     console.error("Error deleting education:", error);
+    //     throw new Error("Error deleting education");
+    //   }
+    // },
   },
 };
 
