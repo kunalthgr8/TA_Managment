@@ -9,7 +9,6 @@ const baseTypeDefs = gql`
 const typeDefs = [
     baseTypeDefs,
     TA_TypeDefs
-    // todoTypeDefs
 ];
 
 export default typeDefs;

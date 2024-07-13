@@ -2,13 +2,13 @@ import Skills from '../../models/ta/skills.js';
 
 const skillsResolver = {
   Query: {
-    getSkills: async (parent, { idNumber }) => {
+    getSkills: async (parent, { idNumber, field }) => {
       try {
         const skills = await Skills.findOne({ idNumber });
         if (!skills) {
           throw new Error("Skills not found");
         }
-        return skills;
+        return field ? skills[field] : skills;
       } catch (error) {
         console.error("Error fetching skills:", error);
         throw new Error("Error fetching skills");
