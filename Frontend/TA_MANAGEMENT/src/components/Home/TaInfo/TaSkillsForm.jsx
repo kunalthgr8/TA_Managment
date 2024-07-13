@@ -69,7 +69,6 @@ function TaSkillsForm() {
         publications: publications,
         patents: patents,
       });
-      console.log("User Skills", data.getSkills);
     }
   }, [data]);
 
