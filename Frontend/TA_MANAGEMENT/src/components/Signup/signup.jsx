@@ -1,14 +1,21 @@
 import React, { useState } from "react";
-import { Logo, Button, Input } from "../index";
+import { Logo, Button, Input, RadioButton } from "../index";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from '@apollo/client';
+import { useMutation } from "@apollo/client";
 import { REGISTER_USER } from "../../graphql/mutations/user.mutations";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ idNumber: "", username: "", emailId: "", phoneNumber: "", password: "" });
+  const [formData, setFormData] = useState({
+    idNumber: "",
+    username: "",
+    emailId: "",
+    phoneNumber: "",
+    password: "",
+    role: "",
+  });
   const [error, setError] = useState("");
   const [registerUser, { loading }] = useMutation(REGISTER_USER);
   const dispatch = useDispatch();
@@ -16,34 +23,46 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
-    try {
-      const response = await registerUser({
-        variables: {
-          input: {
-            idNumber: formData.idNumber,
-            name: formData.username,
-            email: formData.emailId,
-            phoneNumber: formData.phoneNumber,
-            password: formData.password,
+    if (formData.role === "student") {
+      try {
+        const response = await registerUser({
+          variables: {
+            input: {
+              idNumber: formData.idNumber,
+              name: formData.username,
+              email: formData.emailId,
+              phoneNumber: formData.phoneNumber,
+              password: formData.password,
+            },
           },
-        },
-      });
+        });
 
-      if (response.data.registerUser.status === 201) {
-        dispatch(login(response.data.registerUser.data));
-        localStorage.setItem("token", JSON.stringify(response.data.registerUser.data));
-        navigate("/");
-      } else {
-        setError(response.data.registerUser.message);
+        if (response.data.registerUser.status === 201) {
+          dispatch(login(response.data.registerUser.data));
+          localStorage.setItem(
+            "token",
+            JSON.stringify(response.data.registerUser.data)
+          );
+          navigate("/");
+        } else {
+          setError(response.data.registerUser.message);
+        }
+      } catch (error) {
+        setError(error.message);
       }
-    } catch (error) {
-      setError(error.message);
     }
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    if (type === "radio") {
+      setFormData((prevData) => ({
+        ...prevData,
+        role: value,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   return (
@@ -100,6 +119,26 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
+          <div className="flex gap-10">
+            <RadioButton
+              id="faculty"
+              label="faculty"
+              name="Enrollment Type"
+              value="faculty"
+              onChange={handleChange}
+              checked={formData.role === "faculty"}
+              required
+            />
+            <RadioButton
+              id="student"
+              label="student"
+              name="Enrollment Type"
+              value="student"
+              onChange={handleChange}
+              checked={formData.role === "student"}
+              required
+            />
+          </div>
           <Button
             type="submit"
             className="rounded-xl transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 bg-custom-purple hover:bg-text-green text-white outline-none focus:bg-gray-50 duration-200 w-full"

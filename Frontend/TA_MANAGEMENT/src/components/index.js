@@ -36,8 +36,10 @@ import TaProjectForm from "./Home/TaInfo/TaProjectForm";
 import TaSkillsForm from "./Home/TaInfo/TaSkillsForm";
 import TaSocialInfo from "./Home/TaInfo/TaSocialInfo";
 import TaLeaves from "./TaLeaves/TaLeaves";
+import RadioButton from "./Signup/RadioButton";
 
 export {
+  RadioButton,
   TaLeaves,
   TaAboutForm,
   TaExperienceForm,
