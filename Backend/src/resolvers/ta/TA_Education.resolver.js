@@ -17,7 +17,7 @@ const educationResolvers = {
     },
     getAllEducation: async () => {
       try {
-        console.log("Get all education")
+        // console.log("Get all education")
         return await Education.find();
       } catch (error) {
         console.error("Error fetching all education:", error);
@@ -28,7 +28,7 @@ const educationResolvers = {
   Mutation: {
     createEducation: async (parent, args) => {
       const { idNumber, education } = args.input;
-      console.log("Create education args:", args.input)
+      // console.log("Create education args:", args.input)
       // const education = {idNumber:idNumber,degree:degree,major:major,college:college,year:year,CGPA:CGPA}
       try {
         // const response = await Education.create({ idNumber, education});

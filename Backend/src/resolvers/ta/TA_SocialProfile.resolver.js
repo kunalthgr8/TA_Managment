@@ -4,6 +4,7 @@ const socialProfileResolver = {
   Query: {
     getSocialProfile: async (parent, { idNumber }) => {
       try {
+        
         const profile = await SocialProfile.findOne({ idNumber });
         if (!profile) {
           throw new Error("Social profile not found");
@@ -26,6 +27,11 @@ const socialProfileResolver = {
   Mutation: {
     createSocialProfile: async (parent, args) => {
       try {
+        console.log(args);
+        const existingSocials = await SocialProfile.findOne({ idNumber: args.idNumber });
+        if(existingSocials) {
+          return await socialProfileResolver.Mutation.updateSocialProfile(parent, args);
+        }
         const profile = new SocialProfile(args);
         return await profile.save();
       } catch (error) {
@@ -35,6 +41,7 @@ const socialProfileResolver = {
     },
     updateSocialProfile: async (parent, { idNumber, ...update }) => {
       try {
+        console.log(idNumber);
         const profile = await SocialProfile.findOneAndUpdate(
           { idNumber },
           { $set: update },

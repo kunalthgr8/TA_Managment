@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Button } from "../../index";
 import { FaLinkedin, FaGithub, FaTwitter, FaGlobe } from "react-icons/fa";
-import { GiGraduateCap } from "react-icons/gi";
 import { MdOutlineEdit } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useQuery } from "@apollo/client";
+import { GET_SOCIAL_PROFILE } from "../../../graphql/queries/taSocialInfo.query";
+import { SiKaggle } from "react-icons/si";
+import {
+  CREATE_SOCIAL_PROFILE,
+  UPDATE_SOCIAL_PROFILE,
+  DELETE_SOCIAL_PROFILE,
+} from "../../../graphql/mutations/taSocialInfo.mutations";
+import { useMutation } from "@apollo/client";
 
 function TaSocialInfo() {
-  const [socialLinks, setSocialLinks] = useState([
-    {
-      website: "https://www.yourwebsite.com",
-      linkedin: "https://www.linkedin.com/",
-      github: "https://www.github.com/",
-      twitter: "https://www.twitter.com/",
-    },
-  ]);
+  const userData = useSelector((state) => state.auth.user);
+  const [socialLinks, setSocialLinks] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentSocialLink, setCurrentSocialLink] = useState({
@@ -21,17 +23,51 @@ function TaSocialInfo() {
     linkedin: "",
     github: "",
     twitter: "",
+    kaggle: "",
   });
   const [editIndex, setEditIndex] = useState(null);
+  const { data } = useQuery(GET_SOCIAL_PROFILE, {
+    variables: { idNumber: userData.idNumber },
+  });
+  console.log("DATA" ,data);
+  const [createSocialProfile] = useMutation(CREATE_SOCIAL_PROFILE);
+  const [updateSocialProfile] = useMutation(UPDATE_SOCIAL_PROFILE);
+  const [deleteSocialProfile] = useMutation(DELETE_SOCIAL_PROFILE);
 
-  const handleSave = () => {
-    if (isEditMode) {
-      const updatedSocialLinks = [...socialLinks];
-      updatedSocialLinks[editIndex] = currentSocialLink;
-      setSocialLinks(updatedSocialLinks);
-    } else {
-      setSocialLinks([...socialLinks, currentSocialLink]);
+  useEffect(() => {
+    if (data) {
+      setSocialLinks([data.getSocialProfile]);
     }
+  }, [data]);
+
+  const handleSave = async() => {
+    const updatedSocialLinks = [...socialLinks];
+    if (isEditMode && editIndex !== null) {
+      updatedSocialLinks[editIndex] = currentSocialLink;
+      await updateSocialProfile({
+        variables: {
+          idNumber: userData.idNumber,
+          github: currentSocialLink.github,
+          twitter: currentSocialLink.twitter,
+          linkedin: currentSocialLink.linkedin,
+          portfolio: currentSocialLink.website,
+          kaggle: currentSocialLink.kaggle,
+        }
+      })
+    } else {
+      updatedSocialLinks.push(currentSocialLink);
+      await createSocialProfile({
+        variables: {
+          idNumber: userData.idNumber,
+          github: currentSocialLink.github,
+          twitter: currentSocialLink.twitter,
+          linkedin: currentSocialLink.linkedin,
+          portfolio: currentSocialLink.website,
+          kaggle: currentSocialLink.kaggle,
+        }
+      })
+    }
+    setSocialLinks(updatedSocialLinks);
     resetForm();
   };
 
@@ -47,6 +83,7 @@ function TaSocialInfo() {
       linkedin: "",
       github: "",
       twitter: "",
+      kaggle: "",
     });
     setEditIndex(null);
   };
@@ -59,6 +96,7 @@ function TaSocialInfo() {
       linkedin: "",
       github: "",
       twitter: "",
+      kaggle: "",
     });
   };
 
@@ -87,34 +125,61 @@ function TaSocialInfo() {
               Social Links
             </h2>
             <div className="flex flex-col gap-2 ml-3 text-custom-black mt-4">
-              <Link
-                to={socialLink.website}
-                className="flex items-center text-sm gap-3"
-              >
-                <FaGlobe className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />{" "}
-                {socialLink.website}
-              </Link>
-              <Link
-                to={socialLink.linkedin}
-                className="flex items-center text-sm gap-3"
-              >
-                <FaLinkedin className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />{" "}
-                {socialLink.linkedin}
-              </Link>
-              <Link
-                to={socialLink.github}
-                className="flex items-center text-sm gap-3"
-              >
-                <FaGithub className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />{" "}
-                {socialLink.github}
-              </Link>
-              <Link
-                to={socialLink.twitter}
-                className="flex items-center text-sm gap-3"
-              >
-                <FaTwitter className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />{" "}
-                {socialLink.twitter}
-              </Link>
+              {socialLink.website && (
+                <a
+                  href={socialLink.website}
+                  className="flex items-center text-sm gap-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGlobe className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />
+                  {socialLink.website}
+                </a>
+              )}
+              {socialLink.linkedin && (
+                <a
+                  href={socialLink.linkedin}
+                  className="flex items-center text-sm gap-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaLinkedin className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />
+                  {socialLink.linkedin}
+                </a>
+              )}
+              {socialLink.github && (
+                <a
+                  href={socialLink.github}
+                  className="flex items-center text-sm gap-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGithub className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />
+                  {socialLink.github}
+                </a>
+              )}
+              {socialLink.twitter && (
+                <a
+                  href={socialLink.twitter}
+                  className="flex items-center text-sm gap-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaTwitter className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />
+                  {socialLink.twitter}
+                </a>
+              )}
+              {socialLink.kaggle && (
+                <a
+                  href={socialLink.kaggle}
+                  className="flex items-center text-sm gap-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SiKaggle className="text-2xl flex justify-center self-center cursor-pointer text-gray-500" />
+                  {socialLink.kaggle}
+                </a>
+              )}
             </div>
             <p
               className="text-right text-custom-purple flex justify-end self-center gap-2 cursor-pointer"
@@ -165,6 +230,15 @@ function TaSocialInfo() {
             label="Twitter"
             onChange={handleChange}
           />
+          <Input
+            type="text"
+            name="kaggle"
+            value={currentSocialLink.kaggle}
+            placeholder="https://www.kaggle.com/yourprofile"
+            className="rounded-md bg-white"
+            label="Kaggle"
+            onChange={handleChange}
+          />
 
           <div className="flex gap-5 m-5 w-1/2">
             <Button
@@ -184,7 +258,14 @@ function TaSocialInfo() {
           </div>
         </div>
       )}
-      
+
+      { !data && <Button
+        className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
+        width="w-1/4"
+        onClick={handleAddAnother}
+      >
+        Add Another
+      </Button>}
     </div>
   );
 }
