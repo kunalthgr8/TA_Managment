@@ -38,7 +38,7 @@ function TaSocialInfo() {
     if (data) {
       setSocialLinks([data.getSocialProfile]);
     }
-  }, [data]);
+  }, [data, setSocialLinks]);
 
   const handleSave = async() => {
     const updatedSocialLinks = [...socialLinks];
