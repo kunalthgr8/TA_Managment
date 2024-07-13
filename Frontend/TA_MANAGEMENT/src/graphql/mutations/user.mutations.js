@@ -42,3 +42,19 @@ export const LOGOUT_USER = gql`
     }
   }
 `;
+
+export const EDUCATION_USER = gql`
+  mutation createEducation($input: Education) {
+    createEducation(input: $input) {
+      idNumber
+      education {
+        degree
+        major
+        college
+        year
+        CGPA
+      }
+    }
+  }
+`;
+
