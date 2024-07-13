@@ -31,6 +31,7 @@ const Signup = () => {
 
       if (response.data.registerUser.status === 201) {
         dispatch(login(response.data.registerUser.data));
+        localStorage.setItem("token", JSON.stringify(response.data.registerUser.data));
         navigate("/");
       } else {
         setError(response.data.registerUser.message);

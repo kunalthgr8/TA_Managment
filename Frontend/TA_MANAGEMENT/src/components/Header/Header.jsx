@@ -9,7 +9,7 @@ import { LOGOUT_USER } from "../../graphql/mutations/user.mutations";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const user = useSelector((state) => state.auth.user);
+  const user = (useSelector((state) => state.auth.user));
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,7 +17,6 @@ function Header() {
   const [logoutUser] = useMutation(LOGOUT_USER);
   const facultyStatus = "Course Added"; // or "Not Assigned"
 
-  console.log("User", user);
 
 
   const onLogout = async () => {
@@ -25,6 +24,7 @@ function Header() {
       const { idNumber } = user;
       await logoutUser({ variables: { idNumber } });
       dispatch(logout());
+      localStorage.removeItem("token");
       navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);
