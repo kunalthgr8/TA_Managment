@@ -1,8 +1,5 @@
 import { gql } from 'apollo-server';
-import userTypeDefs from './ta/ta.js';
-import educationTypeDefs from './ta/education.typeDef.js';
-// import todoTypeDefs from './todo.js';
-
+import TA_TypeDefs from './ta/combineTaTypeDef.js';
 
 const baseTypeDefs = gql`
     type Query
@@ -11,8 +8,7 @@ const baseTypeDefs = gql`
 
 const typeDefs = [
     baseTypeDefs,
-    userTypeDefs,
-    educationTypeDefs,
+    TA_TypeDefs
     // todoTypeDefs
 ];
 

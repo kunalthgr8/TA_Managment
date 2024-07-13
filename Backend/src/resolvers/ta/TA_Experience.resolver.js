@@ -1,4 +1,4 @@
-import Experience from '../../models/experience.js';
+import Experience from '../../models/ta/experience.js';
 
 const experienceResolver = {
   Query: {

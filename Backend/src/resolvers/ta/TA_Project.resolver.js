@@ -1,4 +1,4 @@
-import Projects from '../../models/projects.js';
+import Projects from '../../models/ta/projects.js';
 
 const projectsResolver = {
   Query: {

@@ -1,4 +1,4 @@
-import Skills from '../../models/skills.js';
+import Skills from '../../models/ta/skills.js';
 
 const skillsResolver = {
   Query: {

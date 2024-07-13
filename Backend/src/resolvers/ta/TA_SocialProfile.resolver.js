@@ -1,4 +1,4 @@
-import SocialProfile from '../../models/socialProfile.js';
+import SocialProfile from '../../models/ta/socialProfile.js';
 
 const socialProfileResolver = {
   Query: {

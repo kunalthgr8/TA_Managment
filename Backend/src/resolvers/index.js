@@ -1,16 +1,8 @@
-import taResolver from './ta/ta.resolver.js';
-import educationResolvers from './ta/education.resolver.js';
+import {mergeResolvers} from '@graphql-tools/merge';
+import TAresolvers from "./ta/TA_CombineTa.resolver.js"
 
-const resolvers = {
-    Query: {
-        ...taResolver.Query,
-        ...educationResolvers.Query,
-    },
-    Mutation: {
-        ...taResolver.Mutation,
-        ...educationResolvers.Mutation,
-    },
-    // Todo: todoResolvers.Todo
-};
+const TA_Resolvers = mergeResolvers([
+    TAresolvers
+]);
 
-export default resolvers;
+export default TA_Resolvers;
