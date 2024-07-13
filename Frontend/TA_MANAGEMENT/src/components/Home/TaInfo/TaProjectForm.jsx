@@ -1,22 +1,52 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Input, Button } from "../../index";
 import { FaLightbulb } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { VscGithub } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import { useMutation,useQuery } from "@apollo/client";
+import  { CREATE_PROJECT } from "../../../graphql/mutations/project.mutations";
+import { GET_PROJECT } from "../../../graphql/queries/project.query";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function TaProjectForm() {
-  const [projects, setProjects] = useState([
-    {
-      Title: "TA Management System",
-      Role: "Full Stack Developer",
-      description: "This is a full Stack project...",
-      githubLink: "",
-      liveLink: "",
-      techStack: [],
-    },
-  ]);
+  // const [projects, setProjects] = useState([
+  //   {
+  //     Title: "TA Management System",
+  //     Role: "Full Stack Developer",
+  //     description: "This is a full Stack project...",
+  //     githubLink: "",
+  //     liveLink: "",
+  //     techStack: [],
+  //   },
+  // ]);
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const userData = useSelector((state) => state.auth.user);
+  const [createProject, { data, loading }] = useMutation(CREATE_PROJECT);
+  const [projects, setProjects] = useState([]);
+  const { data: projectData} = useQuery(GET_PROJECT,{
+    variables: { idNumber: userData.idNumber },
+    skip: !userData.idNumber,
+  } );
+
+  useEffect(() => {
+    if (projectData && projectData.getProjects && projectData.getProjects.data && projectData.getProjects.data.projects) {
+      const mappedProjects = projectData.getProjects.data.projects.map((project) => ({ 
+        Title: project.title,
+        Role: project.role,
+        description: project.description,
+        githubLink: project.githubLink,
+        liveLink: project.liveLink,
+        techStack: project.techstack
+      }));
+      setProjects(mappedProjects);
+    }
+  }, [projectData]);
+
+
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [currentProject, setCurrentProject] = useState({
     Title: "",
@@ -36,8 +66,44 @@ function TaProjectForm() {
       updatedProjects.push(currentProject);
     }
     setProjects(updatedProjects);
-    resetForm();
+    // resetForm();
   };
+
+  useEffect(() => {
+    if (projects.length > 0) {
+      // Make sure the state is updated before calling the backend
+      const updateProjectInBackend = async () => {
+        try {
+          const response = await createProject({
+            variables: {
+              input: {
+                idNumber: userData.idNumber,
+                projects: projects.map((project) => ({
+                  title: project.Title,
+                  role: project.Role,
+                  description: project.description,
+                  githubLink: project.githubLink,
+                  liveLink: project.liveLink,
+                  techstack: project.techStack,
+                })),
+              },
+            },
+          });
+          console.log('Response:', response);
+          if (response.data.createProject.status === 201) {
+            setError('Project added successfully');
+            console.log('Project added successfully');
+            resetForm();
+          }
+        } catch (error) {
+          setError(error.message);
+        }
+      };
+
+      updateProjectInBackend();
+    }
+  }, [projects, userData.idNumber, createProject]);
+
 
   const handleCancel = () => {
     resetForm();
