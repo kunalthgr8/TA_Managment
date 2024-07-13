@@ -13,26 +13,18 @@ const projectsTypeDefs = `
     projects: [ProjectDetail]
   }
 
+  type ProjectsApiResponse {
+    status: Int
+    message: String
+    data: Projects
+  }
+
   extend type Query {
-    getProjects(idNumber: ID!): Projects
+    getProjects(idNumber: ID!): ProjectsApiResponse
     getAllProjects: [Projects]
   }
 
-  extend type Mutation {
-    createProject(
-      idNumber: ID!
-      projects: [ProjectDetailInput]
-    ): Projects
-
-    updateProject(
-      idNumber: ID!
-      projects: [ProjectDetailInput]
-    ): Projects
-
-    deleteProject(idNumber: ID!): Projects
-  }
-
-  input ProjectDetailInput {
+  input ProjectInfo {
     title: String
     role: String
     description: String
@@ -40,6 +32,25 @@ const projectsTypeDefs = `
     liveLink: String
     techstack: [String]
   }
+
+  input ProjectDetailInput {
+    idNumber: ID!
+    projects: [ProjectInfo]
+  }
+
+  extend type Mutation {
+    createProject(
+      input: ProjectDetailInput
+    ): ProjectsApiResponse
+
+    updateProject(
+      input: ProjectDetailInput
+    ): ProjectsApiResponse
+
+    deleteProject(idNumber: ID!): ProjectsApiResponse
+  }
+
+  
 `;
 
 export default projectsTypeDefs;
