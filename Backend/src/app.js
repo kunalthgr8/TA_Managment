@@ -36,22 +36,23 @@ export async function startApolloServer() {
     app.use(cookieParser());
     app.use(
       "/graphql",
-      // async (req, res, next) => {
-      //   // Skip authentication for the login route
-      //   const loginRoute = req.body.query.includes("loginUser");
-      //   const registerUser = req.body.query.includes("registerUser");
-      //   const registerFaculty = req.body.query.includes("registerFaculty");
-      //   if (!loginRoute && !registerUser && !registerFaculty) {
-      //     try {
-      //       const user = await authentication(req);
-      //       req.user = user;
-      //     } catch (error) {
-      //       // Handle authentication errors
-      //       return res.status(401).json({ message: "Unauthorized" });
-      //     }
-      //   }
-      //   next();
-      // },
+      async (req, res, next) => {
+        // Skip authentication for the login route
+        const loginRoute = req.body.query.includes("loginUser");
+        const registerUser = req.body.query.includes("registerUser");
+        const registerFaculty = req.body.query.includes("registerFaculty");
+        const loginFaculty = req.body.query.includes("loginFaculty");
+        if (!loginRoute && !registerUser && !registerFaculty && !loginFaculty) {
+          try {
+            const user = await authentication(req);
+            req.user = user;
+          } catch (error) {
+            // Handle authentication errors
+            return res.status(401).json({ message: "Unauthorized" });
+          }
+        }
+        next();
+      },
       expressMiddleware(server, {
         context: ({ req, res }) => ({ req, res, user: req.user }),
       })

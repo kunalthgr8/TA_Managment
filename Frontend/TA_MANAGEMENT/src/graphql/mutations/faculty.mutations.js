@@ -18,21 +18,21 @@ export const REGISTER_FACULTY = gql`
   }
 `;
 
-// export const LOGIN_USER = gql`
-//   mutation loginUser($input: LoginInput!) {
-//     loginUser(input: $input) {
-//       status
-//       message
-//       data {
-//         name
-//         idNumber
-//         email
-//         phoneNumber
-//         accessToken
-//       }
-//     }
-//   }
-// `;
+export const LOGIN_FACULTY = gql`
+  mutation loginFaculty($input: LoginInput!) {
+    loginFaculty(input: $input) {
+      status
+      message
+      data {
+        name
+        idNumber
+        email
+        phoneNumber
+        accessToken
+      }
+    }
+  }
+`;
 
 
 

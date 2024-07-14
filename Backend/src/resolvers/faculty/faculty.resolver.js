@@ -114,6 +114,47 @@ const facultyResolvers = {
       }
     },
 
+    loginFaculty: async (parent, { input: { idNumber, password } }, context) => {
+      try {
+        if (!idNumber || !password) {
+          throw new ApiError(400, "Please fill all fields");
+        }
+
+        validateIdNumber(idNumber, 8);
+        validatePassword(password);
+
+        const user = await Faculty.findOne({ idNumber });
+        if (!user) {
+          throw new ApiError(404, "User not found");
+        }
+
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+        if (!isPasswordCorrect) {
+          throw new ApiError(401, "Invalid credentials");
+        }
+
+        const { accessToken, refreshToken } = await generateTokens(user);
+        const loggedInUser = await Faculty.findById(user._id).select(
+          "-password -refreshToken"
+        );
+
+        const options = { httpOnly: true, secure: true };
+        context.res.cookie("refreshToken", refreshToken, options);
+        context.res.cookie("accessToken", accessToken, options);
+
+        // return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
+        const update = { ...loggedInUser, accessToken: accessToken };
+        return {
+          status: 201,
+          message: "User logged in successfully",
+          data: { ...loggedInUser["_doc"], accessToken: accessToken },
+        };
+      } catch (error) {
+        console.error("Error logging in user:", error);
+        throw new Error(error.message);
+      }
+    },
+
     updateFaculty: async (_, { id, name, email, phoneNumber }) => {
       try {
         const updatedFaculty = await Faculty.findByIdAndUpdate(

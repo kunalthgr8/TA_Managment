@@ -5,6 +5,8 @@ const facultyTypeDef = `
     name: String!
     email: String!
     phoneNumber: String!
+    accessToken: String
+    refreshToken: String
   }
 
   type AuthPayload {
@@ -13,7 +15,7 @@ const facultyTypeDef = `
     faculty: Faculty
   }
 
-  type ApiResponse {
+  type FacultyApiResponse {
     status: Int
     message: String
     data: Faculty
@@ -38,7 +40,8 @@ const facultyTypeDef = `
 
 
   extend type Mutation {
-    registerFaculty(input: RegisterInput!): ApiResponse
+    registerFaculty(input: RegisterInput!): FacultyApiResponse
+    loginFaculty(input: LoginInput!): FacultyApiResponse
     updateFaculty(id: ID!, name: String, email: String, phoneNumber: String): Faculty
     deleteFaculty(id: ID!): Faculty
   }
