@@ -8,18 +8,24 @@ import { GET_USER } from "../../../graphql/queries/user.queries";
 
 function TaAboutForm() {
   const userData = useSelector((state) => state.auth.user);
-
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [currentAboutValues, setCurrentAboutValues] = useState({
+    Name: userData?.name || "User Name",
+    Gender: userData?.gender || "Gender",
+    Bio: userData?.bio || "Bio ",
+    Email: userData?.email || "Email",
+    Phone: userData?.phoneNumber || "Mobile Number",
+    image: null,
+  });
+  const [updateUserMutation] = useMutation(UPDATE_USER);
   const defaultAboutValues = {
     Name: userData?.name || "User Name",
-    Gender: userData?.gender || "Male", // Default to Male if gender not provided
+    Gender: userData?.gender || "Gender",
     Bio: userData?.bio || "Bio ",
     Email: userData?.email || "Email",
     Phone: userData?.phoneNumber || "Mobile Number",
     image: null,
   };
-
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [currentAboutValues, setCurrentAboutValues] = useState(defaultAboutValues);
 
   const capitalizeName = (name) =>
     name
@@ -27,21 +33,21 @@ function TaAboutForm() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
-  const [updateUserMutation] = useMutation(UPDATE_USER);
   const { data } = useQuery(GET_USER, {
     variables: { idNumber: userData.idNumber },
   });
 
   useEffect(() => {
     if (data) {
-      setCurrentAboutValues({
-        Name: data.getUser.name,
-        Gender: capitalizeName(data.getUser?.gender||"gender"),
-        Bio: data.getUser.bio,
-        Email: data.getUser.email,
-        Phone: data.getUser.phoneNumber,
-        image: null,
-      });
+      const { name, gender, bio, email, phoneNumber } = data.getUser;
+      setCurrentAboutValues((prevData) => ({
+        ...prevData,
+        Name: name,
+        Gender: capitalizeName(gender || "Male"),
+        Bio: bio,
+        Email: email,
+        Phone: phoneNumber,
+      }));
     }
   }, [data]);
 
@@ -59,15 +65,11 @@ function TaAboutForm() {
           },
         },
       });
-      console.log("Updated user:", data.updateUser);
-      // Handle success, e.g., show a success message or update local state
+      resetForm();
+      setIsFormVisible(false);
     } catch (error) {
       console.error("Error updating user:", error);
-      // Handle error, e.g., show an error message
     }
-
-    resetForm();
-    setIsFormVisible(false);
   };
 
   const handleCancel = () => {
@@ -134,7 +136,12 @@ const ProfileDisplay = ({ currentAboutValues, capitalizeName, editForm }) => (
   <>
     <div className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl">
       <div className="flex justify-center self-center">
-        <img src={Cat} alt="Profile Image" width="150px" className="rounded-full" />
+        <img
+          src={Cat}
+          alt="Profile Image"
+          width="150px"
+          className="rounded-full"
+        />
       </div>
       <div className="flex flex-col gap-2 w-3/4">
         <h1 className="text-2xl font-bold text-custom-black">
@@ -147,7 +154,10 @@ const ProfileDisplay = ({ currentAboutValues, capitalizeName, editForm }) => (
           <p className="text-sm text-gray-500 cursor-pointer" title="Gender">
             {currentAboutValues.Gender}
           </p>
-          <p className="text-sm text-gray-500 cursor-pointer" title="Mobile Number">
+          <p
+            className="text-sm text-gray-500 cursor-pointer"
+            title="Mobile Number"
+          >
             {currentAboutValues.Phone}
           </p>
           <p className="text-sm text-gray-500 cursor-pointer" title="Email">

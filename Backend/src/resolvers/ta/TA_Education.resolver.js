@@ -1,48 +1,51 @@
-import Education from '../../models/ta/education.js';
+import Education from "../../models/ta/education.js";
+import { ApiError } from "../../utils/ApiError.js";
 
 const educationResolvers = {
   Query: {
-    getEducation: async (parent, { idNumber },context) => {
+    getEducation: async (parent, { idNumber }, context) => {
       try {
         if (!context.user) {
-          throw new Error("Unauthorized");
+          throw new ApiError(404, "Unauthorized");
         }
-        const response = await Education.findOne({ idNumber }); 
+        const response = await Education.findOne({ idNumber });
         return {
           status: 201,
           message: "Education fetched successfully",
           data: response,
-        }
+        };
       } catch (error) {
-        console.error("Error fetching education:", error);
-        throw new Error("Error fetching education");
+        throw new ApiError(404, "Error fetching education");
       }
     },
-    getAllEducation: async () => {
+    getAllEducation: async (parent, { idNumber }, context) => {
+      if (!context.user) {
+        throw new ApiError(404, "Unauthorized");
+      }
       try {
-        // console.log("Get all education")
         return await Education.find();
       } catch (error) {
-        console.error("Error fetching all education:", error);
-        throw new Error("Error fetching all education");
+        throw new ApiError(404, "Error fetching all education");
       }
     },
   },
   Mutation: {
-    createEducation: async (parent, args,context) => {
-      const { idNumber, education } = args.input;
+    createEducation: async (parent, { input }, context) => {
+      if (!context.user) {
+        throw new ApiError(404, "Unauthorized");
+      }
+      const { idNumber, education } = input;
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(404, "Unauthorized");
+      }
       try {
-        if (!context.user) {
-          throw new Error("Unauthorized");
-        }
-        // const response = await Education.create({ idNumber, education});
         const existingEducation = await Education.findOne({ idNumber });
         if (existingEducation) {
           existingEducation.education = education;
-          const response = await existingEducation.save({new: true});
+          const response = await existingEducation.save({ new: true });
           return {
             status: 201,
-            message: "Education Updated Successfully",
+            message: "Education Added Successfully",
             data: response,
           };
         } else {
@@ -54,32 +57,27 @@ const educationResolvers = {
           };
         }
       } catch (error) {
-        console.error("Error creating education:", error);
-        throw new Error("Error creating education");
+        throw new ApiError(404, "Error creating education");
       }
     },
-    updateEducation: async (parent, args) => {
-      const { idNumber, education } = args.input;
+    updateEducation: async (parent, { input }, context) => {
+      if (!context.user) {
+        throw new ApiError(404, "Unauthorized");
+      }
+      const { idNumber, education } = input;
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(404, "Unauthorized");
+      }
       try {
-        return await Education.findOneAndUpdate({ idNumber }, { education }, { new: true });
+        return await Education.findOneAndUpdate(
+          { idNumber },
+          { education },
+          { new: true }
+        );
       } catch (error) {
-        console.error("Error updating education:", error);
-        throw new Error("Error updating education");
+        throw new ApiError(404, "Error updating education");
       }
     },
-    // deleteEducation: async (parent, { idNumber }) => {
-    //   try {
-    //     const response = await Education.findOneAndDelete({ idNumber });
-    //     return {
-    //       status: 201,
-    //       message: "Education deleted successfully",
-    //       data: response,
-    //     }
-    //   } catch (error) {
-    //     console.error("Error deleting education:", error);
-    //     throw new Error("Error deleting education");
-    //   }
-    // },
   },
 };
 

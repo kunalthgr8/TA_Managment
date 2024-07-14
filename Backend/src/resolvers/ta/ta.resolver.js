@@ -24,9 +24,16 @@ const generateTokens = async (user) => {
   return { accessToken, refreshToken, user };
 };
 
+const authenticate = (context) => {
+  if (!context.user) {
+    throw new Error("Unauthorized");
+  }
+};
+
 const taResolver = {
   Query: {
-    getAllUsers: async () => {
+    getAllUsers: async (_, __, context) => {
+      authenticate(context);
       try {
         return await User.find();
       } catch (error) {
@@ -34,11 +41,9 @@ const taResolver = {
         throw new Error("Error fetching users");
       }
     },
-    getUser: async (parent, { idNumber },context) => {
+    getUser: async (parent, { idNumber }, context) => {
+      authenticate(context);
       try {
-        // if (!context.user) {
-        //   throw new Error("Unauthorized");
-        // }
         const user = await User.findOne({ idNumber });
         if (!user) {
           throw new ApiError(404, "User not found with this ID number");
@@ -55,10 +60,11 @@ const taResolver = {
       const user = await User.findOne({ idNumber });
       return generateTokens(user);
     },
-    registerUser: async (parent, args, context) => {
-      console.log("Register user args:", args);
-      const { name, idNumber, email, password, phoneNumber } = args.input;
-
+    registerUser: async (
+      parent,
+      { input: { name, idNumber, email, password, phoneNumber } },
+      context
+    ) => {
       try {
         if (!name || !idNumber || !email || !password || !phoneNumber) {
           throw new ApiError(400, "Please fill all fields");
@@ -69,12 +75,10 @@ const taResolver = {
         validateNumber(phoneNumber, 10);
         validatePassword(password);
         validateIdNumber(idNumber, 8);
-        console.log("Validated user input");
 
         const userExist = await User.findOne({
           $or: [{ idNumber }, { email }, { phoneNumber }],
         });
-        console.log("Checked if user exists");
         if (userExist) {
           throw new ApiError(400, "User already exists");
         }
@@ -89,11 +93,9 @@ const taResolver = {
 
         // Save user to database first
         await user.save();
-        console.log("User saved successfully");
 
         // Generate tokens after saving the user
         const { accessToken, refreshToken } = await generateTokens(user);
-        console.log("Generated tokens", accessToken, refreshToken);
 
         // Fetch the saved user without sensitive fields
         const loggedInUser = await User.findById(user._id).select(
@@ -108,12 +110,11 @@ const taResolver = {
         const options = { httpOnly: true, secure: true };
         context.res.cookie("refreshToken", refreshToken, options);
         context.res.cookie("accessToken", accessToken, options);
-        console.log("User logged in successfully");
 
         return {
           status: "201",
           message: "User created successfully",
-          data: {...loggedInUser["_doc"],accessToken:accessToken},
+          data: { ...loggedInUser["_doc"], accessToken: accessToken },
         };
       } catch (error) {
         console.error("Error adding user:", error);
@@ -121,8 +122,7 @@ const taResolver = {
       }
     },
 
-    loginUser: async (parent, args,context) => {
-      const { idNumber, password } = args.input;
+    loginUser: async (parent, { input: { idNumber, password } }, context) => {
       try {
         if (!idNumber || !password) {
           throw new ApiError(400, "Please fill all fields");
@@ -151,46 +151,48 @@ const taResolver = {
         context.res.cookie("accessToken", accessToken, options);
 
         // return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
-        const update = {...loggedInUser,accessToken:accessToken}
-        console.log("update",update);
-        console.log({...loggedInUser["_doc"],accessToken:accessToken});
+        const update = { ...loggedInUser, accessToken: accessToken };
         return {
           status: 201,
           message: "User logged in successfully",
-          data: {...loggedInUser["_doc"],accessToken:accessToken},
+          data: { ...loggedInUser["_doc"], accessToken: accessToken },
         };
       } catch (error) {
         console.error("Error logging in user:", error);
         throw new Error(error.message);
       }
     },
-    updateUser: async (parent, args,context) => {
-      const { idNumber, name, email, password, phoneNumber, gender, bio } =
-        args.input;
+    updateUser: async (parent, { input }, context) => {
+      authenticate(context);
+      const { idNumber, ...updateFields } = input;
+      if (context.user.idNumber !== idNumber) {
+        throw new ApiError(404, "Unauthorized");
+      }
       try {
-        if (!context.user) {
-          throw new Error("Unauthorized");
-        }
         const updatedUser = await User.findOneAndUpdate(
           { idNumber },
-          { $set: { name, email, password, phoneNumber, gender, bio } },
+          { $set: updateFields },
           { new: true }
         );
         if (!updatedUser) {
           throw new ApiError(404, "User not found");
         }
-        return updatedUser;
+        return {
+          status: 201,
+          message: "User logged in successfully",
+          data: updatedUser,
+        };
       } catch (error) {
         console.error("Error updating user:", error);
         throw new Error("Error updating user");
       }
     },
-    deleteUser: async (parent, { idNumber },context) => {
+    deleteUser: async (parent, { idNumber }, context) => {
+      authenticate(context);
       try {
-        if (!context.user) {
-          throw new Error("Unauthorized");
-        }
-        const deletedUser = await User.findOneAndDelete({ idNumber });
+        const deletedUser = await User.findOneAndDelete({
+          idNumber: context.user.idNumber,
+        });
         if (!deletedUser) {
           throw new ApiError(404, "User not found");
         }
@@ -201,11 +203,9 @@ const taResolver = {
       }
     },
     logoutUser: async (parent, { idNumber }, context) => {
+      authenticate(context);
       try {
-        // if (!context.user) {
-        //   throw new Error("Unauthorized");
-        // }
-        const user = await User.findOne({ idNumber });
+        const user = await User.findOne({ idNumber: context.user.idNumber });
         if (!user) {
           throw new ApiError(404, "User not found");
         }

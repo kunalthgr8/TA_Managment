@@ -1,49 +1,19 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button } from "../../index";
 import { FaLightbulb } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
-import { VscGithub } from "react-icons/vsc";
-import { Link } from "react-router-dom";
-import { useMutation,useQuery } from '@apollo/client';
+import { MdDelete } from "react-icons/md";
+import { useMutation, useQuery } from "@apollo/client";
 import { EXPERIENCE_USER } from "../../../graphql/mutations/user.mutations";
 import { GET_EXPERIENCE_USER } from "../../../graphql/queries/user.queries";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { MdDelete } from "react-icons/md";
-
 function TaExperienceForm() {
-  // const [experiences, setexperiences] = useState([
-  //   {
-  //     Company: "Exprto",
-  //     Role: "Mentor",
-  //     description: "This is a mentoring Company...",
-  //     startDate: "2023-01-01",
-  //     endDate: "2023-12-31",
-  //   },
-  // ]);
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const userData = useSelector((state) => state.auth.user);
-  const [createExperience, { data, loading }] = useMutation(EXPERIENCE_USER);
   const [experiences, setexperiences] = useState([]);
-  const { data: experienceData} = useQuery(GET_EXPERIENCE_USER,{
-    variables: { idNumber: userData.idNumber },
-    skip: !userData.idNumber,
-  } );
-
-  useEffect(() => {
-    if (experienceData && experienceData.getExperience && experienceData.getExperience.data && experienceData.getExperience.data.experience) {
-      const mappedexperiences = experienceData.getExperience.data.experience.map((experience) => ({
-        Company: experience.company,
-        Role: experience.role,
-        description: experience.description,
-        startDate: experience.startDate,
-        endDate: experience.endDate
-      }));
-      setexperiences(mappedexperiences);
-    }
-  }, [experienceData]);
+  const [error, setError] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [currentProject, setCurrentProject] = useState({
     Company: "",
@@ -53,6 +23,58 @@ function TaExperienceForm() {
     endDate: "",
   });
   const [editIndex, setEditIndex] = useState(null);
+  const { data: experienceData } = useQuery(GET_EXPERIENCE_USER, {
+    variables: { idNumber: userData.idNumber },
+    skip: !userData.idNumber,
+  });
+  const [createExperience, { data, loading }] = useMutation(EXPERIENCE_USER);
+
+  useEffect(() => {
+    if (
+      experienceData &&
+      experienceData.getExperience &&
+      experienceData.getExperience.data &&
+      experienceData.getExperience.data.experience
+    ) {
+      const mappedexperiences =
+        experienceData.getExperience.data.experience.map((experience) => ({
+          Company: experience.company,
+          Role: experience.role,
+          description: experience.description,
+          startDate: experience.startDate,
+          endDate: experience.endDate,
+        }));
+      setexperiences(mappedexperiences);
+    }
+  }, [experienceData]);
+
+  useEffect(() => {
+    const updateExperienceInBackend = async () => {
+      try {
+        const response = await createExperience({
+          variables: {
+            input: {
+              idNumber: userData.idNumber,
+              experience: experiences.map((experience) => ({
+                company: experience.Company,
+                role: experience.Role,
+                description: experience.description,
+                startDate: experience.startDate,
+                endDate: experience.endDate,
+              })),
+            },
+          },
+        });
+        if (response.data.createExperience.status === 201) {
+          setError("Experience added successfully");
+          resetForm();
+        }
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+    updateExperienceInBackend();
+  }, [experiences, userData.idNumber, createExperience]);
 
   const handleSave = () => {
     const updatedexperiences = [...experiences];
@@ -62,43 +84,7 @@ function TaExperienceForm() {
       updatedexperiences.push(currentProject);
     }
     setexperiences(updatedexperiences);
-    // resetForm();
   };
-  useEffect(() => {
-    if (experiences.length > 0) {
-      // Make sure the state is updated before calling the backend
-      const updateExperienceInBackend = async () => {
-        try {
-          const response = await createExperience({
-            variables: {
-              input: {
-                idNumber: userData.idNumber,
-                experience: experiences.map((experience) => ({
-                  company: experience.Company,
-                  role: experience.Role,
-                  description: experience.description,
-                  startDate: experience.startDate,
-                  endDate: experience.endDate,
-                })),
-              },
-            },
-          });
-          console.log('Response:', response);
-          if (response.data.createExperience.status === 201) {
-            setError('Experience added successfully');
-            console.log('Experience added successfully');
-            resetForm();
-            // navigate("/");
-          }
-        } catch (error) {
-          setError(error.message);
-        }
-      };
-
-      updateExperienceInBackend();
-    }
-  }, [experiences, userData.idNumber, createExperience]);
-
 
   const handleCancel = () => {
     resetForm();
@@ -132,10 +118,10 @@ function TaExperienceForm() {
     setCurrentProject(experiences[index]);
     setEditIndex(index);
   };
+
   const deleteExperience = (index) => {
-    const updatedexperiences = [...experiences];
-    updatedexperiences.splice(index, 1);
-    setexperiences(updatedexperiences);
+    const updatedExperiences = experiences.filter((_, i) => i !== index);
+    setexperiences(updatedExperiences);
   };
 
   const handleChange = (e) => {

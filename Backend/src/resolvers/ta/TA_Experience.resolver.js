@@ -1,46 +1,48 @@
-import Experience from '../../models/ta/experience.js';
+import Experience from "../../models/ta/experience.js";
+import { ApiError } from "../../utils/ApiError.js";
 
 const experienceResolver = {
   Query: {
-    getExperience: async (parent, { idNumber },context) => {
+    getExperience: async (parent, { idNumber }, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
-        if (!context.user) {
-          throw new Error("Unauthorized");
-        }
-
         const experience = await Experience.findOne({ idNumber });
         return {
           status: 201,
           message: "Experience fetched successfully",
           data: experience,
-        }
+        };
       } catch (error) {
-        console.error("Error fetching experience:", error);
-        throw new Error("Error fetching experience");
+        throw new ApiError(400, "Error fetching experience");
       }
     },
     getAllExperience: async () => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
         return await Experience.find();
       } catch (error) {
-        console.error("Error fetching all experience:", error);
-        throw new Error("Error fetching all experience");
+        throw new ApiError(400, "Error fetching experience");
       }
-    }
+    },
   },
   Mutation: {
-    createExperience: async (parent, args,context) => {
-      const { idNumber, experience } = args.input;
-      console.log("Create experience args:", args.input);
+    createExperience: async (parent, { input }, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      const { idNumber, experience } = input;
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
-        if (!context.user) {
-          throw new Error("Unauthorized");
-        }
-        // const response = await Education.create({ idNumber, education});
         const existingExperience = await Experience.findOne({ idNumber });
         if (existingExperience) {
           existingExperience.experience = experience;
-          const response = await existingExperience.save({new: true});
+          const response = await existingExperience.save({ new: true });
           return {
             status: 201,
             message: "Experience Updated Successfully",
@@ -55,11 +57,16 @@ const experienceResolver = {
           };
         }
       } catch (error) {
-        console.error("Error creating experience:", error);
-        throw new Error("Error creating experience");
+        throw new ApiError(400, "Error creating experience");
       }
     },
-    updateExperience: async (parent, { idNumber, experience }) => {
+    updateExperience: async (parent, { idNumber, experience }, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
         const updatedExperience = await Experience.findOneAndUpdate(
           { idNumber },
@@ -67,27 +74,33 @@ const experienceResolver = {
           { new: true }
         );
         if (!updatedExperience) {
-          throw new Error("Experience not found");
+          throw new ApiError(404, "Experience not found");
         }
         return updatedExperience;
       } catch (error) {
-        console.error("Error updating experience:", error);
-        throw new Error("Error updating experience");
+        throw new ApiError(400, "Error updating experience");
       }
     },
-    deleteExperience: async (parent, { idNumber }) => {
+    deleteExperience: async (parent, { idNumber }, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
-        const deletedExperience = await Experience.findOneAndDelete({ idNumber });
+        const deletedExperience = await Experience.findOneAndDelete({
+          idNumber,
+        });
         if (!deletedExperience) {
-          throw new Error("Experience not found");
+          throw new ApiError(404, "Experience not found");
         }
         return deletedExperience;
       } catch (error) {
-        console.error("Error deleting experience:", error);
-        throw new Error("Error deleting experience");
+        throw new ApiError(400, "Error deleting experience");
       }
-    }
-  }
+    },
+  },
 };
 
 export default experienceResolver;

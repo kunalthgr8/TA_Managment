@@ -30,6 +30,7 @@ function Header() {
       await logoutUser({ variables: { idNumber } });
       dispatch(logout());
       localStorage.removeItem("token");
+      localStorage.removeItem("userToken");
       navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);

@@ -1,37 +1,3 @@
-// import Jwt from 'jsonwebtoken';
-
-// const authentication = async (req) => {
-//   try {
-//     const { authorization } = req.headers;
-//     console.log("Request:", req);
-//     console.log("Headers:", req.headers);
-//     console.log("Authorization:", authorization);
-//     if (!authorization || !authorization.startsWith("Bearer")) {
-//       throw new Error("Unauthorized User");
-//     }
-//     console.log("Authorization2:", authorization);
-//     const authorizationToken = authorization.split(" ")[1];
-//     console.log("Authorization Token:", authorizationToken);
-
-//     if (!authorizationToken) {
-//       throw new Error("Something Went Wrong");
-//     }
-
-//     try {
-//       const user = Jwt.verify(authorizationToken, process.env.JWT_SECRET_KEY);
-//       console.log("User:", user);
-//       return user
-//     } catch (error) {
-//       throw new Error("Invalid Token");
-//     }
-//   } catch (error) {
-//     console.error("Authentication error:", error);
-//     throw error;
-//   }
-// };
-
-// export default authentication;
-
 import jwt from "jsonwebtoken";
 import User from "../models/ta/ta.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -63,8 +29,6 @@ const authentication = async (req) => {
       console.error("User not found for decoded _id:", decoded._id);
       throw new ApiError(401, "Unauthorized request -> Invalid Token");
     }
-
-    console.log("User during Authentication Middleware:", user);
     req.user = user;
     return user;
   } catch (error) {

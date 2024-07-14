@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button } from "../../index";
 import { GiGraduateCap } from "react-icons/gi";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import { useMutation,useQuery } from '@apollo/client';
+import { useMutation, useQuery } from "@apollo/client";
 import { EDUCATION_USER } from "../../../graphql/mutations/user.mutations";
 import { GET_EDUCATION_USER } from "../../../graphql/queries/user.queries";
 import { useNavigate } from "react-router-dom";
@@ -11,40 +11,57 @@ import { useSelector } from "react-redux";
 
 function TaEducationForm() {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const userData = useSelector((state) => state.auth.user);
-  const [createEducation, { data, loading }] = useMutation(EDUCATION_USER);
+  const [error, setError] = useState("");
   const [educations, setEducations] = useState([]);
-  const { data: educationData} = useQuery(GET_EDUCATION_USER,{
-    variables: { idNumber: userData.idNumber },
-    skip: !userData.idNumber,
-  } );
-
-  useEffect(() => {
-    if (educationData && educationData.getEducation && educationData.getEducation.data && educationData.getEducation.data.education) {
-      const mappededucations = educationData.getEducation.data.education.map((education) => ({
-        degree: education.degree,
-        major: education.major,
-        university: education.college,
-        year: education.year,
-        cgpa: education.CGPA,
-      }));
-      setEducations(mappededucations);
-    }
-  }, [educationData]);
-
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [currentEducation, setCurrentEducation] = useState({
+  const initialEducationState = {
     degree: "",
     major: "",
     university: "",
     year: "",
     cgpa: "",
-  });
+  };
+  const [currentEducation, setCurrentEducation] = useState(
+    initialEducationState
+  );
   const [editIndex, setEditIndex] = useState(null);
+  const { data: educationData } = useQuery(GET_EDUCATION_USER, {
+    variables: { idNumber: userData.idNumber },
+    skip: !userData.idNumber,
+  });
+  console.log(
+    "Getting Query ",
+    useQuery(GET_EDUCATION_USER, {
+      variables: { idNumber: userData.idNumber },
+      skip: !userData.idNumber,
+    })
+  );
+  const [createEducation, { loading }] = useMutation(EDUCATION_USER);
 
-  const handleSave =  async () => {
+  useEffect(() => {
+    console.log("EducationData", educationData);
+    if (
+      educationData &&
+      educationData.getEducation &&
+      educationData.getEducation.data &&
+      educationData.getEducation.data.education
+    ) {
+      const mappedEducations = educationData.getEducation.data.education.map(
+        (education) => ({
+          degree: education.degree,
+          major: education.major,
+          university: education.college,
+          year: education.year,
+          cgpa: education.CGPA,
+        })
+      );
+      setEducations(mappedEducations);
+    }
+  }, [educationData]);
+
+  const handleSave = async () => {
     if (isEditMode) {
       const updatedEducations = [...educations];
       updatedEducations[editIndex] = currentEducation;
@@ -52,7 +69,6 @@ function TaEducationForm() {
     } else {
       setEducations([...educations, currentEducation]);
     }
-  
   };
   useEffect(() => {
     if (educations.length > 0) {
@@ -73,54 +89,33 @@ function TaEducationForm() {
               },
             },
           });
-          console.log('Response:', response);
           if (response.data.createEducation.status === 201) {
-            setError('Education added successfully');
-            console.log('Education added successfully');
+            setError("Education added successfully");
             resetForm();
-            // navigate("/");
           }
         } catch (error) {
           setError(error.message);
         }
       };
-
       updateEducationInBackend();
     }
   }, [educations, userData.idNumber, createEducation]);
 
   const handleCancel = () => {
-    // if (isEditMode) {
-    //   const updatedEducations = [...educations];
-    //   updatedEducations.splice(editIndex, 1);
-    //   setEducations(updatedEducations);
-    // }
     resetForm();
   };
 
   const resetForm = () => {
     setIsFormVisible(false);
     setIsEditMode(false);
-    setCurrentEducation({
-      degree: "",
-      major: "",
-      university: "",
-      year: "",
-      cgpa: "",
-    });
+    setCurrentEducation(initialEducationState);
     setEditIndex(null);
   };
 
   const handleAddAnother = () => {
     setIsFormVisible(true);
     setIsEditMode(false);
-    setCurrentEducation({
-      degree: "",
-      major: "",
-      university: "",
-      year: "",
-      cgpa: "",
-    });
+    setCurrentEducation(initialEducationState);
   };
 
   const deleteEducation = (index) => {
