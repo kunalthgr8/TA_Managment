@@ -10,7 +10,7 @@ import { LOGOUT_USER } from "../../graphql/mutations/user.mutations";
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
-  console.log("USER",user);
+  console.log("USER", user);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -79,13 +79,6 @@ function Header() {
     {
       name: "Home",
       slug: "/",
-      color: "text-custom-black",
-      authenticationReq: true,
-      facultyReq: "either",
-    },
-    {
-      name: "TA List",
-      slug: "/ta-list",
       color: "text-custom-black",
       authenticationReq: true,
       facultyReq: "either",
@@ -168,7 +161,9 @@ function Header() {
             className="rounded-3xl"
             src={cat}
           />
-          <p className="text-xs">{isAuthenticated ? capitalizeName(user.name) : "User"}</p>
+          <p className="text-xs">
+            {isAuthenticated ? capitalizeName(user.name) : "User"}
+          </p>
         </div>
       </div>
     </div>
