@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Logo, Button, Input } from "../index";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from '@apollo/client';
+import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../../graphql/mutations/user.mutations";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
@@ -25,11 +25,16 @@ const Login = () => {
           },
         },
       });
-      console.log("RESPONSE after login call", response);
       if (response.data.loginUser.status === 201) {
         dispatch(login(response.data.loginUser.data));
-        localStorage.setItem("token",  JSON.stringify(response.data.loginUser.data));
-        localStorage.setItem("userToken", JSON.stringify(response.data.loginUser.data.accessToken));
+        localStorage.setItem(
+          "token",
+          JSON.stringify(response.data.loginUser.data)
+        );
+        localStorage.setItem(
+          "userToken",
+          JSON.stringify(response.data.loginUser.data.accessToken)
+        );
         setError("Login successful");
         navigate("/");
       } else {

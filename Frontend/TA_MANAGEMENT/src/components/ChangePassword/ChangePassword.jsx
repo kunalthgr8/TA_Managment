@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Input, Button } from "../index";
 // import authService from "../../appwrite/auth.js";
 import { MdModeEdit } from "react-icons/md";
+import { CHANGE_PASSWORD_USER } from "../../graphql/mutations/user.mutations";
+import { useMutation } from "@apollo/client";
+import { useSelector } from "react-redux";
 
 function ChangePassword() {
   const navigate = useNavigate();
+  const userData = useSelector((state) => state.auth.user);
+
   const [data, setData] = React.useState({
     oldPassword: "",
     newPassword: "",
@@ -13,32 +18,42 @@ function ChangePassword() {
   });
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [changePasswordMutation] = useMutation(CHANGE_PASSWORD_USER);
 
   const handleSubmit = async () => {
     console.log("Change Password Data:", data);
+
     // setError("");
 
-    // if (
-    //   data.oldPassword === "" ||
-    //   data.newPassword === "" ||
-    //   data.confirmPassword === ""
-    // ) {
-    //   return setError("Please fill all the fields");
-    // }
+    if (
+      data.oldPassword === "" ||
+      data.newPassword === "" ||
+      data.confirmPassword === ""
+    ) {
+      return setError("Please fill all the fields");
+    }
 
-    // if (data.newPassword !== data.confirmPassword) {
-    //   return setError("Password does not match");
-    // }
+    if (data.newPassword !== data.confirmPassword) {
+      return setError("Password does not match");
+    }
 
-    // try {
-    //   setLoading(true);
-    //   await authService.changePassword(data);
-    //   navigate("/user");
-    // } catch (error) {
-    //   setError(error.message);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const { status, message } = await changePasswordMutation({
+        variables: {
+          input: {
+            idNumber: userData.idNumber,
+            oldPassword: data.oldPassword,
+            newPassword: data.newPassword,
+          },
+        },
+      });
+      setLoading(false);
+      navigate("/login");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setError(error.message);
+    }
   };
 
   return (

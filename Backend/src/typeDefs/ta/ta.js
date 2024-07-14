@@ -51,6 +51,12 @@ const userTypeDefs = `
         bio: String
     }
 
+    input ChangePasswordInput {
+        idNumber: ID!
+        oldPassword: String!
+        newPassword: String!
+    }
+
     extend type Mutation {
         registerUser(input: RegisterInput!): ApiResponse
         updateUser(input: UpdateInput!): ApiResponse
@@ -58,6 +64,7 @@ const userTypeDefs = `
         generateAccessAndRefreshToken(idNumber: ID!): AuthPayload
         loginUser(input: LoginInput!): ApiResponse
         logoutUser(idNumber: ID!): ApiResponse
+        changePassword(input: ChangePasswordInput!): ApiResponse
     }
 `;
 

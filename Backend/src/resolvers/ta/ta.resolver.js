@@ -225,6 +225,45 @@ const taResolver = {
         throw new Error(error.message);
       }
     },
+    changePassword: async (
+      parent,
+      { input: { idNumber, oldPassword, newPassword } },
+      context
+    ) => {
+      authenticate(context);
+      try {
+        if (!idNumber || !oldPassword || !newPassword) {
+          throw new ApiError(400, "Please provide all fields");
+        }
+        if (context.user.idNumber !== idNumber) {
+          throw new ApiError(400, "Unauthorized");
+        }
+
+        validateIdNumber(idNumber, 8);
+        validatePassword(newPassword);
+
+        const user = await User.findOne({ idNumber });
+        if (!user) {
+          throw new ApiError(404, "User not found");
+        }
+
+        const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+        if (!isPasswordCorrect) {
+          throw new ApiError(401, "Invalid credentials");
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return {
+          status: 200,
+          message: "Password changed successfully",
+        };
+      } catch (error) {
+        console.error("Error changing password:", error);
+        throw new Error(error.message);
+      }
+    },
   },
 };
 
