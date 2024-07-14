@@ -28,7 +28,7 @@ const Login = () => {
 
       if (response.data.loginUser.status === 201) {
         dispatch(login(response.data.loginUser.data));
-        localStorage.setItem("token",  JSON.stringify(response.data.loginUser.data));
+        localStorage.setItem("token",  JSON.stringify(response.data.loginUser.data.accessToken));
         setError("Login successful");
         navigate("/");
       } else {

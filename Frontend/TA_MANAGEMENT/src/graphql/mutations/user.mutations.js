@@ -15,6 +15,7 @@ export const REGISTER_USER = gql`
         gender
         bio
         refreshToken
+        accessToken
       }
     }
   }
@@ -30,6 +31,7 @@ export const LOGIN_USER = gql`
         idNumber
         email
         phoneNumber
+        accessToken
       }
     }
   }

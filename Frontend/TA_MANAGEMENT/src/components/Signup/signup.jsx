@@ -41,7 +41,7 @@ const Signup = () => {
           dispatch(login(response.data.registerUser.data));
           localStorage.setItem(
             "token",
-            JSON.stringify(response.data.registerUser.data)
+            JSON.stringify(response.data.registerUser.data.accessToken)
           );
           navigate("/");
         } else {
