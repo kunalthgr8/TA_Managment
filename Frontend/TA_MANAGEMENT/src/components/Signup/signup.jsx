@@ -45,6 +45,7 @@ const Signup = () => {
             "token",
             JSON.stringify(response.data.registerUser.data)
           );
+          localStorage.setItem("isFaculty",  JSON.stringify(false));
 
           localStorage.setItem(
             "userToken",
@@ -78,6 +79,7 @@ const Signup = () => {
             "token",
             JSON.stringify(response.data.registerFaculty.data)
           );
+          localStorage.setItem("isFaculty",  JSON.stringify(true));
 
           localStorage.setItem(
             "userToken",

@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "./components";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "./store/authSlice";
+import { faculty, login } from "./store/authSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -11,8 +11,16 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const isFaculty = localStorage.getItem("isFaculty");
     if (token && !isAuthenticated) {
       dispatch(login(JSON.parse(token)));
+      if (isFaculty) {
+        dispatch(faculty());
+      }
+
+      if (isFaculty) {
+        dispatch;
+      }
     }
   }, [dispatch, isAuthenticated]);
 

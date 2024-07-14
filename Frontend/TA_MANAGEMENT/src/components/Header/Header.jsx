@@ -28,6 +28,7 @@ function Header() {
   const onLogout = async () => {
     try {
       const { idNumber } = user;
+      console.log("isFaculty", isFaculty);
       if (!isFaculty) {
         await logoutUser({ variables: { idNumber } });
       } else {
@@ -36,6 +37,7 @@ function Header() {
       dispatch(logout());
       localStorage.removeItem("token");
       localStorage.removeItem("userToken");
+      localStorage.removeItem("isFaculty");
       navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);

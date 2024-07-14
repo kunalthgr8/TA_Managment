@@ -31,6 +31,7 @@ const Login = () => {
         if (response.data.loginUser.status === 201) {
           dispatch(login(response.data.loginUser.data));
           localStorage.setItem("token",  JSON.stringify(response.data.loginUser.data));
+          localStorage.setItem("isFaculty",  JSON.stringify(false));
           localStorage.setItem("userToken", JSON.stringify(response.data.loginUser.data.accessToken));
           setError("Login successful");
           navigate("/");
@@ -55,6 +56,7 @@ const Login = () => {
           dispatch(login(response.data.loginFaculty.data));
           dispatch(faculty());
           localStorage.setItem("token",  JSON.stringify(response.data.loginFaculty.data));
+          localStorage.setItem("isFaculty",  JSON.stringify(true));
           localStorage.setItem("userToken", JSON.stringify(response.data.loginFaculty.data.accessToken));
           setError("Login successful");
           navigate("/");
