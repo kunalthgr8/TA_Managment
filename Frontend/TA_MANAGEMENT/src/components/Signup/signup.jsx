@@ -3,8 +3,9 @@ import { Logo, Button, Input, RadioButton } from "../index";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { REGISTER_USER } from "../../graphql/mutations/user.mutations";
+import { REGISTER_FACULTY } from "../../graphql/mutations/faculty.mutations";
 import { useDispatch } from "react-redux";
-import { login } from "../../store/authSlice";
+import { faculty, login } from "../../store/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Signup = () => {
   });
   const [error, setError] = useState("");
   const [registerUser, { loading }] = useMutation(REGISTER_USER);
+  const [registerFaculty, { loading:loadingFaculty }] = useMutation(REGISTER_FACULTY);
   const dispatch = useDispatch();
 
   const handleSignup = async (e) => {
@@ -56,7 +58,39 @@ const Signup = () => {
         setError(error.message);
       }
     } else {
-      setError("Faculty Signup is not available yet");
+      // setError("Faculty Signup is not available yet");
+      try {
+        const response = await registerFaculty({
+          variables: {
+            input: {
+              idNumber: formData.idNumber,
+              name: formData.username,
+              email: formData.emailId,
+              phoneNumber: formData.phoneNumber,
+              password: formData.password,
+            },
+          },
+        });
+        console.log("RESPONSE after signup call", response);
+        if (response.data.registerFaculty.status === 201) {
+          dispatch(login(response.data.registerFaculty.data));
+          dispatch(faculty());
+          localStorage.setItem(
+            "token",
+            JSON.stringify(response.data.registerFaculty.data)
+          );
+
+          localStorage.setItem(
+            "userToken",
+            JSON.stringify(response.data.registerFaculty.data.accessToken)
+          );
+          navigate("/");
+        } else {
+          setError(response.data.registerFaculty.message);
+        }
+      } catch (error) {
+        setError(error.message);
+      }
     }
   };
 

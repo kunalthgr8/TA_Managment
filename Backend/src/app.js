@@ -37,10 +37,14 @@ export async function startApolloServer() {
     app.use(
       "/graphql",
       async (req, res, next) => {
+
         try {
           const loginRoute = req.body?.query?.includes("loginUser");
           const registerUser = req.body?.query?.includes("registerUser");
-          if (!loginRoute && !registerUser) {
+          const registerFaculty = req.body?.query?.includes("registerFaculty");
+          const loginFaculty = req.body?.query?.includes("loginFaculty");
+          
+          if (!loginRoute && !registerUser && !registerFaculty && !loginFaculty) {
             const user = await authentication(req);
             req.user = user;
           }

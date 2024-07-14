@@ -1,6 +1,6 @@
-import SelectedTa from '../../models/SelectedTa.js';
-import ApiError from '../../utils/ApiError.js';
-import ApiResponse from '../../utils/ApiResponse.js';
+import SelectedTa from '../../models/faculty/selectedTa.js';
+import {ApiError} from '../../utils/ApiError.js';
+import {ApiResponse} from '../../utils/ApiResponse.js';
 
 const selectedTaResolvers = {
   Query: {

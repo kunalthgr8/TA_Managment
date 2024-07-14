@@ -18,8 +18,11 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
     },
+    faculty(state) {
+      state.isFaculty = true;
+    }
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout,faculty } = authSlice.actions;
 export default authSlice.reducer;

@@ -11,7 +11,11 @@ const facultySchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  name: { type: String, required: true, trim: true },
+  name: { 
+    type: String, 
+    required: true, 
+    trim: true },
+
   email: {
     type: String,
     required: true,
@@ -19,9 +23,25 @@ const facultySchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  password: { type: String, required: true },
-  phoneNumber: { type: String, required: true, unique: true, trim: true },
-});
+
+  password: { 
+    type: String, 
+    required: true },
+
+  phoneNumber: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    trim: true },
+
+  refreshToken: { 
+    type: String },
+
+  },
+  { 
+    timestamps: true, 
+  }
+);
 
 // Hash password before saving faculty member
 facultySchema.pre("save", async function (next) {
@@ -36,6 +56,11 @@ facultySchema.pre("save", async function (next) {
   }
 });
 
+// Method to verify password
+facultySchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
 // Method to generate access token
 facultySchema.methods.generateAccessToken = function () {
   return jwt.sign(
@@ -46,8 +71,10 @@ facultySchema.methods.generateAccessToken = function () {
       name: this.name,
       phoneNumber: this.phoneNumber,
     },
-    conf.accessTokenSecret,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    // conf.accessTokenSecret,
+    process.env.ACCESS_TOKEN_SECRET,
+    // { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    { expiresIn: "1d" }
   );
 };
 
@@ -57,15 +84,14 @@ facultySchema.methods.generateRefreshToken = function () {
     {
       _id: this._id,
     },
-    conf.refreshTokenSecret,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+    // conf.refreshTokenSecret,
+    process.env.REFRESH_TOKEN_SECRET,
+    // { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+    { expiresIn: "7d" }
   );
 };
 
-// Method to verify password
-facultySchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
+
 
 const Faculty = mongoose.model("Faculty", facultySchema);
 
