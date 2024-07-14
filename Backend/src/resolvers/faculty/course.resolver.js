@@ -1,8 +1,8 @@
-import Courses from '../../models/Courses.js';
-import Faculty from '../../models/Faculty.js';
-import SelectedTa from '../../models/SelectedTa.js';
-import ApiError from '../../utils/ApiError.js';
-import ApiResponse from '../../utils/ApiResponse.js';
+import Courses from '../../models/faculty/courses.js';
+import Faculty from '../../models/faculty/faculty.js';
+import SelectedTa from '../../models/faculty/selectedTa.js';
+import {ApiError} from '../../utils/ApiError.js';
+import {ApiResponse} from '../../utils/ApiResponse.js';
 
 const coursesResolvers = {
   Query: {
