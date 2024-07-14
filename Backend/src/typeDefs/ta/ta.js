@@ -7,6 +7,7 @@ const userTypeDefs = `
         gender: String
         bio: String
         refreshToken: String
+        accessToken: String
     }
 
     type AuthPayload {

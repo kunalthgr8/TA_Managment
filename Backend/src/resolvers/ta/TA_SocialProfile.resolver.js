@@ -2,9 +2,11 @@ import SocialProfile from '../../models/ta/socialProfile.js';
 
 const socialProfileResolver = {
   Query: {
-    getSocialProfile: async (parent, { idNumber }) => {
+    getSocialProfile: async (parent, { idNumber },context) => {
       try {
-        
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         const profile = await SocialProfile.findOne({ idNumber });
         if (!profile) {
           throw new Error("Social profile not found");
@@ -25,8 +27,11 @@ const socialProfileResolver = {
     }
   },
   Mutation: {
-    createSocialProfile: async (parent, args) => {
+    createSocialProfile: async (parent, args,context) => {
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         console.log(args);
         const existingSocials = await SocialProfile.findOne({ idNumber: args.idNumber });
         if(existingSocials) {
@@ -39,8 +44,11 @@ const socialProfileResolver = {
         throw new Error("Error creating social profile");
       }
     },
-    updateSocialProfile: async (parent, { idNumber, ...update }) => {
+    updateSocialProfile: async (parent, { idNumber, ...update },context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         console.log(idNumber);
         const profile = await SocialProfile.findOneAndUpdate(
           { idNumber },
@@ -56,8 +64,11 @@ const socialProfileResolver = {
         throw new Error("Error updating social profile");
       }
     },
-    deleteSocialProfile: async (parent, { idNumber }) => {
+    deleteSocialProfile: async (parent, { idNumber },context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const profile = await SocialProfile.findOneAndDelete({ idNumber });
         if (!profile) {
           throw new Error("Social profile not found");

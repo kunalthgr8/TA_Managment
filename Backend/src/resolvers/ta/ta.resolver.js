@@ -34,8 +34,11 @@ const taResolver = {
         throw new Error("Error fetching users");
       }
     },
-    getUser: async (parent, { idNumber }) => {
+    getUser: async (parent, { idNumber },context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const user = await User.findOne({ idNumber });
         if (!user) {
           throw new ApiError(404, "User not found with this ID number");
@@ -110,7 +113,7 @@ const taResolver = {
         return {
           status: "201",
           message: "User created successfully",
-          data: loggedInUser,
+          data: {...loggedInUser,['accessToken']:accessToken},
         };
       } catch (error) {
         console.error("Error adding user:", error);
@@ -118,7 +121,7 @@ const taResolver = {
       }
     },
 
-    loginUser: async (parent, args, context) => {
+    loginUser: async (parent, args,context) => {
       const { idNumber, password } = args.input;
       try {
         if (!idNumber || !password) {
@@ -148,20 +151,26 @@ const taResolver = {
         context.res.cookie("accessToken", accessToken, options);
 
         // return new ApiResponse(200, 'User logged in successfully', { user: loggedInUser });
+        const update = {...loggedInUser,accessToken:accessToken}
+        console.log("update",update);
+        console.log({...loggedInUser["_doc"],accessToken:accessToken});
         return {
           status: 201,
           message: "User logged in successfully",
-          data: loggedInUser,
+          data: {...loggedInUser["_doc"],accessToken:accessToken},
         };
       } catch (error) {
         console.error("Error logging in user:", error);
         throw new Error(error.message);
       }
     },
-    updateUser: async (parent, args) => {
+    updateUser: async (parent, args,context) => {
       const { idNumber, name, email, password, phoneNumber, gender, bio } =
         args.input;
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         const updatedUser = await User.findOneAndUpdate(
           { idNumber },
           { $set: { name, email, password, phoneNumber, gender, bio } },
@@ -176,8 +185,11 @@ const taResolver = {
         throw new Error("Error updating user");
       }
     },
-    deleteUser: async (parent, { idNumber }) => {
+    deleteUser: async (parent, { idNumber },context) => {
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         const deletedUser = await User.findOneAndDelete({ idNumber });
         if (!deletedUser) {
           throw new ApiError(404, "User not found");
@@ -190,6 +202,9 @@ const taResolver = {
     },
     logoutUser: async (parent, { idNumber }, context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const user = await User.findOne({ idNumber });
         if (!user) {
           throw new ApiError(404, "User not found");
