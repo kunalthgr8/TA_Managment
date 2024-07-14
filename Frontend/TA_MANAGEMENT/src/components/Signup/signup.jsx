@@ -41,7 +41,12 @@ const Signup = () => {
           dispatch(login(response.data.registerUser.data));
           localStorage.setItem(
             "token",
-            JSON.stringify(response.data.registerUser.data.accessToken)
+            JSON.stringify(response.data.registerUser.data)
+          );
+
+          localStorage.setItem(
+            "userToken",
+            JSON.stringify(response.data.loginUser.data.accessToken)
           );
           navigate("/");
         } else {
@@ -50,8 +55,8 @@ const Signup = () => {
       } catch (error) {
         setError(error.message);
       }
-    }else{
-      setError("Faculty Signup is not available yet")
+    } else {
+      setError("Faculty Signup is not available yet");
     }
   };
 
