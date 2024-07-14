@@ -37,24 +37,24 @@ export async function startApolloServer() {
     app.use(
       "/graphql",
       async (req, res, next) => {
-        // Skip authentication for the login route
-        const loginRoute = req.body.query.includes("loginUser");
-        const registerUser = req.body.query.includes("registerUser");
-        if (!loginRoute && !registerUser) {
-          try {
+        try {
+          const loginRoute = req.body?.query?.includes("loginUser");
+          const registerUser = req.body?.query?.includes("registerUser");
+          if (!loginRoute && !registerUser) {
             const user = await authentication(req);
             req.user = user;
-          } catch (error) {
-            // Handle authentication errors
-            return res.status(401).json({ message: "Unauthorized" });
           }
+          next();
+        } catch (error) {
+          console.error("Error in GraphQL middleware:", error);
+          return res.status(400).json({ message: "Invalid request" });
         }
-        next();
       },
       expressMiddleware(server, {
         context: ({ req, res }) => ({ req, res, user: req.user }),
       })
     );
+    
 
     const httpServer = http.createServer(app);
 
