@@ -28,7 +28,6 @@ const Login = () => {
             },
           },
         });
-        console.log("RESPONSE after login call", response);
         if (response.data.loginUser.status === 201) {
           dispatch(login(response.data.loginUser.data));
           localStorage.setItem("token",  JSON.stringify(response.data.loginUser.data));
@@ -52,7 +51,6 @@ const Login = () => {
             },
           },
         });
-        console.log("RESPONSE after login call", response);
         if (response.data.loginFaculty.status === 201) {
           dispatch(login(response.data.loginFaculty.data));
           dispatch(faculty());

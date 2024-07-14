@@ -6,6 +6,7 @@ import { logout } from "../../store/authSlice";
 import cat from "../../assets/cat.jpg";
 import { useMutation } from "@apollo/client";
 import { LOGOUT_USER } from "../../graphql/mutations/user.mutations";
+import { LOGOUT_FACULTY } from "../../graphql/mutations/faculty.mutations";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -15,6 +16,7 @@ function Header() {
   const dispatch = useDispatch();
   const isFaculty = useSelector((state) => state.auth.isFaculty);
   const [logoutUser] = useMutation(LOGOUT_USER);
+  const [logoutFaculty] = useMutation(LOGOUT_FACULTY);
   const facultyStatus = "Course Added"; // or "Not Assigned"
 
   const capitalizeName = (name) =>
@@ -26,7 +28,11 @@ function Header() {
   const onLogout = async () => {
     try {
       const { idNumber } = user;
-      await logoutUser({ variables: { idNumber } });
+      if (!isFaculty) {
+        await logoutUser({ variables: { idNumber } });
+      } else {
+        await logoutFaculty({ variables: { idNumber } });
+      }
       dispatch(logout());
       localStorage.removeItem("token");
       localStorage.removeItem("userToken");

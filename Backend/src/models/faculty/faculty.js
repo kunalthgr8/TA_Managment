@@ -3,43 +3,47 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import conf from "../../../conf/conf.js";
 
-const facultySchema = new mongoose.Schema({
-  idNumber: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
+const facultySchema = new mongoose.Schema(
+  {
+    idNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+
+    phoneNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+
+    refreshToken: {
+      type: String,
+    },
   },
-  name: { 
-    type: String, 
-    required: true, 
-    trim: true },
-
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-  },
-
-  password: { 
-    type: String, 
-    required: true },
-
-  phoneNumber: { 
-    type: String, 
-    required: true, 
-    unique: true, 
-    trim: true },
-
-  refreshToken: { 
-    type: String },
-
-  },
-  { 
-    timestamps: true, 
+  {
+    timestamps: true,
   }
 );
 
@@ -70,6 +74,7 @@ facultySchema.methods.generateAccessToken = function () {
       email: this.email,
       name: this.name,
       phoneNumber: this.phoneNumber,
+      userType: "Faculty",
     },
     // conf.accessTokenSecret,
     process.env.ACCESS_TOKEN_SECRET,
@@ -83,6 +88,7 @@ facultySchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
+      userType: "Faculty",
     },
     // conf.refreshTokenSecret,
     process.env.REFRESH_TOKEN_SECRET,
@@ -90,8 +96,6 @@ facultySchema.methods.generateRefreshToken = function () {
     { expiresIn: "7d" }
   );
 };
-
-
 
 const Faculty = mongoose.model("Faculty", facultySchema);
 

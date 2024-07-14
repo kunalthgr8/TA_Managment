@@ -38,9 +38,9 @@ const Signup = () => {
             },
           },
         });
-        console.log("RESPONSE after signup call", response);
         if (response.data.registerUser.status === 201) {
           dispatch(login(response.data.registerUser.data));
+          
           localStorage.setItem(
             "token",
             JSON.stringify(response.data.registerUser.data)
@@ -71,10 +71,9 @@ const Signup = () => {
             },
           },
         });
-        console.log("RESPONSE after signup call", response);
         if (response.data.registerFaculty.status === 201) {
           dispatch(login(response.data.registerFaculty.data));
-          dispatch(faculty());
+          dispatch(faculty())
           localStorage.setItem(
             "token",
             JSON.stringify(response.data.registerFaculty.data)

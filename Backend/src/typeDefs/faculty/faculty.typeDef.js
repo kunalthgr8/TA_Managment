@@ -44,6 +44,7 @@ const facultyTypeDef = `
     loginFaculty(input: LoginInput!): FacultyApiResponse
     updateFaculty(id: ID!, name: String, email: String, phoneNumber: String): Faculty
     deleteFaculty(id: ID!): Faculty
+    logoutFaculty(idNumber: ID!): FacultyApiResponse
   }
 
 `;

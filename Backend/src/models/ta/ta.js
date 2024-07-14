@@ -86,6 +86,7 @@ userSchema.methods.generateAccessToken = function () {
       email: this.email,
       name: this.name,
       phoneNumber: this.phoneNumber,
+      userType: "TA",
     },
     // conf.accessTokenSecret,
     // console.log("Access token secret", process.env.ACCESS_TOKEN_SECRET),
@@ -101,6 +102,7 @@ userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
+      userType: "TA",
     },
     // conf.accessTokenSecret,
     process.env.REFRESH_TOKEN_SECRET,

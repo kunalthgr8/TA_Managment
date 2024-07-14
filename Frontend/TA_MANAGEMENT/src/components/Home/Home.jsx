@@ -13,6 +13,7 @@ function Home() {
   const taStatus = "Form Not Filled";
   // const taStatus = "Not Assigned";
   const isFaculty = useSelector((state) => state.auth.isFaculty);
+  console.log("If Faculty :", isFaculty)
   return (
     <>
       {isFaculty && facultyStatus === "Course Added" && isAuthenticated && (

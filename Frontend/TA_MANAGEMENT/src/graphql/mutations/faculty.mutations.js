@@ -36,11 +36,11 @@ export const LOGIN_FACULTY = gql`
 
 
 
-// export const LOGOUT_USER = gql`
-//   mutation logoutUser($idNumber: ID!) {
-//     logoutUser(idNumber: $idNumber) {
-//       status
-//       message
-//     }
-//   }
-// `;
+export const LOGOUT_FACULTY = gql`
+  mutation logoutFaculty($idNumber: ID!) {
+    logoutFaculty(idNumber: $idNumber) {
+      status
+      message
+    }
+  }
+`;

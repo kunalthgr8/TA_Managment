@@ -1,5 +1,5 @@
-import Faculty from '../../models/faculty/faculty.js';
-import {ApiError} from '../../utils/ApiError.js';
+import Faculty from "../../models/faculty/faculty.js";
+import { ApiError } from "../../utils/ApiError.js";
 // import {ApiResponse} from '../../utils/ApiResponse.js';
 import { AuthenticationError } from "apollo-server";
 import {
@@ -44,7 +44,7 @@ const facultyResolvers = {
         console.error("Error fetching faculty:", error);
         throw new Error(error.message || "Error fetching faculty");
       }
-    }
+    },
   },
   Mutation: {
     generateAccessAndRefreshToken: async (parent, { idNumber }) => {
@@ -114,7 +114,11 @@ const facultyResolvers = {
       }
     },
 
-    loginFaculty: async (parent, { input: { idNumber, password } }, context) => {
+    loginFaculty: async (
+      parent,
+      { input: { idNumber, password } },
+      context
+    ) => {
       try {
         if (!idNumber || !password) {
           throw new ApiError(400, "Please fill all fields");
@@ -156,6 +160,10 @@ const facultyResolvers = {
     },
 
     updateFaculty: async (_, { id, name, email, phoneNumber }) => {
+      authenticate(context);
+      if (id !== context.user.idNumber) {
+        throw new ApiError(404, "Authneticated");
+      }
       try {
         const updatedFaculty = await Faculty.findByIdAndUpdate(
           id,
@@ -165,25 +173,63 @@ const facultyResolvers = {
         if (!updatedFaculty) {
           throw new ApiError(404, "Faculty not found");
         }
-        return new ApiResponse(200, updatedFaculty, "Faculty updated successfully");
+        return new ApiResponse(
+          200,
+          updatedFaculty,
+          "Faculty updated successfully"
+        );
       } catch (error) {
         console.error("Error updating faculty:", error);
         throw new ApiError(500, "Error updating faculty", [], error.stack);
       }
     },
     deleteFaculty: async (_, { id }) => {
+      authenticate(context);
+      if (id !== context.user.idNumber) {
+        throw new ApiError(404, "Authneticated");
+      }
       try {
         const deletedFaculty = await Faculty.findByIdAndDelete(id);
         if (!deletedFaculty) {
           throw new ApiError(404, "Faculty not found");
         }
-        return new ApiResponse(200, deletedFaculty, "Faculty deleted successfully");
+        return new ApiResponse(
+          200,
+          deletedFaculty,
+          "Faculty deleted successfully"
+        );
       } catch (error) {
         console.error("Error deleting faculty:", error);
         throw new ApiError(500, "Error deleting faculty", [], error.stack);
       }
-    }
-  }
+    },
+    logoutFaculty: async (parent, { idNumber }, context) => {
+      authenticate(context);
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(404, "Authneticated");
+      }
+      try {
+        const user = await Faculty.findOne({ idNumber: context.user.idNumber });
+        if (!user) {
+          throw new ApiError(404, "User not found");
+        }
+
+        user.refreshToken = null;
+        await user.save({ validateBeforeSave: false });
+
+        context.res.clearCookie("refreshToken");
+        context.res.clearCookie("accessToken");
+
+        return {
+          status: 200,
+          message: "Faculty logged out successfully",
+        };
+      } catch (error) {
+        console.error("Error logging out user:", error);
+        throw new Error(error.message);
+      }
+    },
+  },
 };
 
 export default facultyResolvers;
