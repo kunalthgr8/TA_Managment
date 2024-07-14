@@ -36,7 +36,7 @@ const Signup = () => {
             },
           },
         });
-
+        console.log("RESPONSE after signup call", response);
         if (response.data.registerUser.status === 201) {
           dispatch(login(response.data.registerUser.data));
           localStorage.setItem(
@@ -46,7 +46,7 @@ const Signup = () => {
 
           localStorage.setItem(
             "userToken",
-            JSON.stringify(response.data.loginUser.data.accessToken)
+            JSON.stringify(response.data.registerUser.data.accessToken)
           );
           navigate("/");
         } else {

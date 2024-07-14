@@ -36,7 +36,7 @@ function TaAboutForm() {
     if (data) {
       setCurrentAboutValues({
         Name: data.getUser.name,
-        Gender: capitalizeName(data.getUser.gender),
+        Gender: capitalizeName(data.getUser?.gender||"gender"),
         Bio: data.getUser.bio,
         Email: data.getUser.email,
         Phone: data.getUser.phoneNumber,

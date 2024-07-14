@@ -14,7 +14,6 @@ export const REGISTER_USER = gql`
         phoneNumber
         gender
         bio
-        refreshToken
         accessToken
       }
     }
