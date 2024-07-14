@@ -3,24 +3,30 @@ import { Input, Button } from "../index";
 import { MdModeEdit } from "react-icons/md";
 import Cat from "../../assets/cat.jpg";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { UPDATE_USER } from "../../graphql/mutations/user.mutations";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_USER } from "../../graphql/queries/user.queries";
+import { login } from "../../store/authSlice";
 
 function FacultyDashboard() {
-  const userData = useSelector((state) => state.auth.user);
+  const userinfo = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const isFaculty = useSelector((state) => state.auth.isFaculty);
   const navigate = useNavigate();
+  const [updateUserMutation] = useMutation(UPDATE_USER);
 
   const [editAbleUser, setEditAbleUser] = useState(false);
-  const [data, setData] = useState({
-    email: userData?.email || "No Email Found",
-    phoneNumber: userData?.phoneNumber || "No Number Found",
-    fullname: userData?.name || "User Name Not Found",
-    idNumber: userData?.idNumber || "xxxxxxxxxx",
+  const [info, setinfo] = useState({
+    email: userinfo?.email || "No Email Found",
+    phoneNumber: userinfo?.phoneNumber || "No Number Found",
+    fullname: userinfo?.name || "User Name Not Found",
+    idNumber: userinfo?.idNumber || "xxxxxxxxxx",
   });
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setData((prev) => ({
+    setinfo((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -32,10 +38,33 @@ function FacultyDashboard() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
-  const saveButtonHandler = () => {
+  const saveButtonHandler = async () => {
     // Implement save functionality here
-    console.log("Details saved:", data);
-    setEditAbleUser(false);
+    if (
+      info.email === "" ||
+      info.phoneNumber === "" ||
+      info.fullname === "" ||
+      info.idNumber === ""
+    ) {
+      console.log("Please fill all the fields");
+      return;
+    }
+    if (!isFaculty) {
+      const { data } = await updateUserMutation({
+        variables: {
+          input: {
+            idNumber: userinfo.idNumber,
+            name: info.fullname,
+            email: info.email,
+            phoneNumber: info.phoneNumber,
+          },
+        },
+      });
+      if (data.updateUser.status === 201) {
+        dispatch(login(data.updateUser.data));
+      }
+      setEditAbleUser(false);
+    }
   };
 
   return (
@@ -47,10 +76,10 @@ function FacultyDashboard() {
           </div>
           <div className="flex flex-col gap-1">
             <h1 className="font-semibold text-nav-color text-base sm:text-xl">
-              {capitalizeName(data.fullname)}
+              {capitalizeName(info.fullname)}
             </h1>
             <p className="text-black-heading text-xs sm:text-sm italic">
-              {data.email}
+              {info.email}
             </p>
             <p
               className="text-nav-color font-semibold cursor-pointer text-xs sm:text-sm italic"
@@ -76,14 +105,14 @@ function FacultyDashboard() {
                       <Input
                         type="email"
                         name="email"
-                        value={data.email}
+                        value={info.email}
                         placeholder="Email"
                         className="text-xs sm:text-sm font-medium text-heading-color border-b border-text-heading"
                         onChange={handleChange}
                       />
                     ) : (
                       <p className="text-sm font-medium text-heading-color border-b border-text-heading">
-                        {data.email}
+                        {info.email}
                       </p>
                     )}
                   </div>
@@ -95,14 +124,14 @@ function FacultyDashboard() {
                       <Input
                         type="text"
                         name="phoneNumber"
-                        value={data.phoneNumber}
+                        value={info.phoneNumber}
                         placeholder="Mobile Number"
                         className="text-xs sm:text-sm font-medium text-heading-color border-b border-text-heading"
                         onChange={handleChange}
                       />
                     ) : (
                       <p className="text-sm font-medium text-heading-color border-b border-text-heading">
-                        {data.phoneNumber}
+                        {info.phoneNumber}
                       </p>
                     )}
                   </div>
@@ -121,14 +150,14 @@ function FacultyDashboard() {
                       <Input
                         type="text"
                         name="fullname"
-                        value={data.fullname}
+                        value={info.fullname}
                         placeholder="Full Name"
                         className="text-xs sm:text-sm font-medium text-heading-color border-b border-text-heading"
                         onChange={handleChange}
                       />
                     ) : (
                       <p className="text-sm font-medium text-heading-color border-b border-text-heading">
-                        {capitalizeName(data.fullname)}
+                        {capitalizeName(info.fullname)}
                       </p>
                     )}
                   </div>
@@ -140,14 +169,14 @@ function FacultyDashboard() {
                       <Input
                         type="text"
                         name="idNumber"
-                        value={data.idNumber}
+                        value={info.idNumber}
                         placeholder="ID Number"
                         className="text-xs sm:text-sm font-medium text-heading-color border-b border-text-heading"
                         onChange={handleChange}
                       />
                     ) : (
                       <p className="text-sm font-medium text-heading-color border-b border-text-heading">
-                        {data.idNumber}
+                        {info.idNumber}
                       </p>
                     )}
                   </div>
@@ -167,28 +196,30 @@ function FacultyDashboard() {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col w-2/3 justify-center self-center bg-white rounded-lg p-8 pb-4 mt-8">
-            <div className="w-full flex flex-row">
-              <div className="flex flex-col w-full gap-3">
-                <h1 className="text-xs sm:text-sm text-custom-purple font-semibold">
-                  COURSES INFORMATION
-                </h1>
-                <div className="flex flex-col p-3 gap-2">
-                  <div className="flex flex-col pb-3 gap-1">
-                    <p className="text-xs sm:text-sm font-medium text-red-500">
-                      Courses
-                    </p>
-                    <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
-                      CS500
-                    </p>
-                    <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
-                      CS200
-                    </p>
+          {isFaculty && (
+            <div className="flex flex-col w-2/3 justify-center self-center bg-white rounded-lg p-8 pb-4 mt-8">
+              <div className="w-full flex flex-row">
+                <div className="flex flex-col w-full gap-3">
+                  <h1 className="text-xs sm:text-sm text-custom-purple font-semibold">
+                    COURSES INFORMATION
+                  </h1>
+                  <div className="flex flex-col p-3 gap-2">
+                    <div className="flex flex-col pb-3 gap-1">
+                      <p className="text-xs sm:text-sm font-medium text-red-500">
+                        Courses
+                      </p>
+                      <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
+                        CS500
+                      </p>
+                      <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
+                        CS200
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

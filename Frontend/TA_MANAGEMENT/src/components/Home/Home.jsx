@@ -7,7 +7,6 @@ import Wait from "../../assets/wait.svg";
 function Home() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
-  console.log("User Details", user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const facultyStatus = "Course Added";
   // const facultyStatus = "Not Assigned";

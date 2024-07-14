@@ -31,17 +31,10 @@ function TaEducationForm() {
     variables: { idNumber: userData.idNumber },
     skip: !userData.idNumber,
   });
-  console.log(
-    "Getting Query ",
-    useQuery(GET_EDUCATION_USER, {
-      variables: { idNumber: userData.idNumber },
-      skip: !userData.idNumber,
-    })
-  );
+  
   const [createEducation, { loading }] = useMutation(EDUCATION_USER);
 
   useEffect(() => {
-    console.log("EducationData", educationData);
     if (
       educationData &&
       educationData.getEducation &&
