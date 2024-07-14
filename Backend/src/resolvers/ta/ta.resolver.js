@@ -113,7 +113,7 @@ const taResolver = {
         return {
           status: "201",
           message: "User created successfully",
-          data: {...loggedInUser,['accessToken']:accessToken},
+          data: {...loggedInUser["_doc"],accessToken:accessToken},
         };
       } catch (error) {
         console.error("Error adding user:", error);
