@@ -2,8 +2,11 @@ import Projects from '../../models/ta/projects.js';
 
 const projectsResolver = {
   Query: {
-    getProjects: async (parent, { idNumber }) => {
+    getProjects: async (parent, { idNumber },context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const projects = await Projects.findOne({ idNumber });
         return {
           status: 201,
@@ -25,10 +28,13 @@ const projectsResolver = {
     }
   },
   Mutation: {
-    createProject: async (parent, args) => {
+    createProject: async (parent, args,context) => {
       const { idNumber, projects } = args.input;
       console.log("Create projects args:", args.input);
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const existingProjects = await Projects.findOne({ idNumber });
         if (existingProjects) {
           existingProjects.projects = projects;
@@ -67,7 +73,7 @@ const projectsResolver = {
         throw new Error("Error updating projects");
       }
     },
-    deleteProject: async (parent, { idNumber }) => {
+    deleteProject: async (parent, { idNumber },context) => {
       try {
         const deletedProjects = await Projects.findOneAndDelete({ idNumber });
         if (!deletedProjects) {

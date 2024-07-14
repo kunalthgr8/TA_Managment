@@ -2,8 +2,12 @@ import Experience from '../../models/ta/experience.js';
 
 const experienceResolver = {
   Query: {
-    getExperience: async (parent, { idNumber }) => {
+    getExperience: async (parent, { idNumber },context) => {
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
+
         const experience = await Experience.findOne({ idNumber });
         return {
           status: 201,
@@ -25,10 +29,13 @@ const experienceResolver = {
     }
   },
   Mutation: {
-    createExperience: async (parent, args) => {
+    createExperience: async (parent, args,context) => {
       const { idNumber, experience } = args.input;
       console.log("Create experience args:", args.input);
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         // const response = await Education.create({ idNumber, education});
         const existingExperience = await Experience.findOne({ idNumber });
         if (existingExperience) {

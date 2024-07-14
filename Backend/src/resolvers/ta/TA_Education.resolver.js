@@ -2,8 +2,11 @@ import Education from '../../models/ta/education.js';
 
 const educationResolvers = {
   Query: {
-    getEducation: async (parent, { idNumber }) => {
+    getEducation: async (parent, { idNumber },context) => {
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         const response = await Education.findOne({ idNumber }); 
         return {
           status: 201,
@@ -26,11 +29,12 @@ const educationResolvers = {
     },
   },
   Mutation: {
-    createEducation: async (parent, args) => {
+    createEducation: async (parent, args,context) => {
       const { idNumber, education } = args.input;
-      // console.log("Create education args:", args.input)
-      // const education = {idNumber:idNumber,degree:degree,major:major,college:college,year:year,CGPA:CGPA}
       try {
+        if (!context.user) {
+          throw new Error("Unauthorized");
+        }
         // const response = await Education.create({ idNumber, education});
         const existingEducation = await Education.findOne({ idNumber });
         if (existingEducation) {

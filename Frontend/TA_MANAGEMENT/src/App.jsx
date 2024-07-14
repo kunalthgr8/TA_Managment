@@ -13,6 +13,7 @@ function App() {
     const token = localStorage.getItem("token");
     if (token && !isAuthenticated) {
       dispatch(login(JSON.parse(token)));
+      console.log("TOKEN", JSON.parse(token));
     }
   }, [dispatch, isAuthenticated]);
 

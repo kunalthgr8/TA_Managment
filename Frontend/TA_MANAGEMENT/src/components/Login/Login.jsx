@@ -25,10 +25,11 @@ const Login = () => {
           },
         },
       });
-
+      console.log("RESPONSE after login call", response);
       if (response.data.loginUser.status === 201) {
         dispatch(login(response.data.loginUser.data));
         localStorage.setItem("token",  JSON.stringify(response.data.loginUser.data));
+        localStorage.setItem("userToken", JSON.stringify(response.data.loginUser.data.accessToken));
         setError("Login successful");
         navigate("/");
       } else {

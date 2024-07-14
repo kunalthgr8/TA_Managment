@@ -2,8 +2,11 @@ import Skills from '../../models/ta/skills.js';
 
 const skillsResolver = {
   Query: {
-    getSkills: async (parent, { idNumber, field }) => {
+    getSkills: async (parent, { idNumber, field },context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const skills = await Skills.findOne({ idNumber });
         if (!skills) {
           throw new Error("Skills not found");
@@ -24,8 +27,11 @@ const skillsResolver = {
     }
   },
   Mutation: {
-    createSkills: async (parent, args) => {
+    createSkills: async (parent, args,context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         console.log(args);
         const existingSkills = await Skills.findOne({ idNumber: args.idNumber });
         if (existingSkills) {
@@ -38,8 +44,11 @@ const skillsResolver = {
         throw new Error("Error creating skills");
       }
     },
-    updateSkills: async (parent, { idNumber, ...update }) => {
+    updateSkills: async (parent, { idNumber, ...update },context) => {
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const skills = await Skills.findOneAndUpdate(
           { idNumber },
           { $set: update },
@@ -54,8 +63,12 @@ const skillsResolver = {
         throw new Error("Error updating skills");
       }
     },
-    deleteSkills: async (parent, { idNumber }) => {
+    deleteSkills: async (parent, { idNumber },context) => {
+
       try {
+        // if (!context.user) {
+        //   throw new Error("Unauthorized");
+        // }
         const skills = await Skills.findOneAndDelete({ idNumber });
         if (!skills) {
           throw new Error("Skills not found");

@@ -10,6 +10,7 @@ import { LOGOUT_USER } from "../../graphql/mutations/user.mutations";
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
+  console.log("USER",user);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
