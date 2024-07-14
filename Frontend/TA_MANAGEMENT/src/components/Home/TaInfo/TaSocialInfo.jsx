@@ -29,7 +29,6 @@ function TaSocialInfo() {
   const { data } = useQuery(GET_SOCIAL_PROFILE, {
     variables: { idNumber: userData.idNumber },
   });
-  console.log("DATA" ,data);
   const [createSocialProfile] = useMutation(CREATE_SOCIAL_PROFILE);
   const [updateSocialProfile] = useMutation(UPDATE_SOCIAL_PROFILE);
   const [deleteSocialProfile] = useMutation(DELETE_SOCIAL_PROFILE);
@@ -259,7 +258,7 @@ function TaSocialInfo() {
         </div>
       )}
 
-      { !data && <Button
+      { !socialLinks && <Button
         className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
         width="w-1/4"
         onClick={handleAddAnother}
