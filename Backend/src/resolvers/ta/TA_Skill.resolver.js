@@ -1,85 +1,97 @@
-import Skills from '../../models/ta/skills.js';
+import Skills from "../../models/ta/skills.js";
+import { ApiError } from "../../utils/ApiError.js";
 
 const skillsResolver = {
   Query: {
-    getSkills: async (parent, { idNumber, field },context) => {
+    getSkills: async (parent, { idNumber, field }, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
-        // if (!context.user) {
-        //   throw new Error("Unauthorized");
-        // }
         const skills = await Skills.findOne({ idNumber });
         if (!skills) {
-          throw new Error("Skills not found");
+          throw new ApiError(404, "Skills not found");
         }
         return field ? skills[field] : skills;
       } catch (error) {
-        console.error("Error fetching skills:", error);
-        throw new Error("Error fetching skills");
+        throw new ApiError(500, "Error fetching skills");
       }
     },
-    getAllSkills: async () => {
+    getAllSkills: async (_, __, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
       try {
         return await Skills.find();
       } catch (error) {
-        console.error("Error fetching all skills:", error);
-        throw new Error("Error fetching all skills");
+        throw new ApiError(500, "Error fetching all skills");
       }
-    }
+    },
   },
   Mutation: {
-    createSkills: async (parent, args,context) => {
+    createSkills: async (parent, args, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      if (args.idNumber !== context.user.idNumber) {
+        throw new ApiError(403, "Forbidden");
+      }
       try {
-        // if (!context.user) {
-        //   throw new Error("Unauthorized");
-        // }
-        console.log(args);
-        const existingSkills = await Skills.findOne({ idNumber: args.idNumber });
+        const existingSkills = await Skills.findOne({
+          idNumber: args.idNumber,
+        });
         if (existingSkills) {
-          return await skillsResolver.Mutation.updateSkills(parent, args);
-        }        
+          return await skillsResolver.Mutation.updateSkills(
+            parent,
+            args,
+            context
+          );
+        }
         const skills = new Skills(args);
         return await skills.save();
       } catch (error) {
-        console.error("Error creating skills:", error);
-        throw new Error("Error creating skills");
+        throw new ApiError(500, "Error creating skills");
       }
     },
-    updateSkills: async (parent, { idNumber, ...update },context) => {
+    updateSkills: async (parent, { idNumber, ...update }, context) => {
       try {
-        // if (!context.user) {
-        //   throw new Error("Unauthorized");
-        // }
+        if (!context.user) {
+          throw new ApiError(401, "Unauthorized");
+        }
+        if (idNumber !== context.user.idNumber) {
+          throw new ApiError(403, "Forbidden");
+        }
         const skills = await Skills.findOneAndUpdate(
           { idNumber },
           { $set: update },
           { new: true }
         );
         if (!skills) {
-          throw new Error("Skills not found");
+          throw new ApiError(404, "Skills not found");
         }
         return skills;
       } catch (error) {
-        console.error("Error updating skills:", error);
-        throw new Error("Error updating skills");
+        throw new ApiError(500, "Error updating skills");
       }
     },
-    deleteSkills: async (parent, { idNumber },context) => {
-
+    deleteSkills: async (parent, { idNumber }, context) => {
       try {
-        // if (!context.user) {
-        //   throw new Error("Unauthorized");
-        // }
+        if (!context.user) {
+          throw new ApiError(401, "Unauthorized");
+        }
+        if (idNumber !== context.user.idNumber) {
+          throw new ApiError(403, "Forbidden");
+        }
         const skills = await Skills.findOneAndDelete({ idNumber });
         if (!skills) {
-          throw new Error("Skills not found");
+          throw new ApiError(404, "Skills not found");
         }
         return skills;
       } catch (error) {
-        console.error("Error deleting skills:", error);
-        throw new Error("Error deleting skills");
+        throw new ApiError(500, "Error deleting skills");
       }
-    }
-  }
+    },
+  },
 };
 
 export default skillsResolver;
