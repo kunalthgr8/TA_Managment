@@ -1,7 +1,13 @@
 import { Button } from "../index";
 import { useNavigate } from "react-router-dom";
 
-function Card({ width = "100px", height = "100px", className = "", src = "" }) {
+function Card({
+  width = "100px",
+  height = "100px",
+  className = "",
+  src = "",
+  user = { name: "Name", email: "Email", id: "IdNumber", contact: "Contact" },
+}) {
   const navigate = useNavigate();
   return (
     <div
@@ -18,18 +24,18 @@ function Card({ width = "100px", height = "100px", className = "", src = "" }) {
           <div className="text-custom-purple flex flex-col justify-center self-center gap-5">
             <div className="flex flex-col">
               <h1 className="text-lg lg:text-2xl font-bold text-custom-black">
-                Kunal Singla
+                {user.name}
               </h1>
               <p className="text-xs lg:text-xs font-medium text-custom-black">
-                kunalsingla@iitbhilai.ac.in
+                {user.email}
               </p>
             </div>
             <div className="flex flex-col">
               <h1 className="text-lg lg:text-xs font-medium text-custom-black">
-                ID Number: 12140960
+                ID Number: {user.id}
               </h1>
               <p className="text-xs lg:text-xs font-medium text-custom-black">
-                Contact Number: 1234567890
+                Contact Number: {user.contact}
               </p>
             </div>
           </div>
@@ -38,7 +44,7 @@ function Card({ width = "100px", height = "100px", className = "", src = "" }) {
           <Button
             width="flex justify-center self-center w-full"
             className="bg-custom-gray font-bold rounded-3xl p-2 w-11/12 text-custom-purple shadow-lg"
-            onClick={() => navigate("/taPublicView")}
+            onClick={() => navigate(`/taPublicView/${user.id}`)}
           >
             Details
           </Button>

@@ -101,7 +101,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/taPublicView",
+        path: "/taPublicView/:taId",
         element: <TaPublicView />,
       },
       {
