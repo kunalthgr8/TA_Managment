@@ -34,11 +34,18 @@ export const LOGIN_FACULTY = gql`
   }
 `;
 
-
-
 export const LOGOUT_FACULTY = gql`
   mutation logoutFaculty($idNumber: ID!) {
     logoutFaculty(idNumber: $idNumber) {
+      status
+      message
+    }
+  }
+`;
+
+export const CHANGE_PASSWORD_FACULTY = gql`
+  mutation changePasswordFaculty($input: ChangePasswordInputFaculty!) {
+    changePasswordFaculty(input: $input) {
       status
       message
     }

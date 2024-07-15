@@ -26,7 +26,7 @@ const generateTokens = async (user) => {
 
 const authenticate = (context) => {
   if (!context.user) {
-    throw new Error("Unauthorized");
+    throw new ApiError(401, "Unauthorized");
   }
 };
 
@@ -96,7 +96,7 @@ const facultyResolvers = {
 
         // Check if loggedInUser is null or undefined
         if (!loggedInUser) {
-          throw new Error("User not found after saving");
+          throw new ApiError(500, "Error creating user");
         }
 
         const options = { httpOnly: true, secure: true };
@@ -109,8 +109,7 @@ const facultyResolvers = {
           data: { ...loggedInUser["_doc"], accessToken: accessToken },
         };
       } catch (error) {
-        console.error("Error adding user:", error);
-        throw new Error(error.message);
+        throw new ApiError(500, "Error creating user", [], error.stack);
       }
     },
 
@@ -154,8 +153,7 @@ const facultyResolvers = {
           data: { ...loggedInUser["_doc"], accessToken: accessToken },
         };
       } catch (error) {
-        console.error("Error logging in user:", error);
-        throw new Error(error.message);
+        throw new ApiError(500, "Error logging in user", [], error.stack);
       }
     },
 
@@ -179,7 +177,6 @@ const facultyResolvers = {
           "Faculty updated successfully"
         );
       } catch (error) {
-        console.error("Error updating faculty:", error);
         throw new ApiError(500, "Error updating faculty", [], error.stack);
       }
     },
@@ -227,6 +224,45 @@ const facultyResolvers = {
       } catch (error) {
         console.error("Error logging out user:", error);
         throw new Error(error.message);
+      }
+    },
+    changePasswordFaculty: async (
+      parent,
+      { input: { idNumber, oldPassword, newPassword } },
+      context
+    ) => {
+      
+      authenticate(context);
+      try {
+        if (!idNumber || !oldPassword || !newPassword) {
+          throw new ApiError(400, "Please provide all fields");
+        }
+        if (context.user.idNumber !== idNumber) {
+          throw new ApiError(400, "Unauthorized");
+        }
+
+        validateIdNumber(idNumber, 8);
+        validatePassword(newPassword);
+
+        const user = await Faculty.findOne({ idNumber });
+        if (!user) {
+          throw new ApiError(404, "User not found");
+        }
+
+        const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+        if (!isPasswordCorrect) {
+          throw new ApiError(401, "Invalid credentials");
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return {
+          status: 200,
+          message: "Password changed successfully",
+        };
+      } catch (error) {
+        throw new ApiError(500, "Error changing password", [], error.stack);
       }
     },
   },

@@ -6,10 +6,12 @@ import { MdModeEdit } from "react-icons/md";
 import { CHANGE_PASSWORD_USER } from "../../graphql/mutations/user.mutations";
 import { useMutation } from "@apollo/client";
 import { useSelector } from "react-redux";
+import { CHANGE_PASSWORD_FACULTY } from "../../graphql/mutations/faculty.mutations";
 
 function ChangePassword() {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.user);
+  const isFaculty = useSelector((state) => state.auth.isFaculty);
 
   const [data, setData] = React.useState({
     oldPassword: "",
@@ -19,6 +21,7 @@ function ChangePassword() {
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [changePasswordMutation] = useMutation(CHANGE_PASSWORD_USER);
+  const [changePasswordFacultyMutation] = useMutation(CHANGE_PASSWORD_FACULTY);
 
   const handleSubmit = async () => {
     console.log("Change Password Data:", data);
@@ -39,17 +42,29 @@ function ChangePassword() {
 
     try {
       setLoading(true);
-      const { status, message } = await changePasswordMutation({
-        variables: {
-          input: {
-            idNumber: userData.idNumber,
-            oldPassword: data.oldPassword,
-            newPassword: data.newPassword,
+      if (!isFaculty) {
+        const { status, message } = await changePasswordMutation({
+          variables: {
+            input: {
+              idNumber: userData.idNumber,
+              oldPassword: data.oldPassword,
+              newPassword: data.newPassword,
+            },
           },
-        },
-      });
+        });
+      } else {
+        const { status, message } = await changePasswordFacultyMutation({
+          variables: {
+            input: {
+              idNumber: userData.idNumber,
+              oldPassword: data.oldPassword,
+              newPassword: data.newPassword,
+            },
+          },
+        });
+      }
       setLoading(false);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Error changing password:", error);
       setError(error.message);
