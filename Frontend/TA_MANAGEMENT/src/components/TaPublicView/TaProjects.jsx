@@ -8,9 +8,11 @@ import { useNavigate } from "react-router-dom";
 function TaProjects({ userId }) {
   const navigate = useNavigate();
   const isFaculty = useSelector((state) => state.auth.isFaculty);
-  if (!isFaculty) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (!isFaculty) {
+      navigate("/");
+    }
+  }, [isFaculty, navigate]);
   const { loading, error, data } = useQuery(GET_PROJECT, {
     variables: { idNumber: userId },
   });
@@ -18,7 +20,7 @@ function TaProjects({ userId }) {
   console.log("Project data array", data?.getProjects?.data?.projects);
   return (
     <>
-      {data?.getProjects?.data?.projects && (
+      {data?.getProjects?.data?.projects.length >0 && (
         <div className="flex flex-col w-4/5 justify-center self-center gap-3 mt-5">
           <h1 className="text-white font-medium text-xl ">Projects</h1>
           <div className="flex flex-col  justify-center w-full gap-1 self-center bg-white p-8 rounded-lg border-2 border-custom-gray shadow-slate-700">

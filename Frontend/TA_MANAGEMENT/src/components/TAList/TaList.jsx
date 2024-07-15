@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Card } from "../index";
 import cat from "../../assets/cat.jpg";
 import { useSelector } from "react-redux";
@@ -10,9 +10,11 @@ import { useQuery } from "@apollo/client";
 function TaList() {
   const isFaculty = useSelector((state) => state.auth.isFaculty);
   const navigate = useNavigate();
-  if (!isFaculty) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (!isFaculty) {
+      navigate("/");
+    }
+  }, [isFaculty]);
   const { loading, error, data } = useQuery(GET_ALL_USERS);
   if (loading) return <img src={Wait} alt="Loading" />;
   if (error) return <p>Error loading users</p>;
