@@ -35,9 +35,7 @@ function Header() {
         await logoutFaculty({ variables: { idNumber } });
       }
       dispatch(logout());
-      localStorage.removeItem("token");
-      localStorage.removeItem("userToken");
-      localStorage.removeItem("isFaculty");
+      localStorage.clear()
       navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);

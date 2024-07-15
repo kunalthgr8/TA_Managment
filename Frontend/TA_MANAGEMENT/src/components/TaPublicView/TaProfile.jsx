@@ -9,6 +9,7 @@ import { GET_SOCIAL_PROFILE } from "../../graphql/queries/taSocialInfo.query";
 import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Loader } from "../index.js";
 
 function TaProfile({ userId }) {
   const navigate = useNavigate();
@@ -54,7 +55,12 @@ function TaProfile({ userId }) {
     }
   }, [userData]);
 
-  if (userLoading || socialLoading) return <p>Loading...</p>;
+  if (userLoading || socialLoading)
+    return (
+      <div className="flex justify-center self-center gap-10 w-full mt-10">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="flex flex-col md:flex-row w-4/5 justify-center gap-5 self-center bg-white p-8 rounded-lg border-2 border-custom-gray shadow-slate-700">
@@ -69,44 +75,46 @@ function TaProfile({ userId }) {
           {userData?.getUser?.bio}
         </h2>
         <div>
-          <div className="flex flex-row justify-start self-center gap-3 text-lg mt-2 ">
-            {socialData?.getSocialProfile?.linkedin && (
-              <Link
-                to={socialData.getSocialProfile.linkedin}
-                className="text-2xl flex justify-center self-center cursor-pointer text-gray-500"
-                title="LinkedIn"
-              >
-                <FaLinkedinIn />
-              </Link>
-            )}
-            {socialData?.getSocialProfile?.github && (
-              <Link
-                to={socialData.getSocialProfile.github}
-                className="text-2xl flex justify-center self-center cursor-pointer text-gray-500"
-                title="Github"
-              >
-                <VscGithub />
-              </Link>
-            )}
-            {socialData?.getSocialProfile?.kaggle && (
-              <Link
-                to={socialData.getSocialProfile.kaggle}
-                className="text-2xl flex justify-center self-center cursor-pointer text-gray-500"
-                title="Kaggle"
-              >
-                <SiKaggle />
-              </Link>
-            )}
-            {socialData?.getSocialProfile?.portfolio && (
-              <Link
-                to={socialData.getSocialProfile.portfolio}
-                className="text-base flex justify-center self-center cursor-pointer text-gray-500"
-                title="Portfolio"
-              >
-                Website
-              </Link>
-            )}
-          </div>
+          {socialData?.getSocialProfile && (
+            <div className="flex flex-row justify-start self-center gap-3 text-lg mt-2 ">
+              {socialData?.getSocialProfile?.linkedin && (
+                <Link
+                  to={socialData.getSocialProfile.linkedin}
+                  className="text-2xl flex justify-center self-center cursor-pointer text-gray-500"
+                  title="LinkedIn"
+                >
+                  <FaLinkedinIn />
+                </Link>
+              )}
+              {socialData?.getSocialProfile?.github && (
+                <Link
+                  to={socialData.getSocialProfile.github}
+                  className="text-2xl flex justify-center self-center cursor-pointer text-gray-500"
+                  title="Github"
+                >
+                  <VscGithub />
+                </Link>
+              )}
+              {socialData?.getSocialProfile?.kaggle && (
+                <Link
+                  to={socialData.getSocialProfile.kaggle}
+                  className="text-2xl flex justify-center self-center cursor-pointer text-gray-500"
+                  title="Kaggle"
+                >
+                  <SiKaggle />
+                </Link>
+              )}
+              {socialData?.getSocialProfile?.portfolio && (
+                <Link
+                  to={socialData.getSocialProfile.portfolio}
+                  className="text-base flex justify-center self-center cursor-pointer text-gray-500"
+                  title="Portfolio"
+                >
+                  Website
+                </Link>
+              )}
+            </div>
+          )}
           <div className="flex flex-row justify-start self-center gap-3 text-lg mt-2 ">
             <p
               className="text-sm text-gray-500 cursor-pointer"

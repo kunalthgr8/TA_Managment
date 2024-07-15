@@ -6,7 +6,6 @@ import { faculty, login } from "./store/authSlice";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
@@ -16,10 +15,6 @@ function App() {
       dispatch(login(JSON.parse(token)));
       if (isFaculty) {
         dispatch(faculty());
-      }
-
-      if (isFaculty) {
-        dispatch;
       }
     }
   }, [dispatch, isAuthenticated]);

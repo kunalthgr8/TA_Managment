@@ -1,5 +1,5 @@
-import React,{useEffect} from "react";
-import { Card } from "../index";
+import React, { useEffect } from "react";
+import { Card, Loader } from "../index";
 import cat from "../../assets/cat.jpg";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,12 @@ function TaList() {
     }
   }, [isFaculty]);
   const { loading, error, data } = useQuery(GET_ALL_USERS);
-  if (loading) return <img src={Wait} alt="Loading" />;
+  if (loading)
+    return (
+      <div className="flex justify-center self-center gap-10 w-full mt-10" >
+        <Loader />
+      </div>
+    );
   if (error) return <p>Error loading users</p>;
   return (
     <>
