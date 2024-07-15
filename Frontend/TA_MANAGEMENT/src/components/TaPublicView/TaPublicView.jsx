@@ -15,7 +15,7 @@ function TaPublicView() {
   return (
     <div className="flex flex-col w-11/12 justify-center self-center gap-1 mt-10">
       <TaProfile userId={taId}/>
-      <TaIndustryExp />
+      <TaIndustryExp userId={taId}/>
       <TaProjects />
       <TaSkills />
       <TaEducation />

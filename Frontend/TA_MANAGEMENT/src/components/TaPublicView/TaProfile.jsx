@@ -55,8 +55,8 @@ function TaProfile({ userId }) {
   }, [userData]);
 
   if (userLoading || socialLoading) return <p>Loading...</p>;
-  if (userError || socialError)
-    return <p>Error: {userError?.message || socialError?.message}</p>;
+  // if (userError || socialError)
+  //   return <p>Error: {userError?.message || socialError?.message}</p>;
 
   return (
     <div className="flex flex-col md:flex-row w-4/5 justify-center gap-5 self-center bg-white p-8 rounded-lg border-2 border-custom-gray shadow-slate-700">
