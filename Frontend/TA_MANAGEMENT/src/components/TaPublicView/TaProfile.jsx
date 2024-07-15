@@ -55,8 +55,6 @@ function TaProfile({ userId }) {
   }, [userData]);
 
   if (userLoading || socialLoading) return <p>Loading...</p>;
-  // if (userError || socialError)
-  //   return <p>Error: {userError?.message || socialError?.message}</p>;
 
   return (
     <div className="flex flex-col md:flex-row w-4/5 justify-center gap-5 self-center bg-white p-8 rounded-lg border-2 border-custom-gray shadow-slate-700">
@@ -68,7 +66,7 @@ function TaProfile({ userId }) {
           {capitalizeName(userData?.getUser?.name)} {genderPronoun}
         </h1>
         <h2 className="text-base font-medium text-gray-500 mt-3">
-          {userData?.getUser?.bio || "No Bio Available"}
+          {userData?.getUser?.bio}
         </h2>
         <div>
           <div className="flex flex-row justify-start self-center gap-3 text-lg mt-2 ">

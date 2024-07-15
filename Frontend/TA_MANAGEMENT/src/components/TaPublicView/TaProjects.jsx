@@ -16,8 +16,6 @@ function TaProjects({ userId }) {
   const { loading, error, data } = useQuery(GET_PROJECT, {
     variables: { idNumber: userId },
   });
-  console.log("Project Data", data);
-  console.log("Project data array", data?.getProjects?.data?.projects);
   return (
     <>
       {data?.getProjects?.data?.projects.length >0 && (
