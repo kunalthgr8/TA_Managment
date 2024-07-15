@@ -1,41 +1,93 @@
-import React from "react";
+import {React,useState,useEffect} from "react";
 import { useSelector } from "react-redux";
 import { AddCourse, Login, Button, TaForm } from "../index";
 import { useNavigate } from "react-router-dom";
 import Wait from "../../assets/wait.svg";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_COURSES } from "../../graphql/queries/course.query";
+
 
 function Home() {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const facultyStatus = "Course Added";
-  // const facultyStatus = "Not Assigned";
-  const taStatus = "Form Not Filled";
-  // const taStatus = "Not Assigned";
   const isFaculty = useSelector((state) => state.auth.isFaculty);
-  console.log("If Faculty :", isFaculty)
+  const userData = useSelector((state) => state.auth.user);
+  const [facultyStatus, setFacultyStatus] = useState("Not Assigned");
+  const [taStatus, setTaStatus] = useState("Form Not Filled");
+
+  console.log("If Faculty:", isFaculty);
+  console.log("UserData:", userData);
+  // let data = null;
+  // useEffect(() => {
+  //   if (userData) {
+  //     const { data, loading, error } = useQuery(GET_ALL_COURSES, {
+  //       variables: { idNumber: "12140970" },
+  //       // skip: !userData.idNumber,
+  //     });
+  //     console.log("IdNumber:", userData.idNumber);
+  //   }
+  // }, [userData]);
+  // if (userData) {
+  //   const { data, loading, error } = useQuery(GET_ALL_COURSES, {
+  //     variables: { idNumber: "12140970" },
+  //     // skip: !userData.idNumber,
+  //   });
+  //   console.log("IdNumber:", userData.idNumber);
+  // }
+  
+  const { data, loading, error } = useQuery(GET_ALL_COURSES, {
+    variables: { idNumber: userData?.idNumber},
+    // skip: !userData.idNumber,
+  });
+
+  console.log("Data:", data);
+
+  useEffect(() => {
+    if (data?.getCourses?.data?.courses) {
+      console.log("Course Name:", data.getCourses.data.courses[0].courseName);
+      setFacultyStatus("Course Added");
+    } else {
+      setFacultyStatus("Not Assigned");
+    }
+  }, [data]);
+
+  const courses = data?.getCourses?.data?.courses;
+
   return (
     <>
       {isFaculty && facultyStatus === "Course Added" && isAuthenticated && (
         <div className=" w-full md:w-4/5 flex flex-col gap-3 justify-center self-center mt-10 m-8 pl-2 pr-2 ">
-          <div className="bg-white flex justify-between self-center w-full md:w-3/4 rounded-lg p-5  shadow-xl">
-            <h1 className="font-bold text-base">IC500: Machine Learning</h1>
-            <p className="font-medium text-sm">Soon...</p>
-          </div>
-          <div
+          {courses?.map((course, index) => (
+            <div
+              key={index}
+              className="bg-white flex justify-between self-center w-full md:w-3/4 rounded-lg p-5 shadow-xl"
+              onClick={() => navigate(`/course-detail/${course.courseCode}`)}
+            >
+              <h1 className="font-bold text-base">{course.courseName}</h1>
+              {
+                course.selectedTAs?.length > 0 ? (
+                  <p className="font-medium text-sm cursor-pointer">Details</p>
+                ) : (
+                  <p className="font-medium text-sm cursor-pointer">Add TA's</p>
+                )
+              }
+            </div>
+          ))}
+
+          {/* <div
             className="bg-white flex justify-between self-center w-full md:w-3/4 rounded-lg p-5 shadow-xl"
             onClick={() => navigate("/course-detail/:courseId")}
           >
             <h1 className="font-bold text-base">IC200: Operating System</h1>
             <p className="font-medium text-sm cursor-pointer">Add TA's</p>
-          </div>
-          <div
+          </div> */}
+          {/* <div
             className="bg-white flex justify-between self-center w-full md:w-3/4 rounded-lg p-5 shadow-xl"
             onClick={() => navigate("/course-detail/:courseId")}
           >
             <h1 className="font-bold text-base">IC100: Intro to Programming</h1>
             <p className="font-medium text-sm cursor-pointer">Details</p>
-          </div>
+          </div> */}
           <div className="flex justify-between self-center w-full md:w-3/4 rounded-lg p-5">
             <Button
               width="w-full flex justify-center self-center"
