@@ -3,9 +3,16 @@ import React, { useState } from "react";
 import { Input, Button } from "../index";
 import { MdAdd } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import  {useMutation} from "@apollo/client";
+import { CREATE_COURSE } from "../../graphql/mutations/course.mutations";
+import { GET_ALL_COURSES } from "../../graphql/queries/course.query";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function AddCourse() {
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     semester: "",
     courseCode: "",
@@ -13,7 +20,12 @@ function AddCourse() {
     requiredSkills: "",
   });
   const [skills, setSkills] = useState([]);
-
+  const userData = useSelector((state) => state.auth.user);
+  const [createCourse, { data: courseData, loading }] = useMutation(CREATE_COURSE,
+    {refetchQueries: [
+    { query: GET_ALL_COURSES, variables: { idNumber: userData.idNumber } },
+  ]},);
+  
   const handleAddSkill = () => {
     if (data.requiredSkills.trim() === "") {
       setError("Skill cannot be empty.");
@@ -35,7 +47,7 @@ function AddCourse() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  async (e) => {
     e.preventDefault();
     if (
       !data.semester ||
@@ -48,7 +60,33 @@ function AddCourse() {
     }
     setError("");
     // Proceed with form submission (e.g., API call)
+    const response = await createCourse({
+      variables: {
+        input: {
+          idNumber: userData.idNumber,
+          courses: {
+            courseName: data.courseName,
+            courseCode: data.courseCode,
+            semester: data.semester,
+            skills: skills,
+            status: "COURSE_REGISTERED",
+          },
+        },
+      },
+    });
+    console.log("Response:", response);
     console.log("Form data:", { ...data, skills });
+    if (response.data.addCourse.status === 201) {
+      navigate("/");
+      setData({
+        semester: "",
+        courseCode: "",
+        courseName: "",
+        requiredSkills: "",
+      });
+      setSkills([]);
+      setError("Course added successfully");
+    }
   };
 
   return (
