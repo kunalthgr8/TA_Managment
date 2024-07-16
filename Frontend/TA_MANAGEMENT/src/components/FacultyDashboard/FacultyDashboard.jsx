@@ -8,6 +8,7 @@ import { UPDATE_USER } from "../../graphql/mutations/user.mutations";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "../../graphql/queries/user.queries";
 import { login } from "../../store/authSlice";
+import { GET_ALL_COURSES } from "../../graphql/queries/course.query";
 
 function FacultyDashboard() {
   const userinfo = useSelector((state) => state.auth.user);
@@ -15,6 +16,11 @@ function FacultyDashboard() {
   const isFaculty = useSelector((state) => state.auth.isFaculty);
   const navigate = useNavigate();
   const [updateUserMutation] = useMutation(UPDATE_USER);
+
+  const { data, loading, error } = useQuery(GET_ALL_COURSES, {
+    variables: { idNumber: userinfo?.idNumber },
+  });
+  const courses = data?.getCourses?.data?.courses;
 
   const [editAbleUser, setEditAbleUser] = useState(false);
   const [info, setinfo] = useState({
@@ -208,12 +214,22 @@ function FacultyDashboard() {
                       <p className="text-xs sm:text-sm font-medium text-red-500">
                         Courses
                       </p>
-                      <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
+                      {courses?.map((course, index) => (
+                        <p
+                          key={index}
+                          className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading flex justify-between pl-2 pr-2"
+                        >
+                          <p>{course.courseName}</p>
+
+                          {course.courseCode}
+                        </p>
+                      ))}
+                      {/* <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
                         CS500
                       </p>
                       <p className="text-sm font-medium text-heading-color mt-2 border-b border-text-heading">
                         CS200
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 </div>
