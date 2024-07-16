@@ -6,9 +6,16 @@ function Card({
   height = "100px",
   className = "",
   src = "",
-  user = { name: "Name", email: "Email", id: "IdNumber", contact: "Contact" },
+  user = {
+    name: "Name",
+    email: "Email",
+    id: "IdNumber",
+    contact: "Contact",
+    approved: false,
+  },
 }) {
   const navigate = useNavigate();
+  console.log(user);
   return (
     <div
       className={`flex flex-col md:flex-row justify-center self-center bg-slate-100 rounded-lg p-5 gap-4 w-4/5 ${className}`}
@@ -48,12 +55,15 @@ function Card({
           >
             Details
           </Button>
-          <Button
-            width="flex justify-center self-center w-full"
-            className="bg-green-500 font-bold rounded-3xl p-2 w-11/12 text-white shadow-lg"
-          >
-            Approve
-          </Button>
+          {!user.approved && (
+            <Button
+              width="flex justify-center self-center w-full"
+              className="bg-green-500 font-bold rounded-3xl p-2 w-11/12 text-white shadow-lg"
+              onClick={() => navigate(`/approveTa/${user.id}`)}
+            >
+              Approve
+            </Button>
+          )}
         </div>
       </div>
     </div>

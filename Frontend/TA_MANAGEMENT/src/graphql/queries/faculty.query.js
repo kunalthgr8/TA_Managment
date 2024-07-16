@@ -23,6 +23,7 @@ export const GET_ALL_USERS = gql`
       gender
       bio
       refreshToken
+      approved
     }
   }
 `;

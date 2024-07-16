@@ -8,6 +8,7 @@ const userTypeDefs = `
         bio: String
         refreshToken: String
         accessToken: String
+        approved: Boolean
     }
 
     type AuthPayload {

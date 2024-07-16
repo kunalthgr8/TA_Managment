@@ -61,6 +61,7 @@ const courseTypeDef = `
   type Mutation {
     addCourse(input: CourseDetailInput): CourseApiResponse
     deleteFacultyCourse(idNumber: ID!): CourseApiResponse
+    addTaToCourse(idNumber: ID!, courseCode: String!, taId:ID! ): CourseDetailApiResponse
   }
 `;
 

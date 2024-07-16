@@ -37,8 +37,10 @@ import TaSkillsForm from "./Home/TaInfo/TaSkillsForm";
 import TaSocialInfo from "./Home/TaInfo/TaSocialInfo";
 import TaLeaves from "./TaLeaves/TaLeaves";
 import RadioButton from "./Signup/RadioButton";
+import ToBeApprovedFor from "./TAList/ToBeApprovedFor";
 
 export {
+  ToBeApprovedFor,
   RadioButton,
   TaLeaves,
   TaAboutForm,

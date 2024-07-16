@@ -43,12 +43,32 @@ export const GET_TA_BY_COURSE_CODE = gql`
       status
       message
       data {
-        
-          idNumber
-          name
-          email
-          phoneNumber
-        
+        idNumber
+        name
+        email
+        phoneNumber
+      }
+    }
+  }
+`;
+
+export const ADD_TA_TO_COURSE = gql`
+  mutation addTaToCourse($idNumber: ID!, $courseCode: String!, $taId: ID!) {
+    addTaToCourse(idNumber: $idNumber, courseCode: $courseCode, taId: $taId) {
+      status
+      message
+      data {
+        courseName
+        courseCode
+        semester
+        skills
+        status
+        # selectedTAs {
+        #   idNumber
+        #   name
+        #   email
+        #   phoneNumber
+        # }
       }
     }
   }

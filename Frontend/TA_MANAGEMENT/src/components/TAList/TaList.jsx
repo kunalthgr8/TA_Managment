@@ -16,6 +16,9 @@ function TaList() {
     }
   }, [isFaculty]);
   const { loading, error, data } = useQuery(GET_ALL_USERS);
+  useEffect(()=>{
+    
+  },[data])
   if (loading)
     return (
       <div className="flex justify-center self-center gap-10 w-full mt-10" >
@@ -46,6 +49,7 @@ function TaList() {
                       email: item.email,
                       id: item.idNumber,
                       contact: item.phoneNumber,
+                      approved: item.approved || false,
                     }}
                   />
                 </div>

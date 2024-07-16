@@ -4,7 +4,10 @@ import cat from "../../assets/cat.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
-import { GET_COURSE_BY_CODE, GET_TA_BY_COURSE_CODE } from "../../graphql/queries/course.query";
+import {
+  GET_COURSE_BY_CODE,
+  GET_TA_BY_COURSE_CODE,
+} from "../../graphql/queries/course.query";
 
 const ProfileDetails = ({ details, profName }) => (
   <div className="flex justify-center self-center flex-col gap-4 text-custom-black">
@@ -27,17 +30,21 @@ function CourseDetail() {
     variables: { courseCode: courseId, idNumber },
   });
 
-  const { loading: taLoading, error: taError, data: taData } = useQuery(GET_TA_BY_COURSE_CODE, {
+  const {
+    loading: taLoading,
+    error: taError,
+    data: taData,
+  } = useQuery(GET_TA_BY_COURSE_CODE, {
     variables: { courseCode: courseId, idNumber },
   });
-  console.log("TA DATA: ", taData )
+  console.log("TA DATA: ", taData);
   const [courseDetails, setCourseDetails] = useState(null);
 
   useEffect(() => {
     if (data && data.getCourseByCode && data.getCourseByCode.data) {
       setCourseDetails(data.getCourseByCode.data);
     }
-    console.log("TA DATA in UseEffect: ", taData )
+    console.log("TA DATA in UseEffect: ", taData);
   }, [data]);
 
   if (loading || taLoading) {
@@ -60,36 +67,46 @@ function CourseDetail() {
 
   const taInfo = (
     <div className="flex flex-col w-full justify-center self-center p-4 sm:p-10 pt-0 gap-2">
-      {taData && taData.getTAByCourseCode && taData.getTAByCourseCode.data.map((ta, index) => (
-        // <h1> Hellooo</h1>
-        <Card
-          key={index}
-          className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
-          src={cat}
-          user={{
-            name: ta.name,
-            email: ta.email,
-            id: ta.idNumber,
-            contact: ta.phoneNumber
-          }}
-        />
-      ))}
+      {taData &&
+        taData.getTAByCourseCode &&
+        taData.getTAByCourseCode.data.map((ta, index) => (
+          // <h1> Hellooo</h1>
+          <>
+            <Card
+              key={index}
+              className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
+              src={cat}
+              user={{
+                name: ta.name,
+                email: ta.email,
+                id: ta.idNumber,
+                contact: ta.phoneNumber,
+                approved: true
+              }}
+            />
+          </>
+        ))}
     </div>
   );
 
   const addTaButton = (
-    <div className="flex justify-center self-center p-10 w-full">
-      <Button
-        className="bg-custom-purple w-full text-white rounded-xl p-4"
-        onClick={() => navigate("/ta-list")}
-      >
-        Add TAs
-      </Button>
+    <div className="flex justify-center self-center  w-full">
+      <div className="flex justify-center self-center p-5 w-2/3">
+        <Button
+          className="bg-custom-purple w-full text-white rounded-xl p-4"
+          onClick={() => navigate("/ta-list")}
+        >
+          Add TAs
+        </Button>
+      </div>
     </div>
   );
 
   const capitalizeName = (name) =>
-    name.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
   return (
     <div className="bg-custom-purple w-full lg:w-4/5 pt-7">
@@ -108,7 +125,8 @@ function CourseDetail() {
         <h1 className="text-xl font-bold ml-5 sm:ml-24 mt-8">
           Teaching Assistant Information
         </h1>
-        {taData ? taInfo : addTaButton}
+        {taData && taInfo}
+        {addTaButton}
       </div>
     </div>
   );

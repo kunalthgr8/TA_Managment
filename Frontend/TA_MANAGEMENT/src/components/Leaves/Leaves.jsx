@@ -179,7 +179,7 @@ function Leaves() {
 
   const noLeaveRequestContent = (
     <div className="flex flex-col justify-center self-center mt-10 gap-5">
-      <img src={NoLeave} alt="No Leave Request" width={"250px"} />
+      <img src={NoLeave} alt="No Leave Request" width={"250px"} className="flex justify-center self-center" />
       <h1 className="text-white font-bold tracking-wider text-2xl text-center">
         No Leave Requests
       </h1>

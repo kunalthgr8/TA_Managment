@@ -16,12 +16,13 @@ import {
   TaLeaves,
   TaList,
   TaPublicView,
+  ToBeApprovedFor,
 } from "./components/index.js";
 import { Provider } from "react-redux";
 import AuthLayout from "./components/AuthLayout.jsx";
 import store from "./store/store.js";
-import { ApolloProvider } from '@apollo/client';
-import client from './apolloClient';
+import { ApolloProvider } from "@apollo/client";
+import client from "./apolloClient";
 
 const router = createBrowserRouter([
   {
@@ -109,6 +110,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <TaLeaves />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/approveTa/:taId",
+        element: (
+          <AuthLayout authentication={true}>
+            <ToBeApprovedFor />
           </AuthLayout>
         ),
       },
