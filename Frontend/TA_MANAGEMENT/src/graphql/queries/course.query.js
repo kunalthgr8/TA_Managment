@@ -36,3 +36,18 @@ export const GET_COURSE_BY_CODE = gql`
     }
   }
 `;
+
+export const GET_TA_BY_COURSE_CODE = gql`
+  query getTAByCourseCode($courseCode: String!, $idNumber: ID!) {
+    getTAByCourseCode(courseCode: $courseCode, idNumber: $idNumber) {
+      status
+      message
+      data {
+        idNumber
+        name
+        email
+        phoneNumber
+      }
+    }
+  }
+`;

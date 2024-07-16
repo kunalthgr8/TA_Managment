@@ -13,6 +13,13 @@ const courseTypeDef = `
     courses: [CourseDetail]
   }
 
+  type TAType {
+    idNumber: ID!
+    name: String!
+    email: String!
+    phoneNumber: String!
+  }
+
   type CourseDetailApiResponse {
     status: Int
     message: String
@@ -23,6 +30,12 @@ const courseTypeDef = `
     status: Int
     message: String
     data: Course
+  }
+
+  type TADetailApiResponse {
+    status: Int
+    message: String
+    data: [TAType]
   }
 
   input CourseInfo {
@@ -42,6 +55,7 @@ const courseTypeDef = `
   type Query {
     getCourses(idNumber: ID!): CourseApiResponse
     getCourseByCode(courseCode: String!, idNumber: ID!): CourseDetailApiResponse
+    getTAByCourseCode(courseCode: String!, idNumber: ID!): TADetailApiResponse
   }
 
   type Mutation {

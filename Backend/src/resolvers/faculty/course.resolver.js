@@ -48,6 +48,48 @@ const coursesResolvers = {
         );
       }
     },
+    getTAByCourseCode: async (_, { courseCode, idNumber }, context) => {
+      if (!context.user) {
+        throw new ApiError(404, "Unauthorized");
+      }
+      try {
+        const course = await Courses.findOne({ idNumber });
+        if (!course) {
+          throw new ApiError(404, "Course not found");
+        }
+        const foundCourse = course.courses.find(
+          (c) => c.courseCode === courseCode
+        );
+        if (!foundCourse) {
+          throw new ApiError(404, "Course not found");
+        }
+        const TADetails = await Promise.all(
+          foundCourse.selectedTAs.map(async (taIdNumber) => {
+            const taDetails = await User.findOne({ idNumber: taIdNumber });
+            if (!taDetails) {
+              throw new ApiError(
+                404,
+                `TA not found with ID number: ${taIdNumber}`
+              );
+            }
+            return taDetails;
+          })
+        );
+
+        if (TADetails.length === 0) {
+          return new ApiResponse(404, "No TAs found", null);
+        }
+
+        return new ApiResponse(200, "TAs fetched successfully", TADetails);
+      } catch (error) {
+        throw new ApiError(
+          500,
+          "Error fetching course by code",
+          [],
+          error.stack
+        );
+      }
+    },
   },
   Mutation: {
     addCourse: async (_, { input }, context) => {
@@ -77,7 +119,7 @@ const coursesResolvers = {
         throw new ApiError(500, error.message);
       }
     },
-    deleteFacultyCourse: async (_, { idNumber },context) => {
+    deleteFacultyCourse: async (_, { idNumber }, context) => {
       if (!context.user || idNumber !== context.user.idNumber) {
         throw new ApiError(401, "Unauthorized");
       }
