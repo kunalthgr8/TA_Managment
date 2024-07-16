@@ -1,46 +1,63 @@
-import React, { useState } from "react";
-import { ProfileLogo, Card, Button } from "../index";
+import React, { useEffect, useState } from "react";
+import { ProfileLogo, Card, Button, Loader } from "../index";
 import cat from "../../assets/cat.jpg";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { GET_COURSE_BY_CODE } from "../../graphql/queries/course.query";
+import { useQuery } from "@apollo/client";
+import { useSelector } from "react-redux";
 
 const ProfileDetails = ({ details }) => (
   <div className="flex justify-center self-center flex-col gap-4 text-custom-black">
     <p className="font-bold text-2xl text-custom-purple">
-      Code: {details.CourseCode}
+      Code: {details.courseCode}
     </p>
-    <p className="font-bold text-base italic ">Name: {details.CourseName}</p>
-    <p className="font-bold text-base italic">Professor: {details.Professor}</p>
-    <p className="font-bold text-sm italic">Semester: {details.Semester}</p>
-    {/* {details.map((detail, index) => (
-    ))} */}
+    <p className="font-bold text-base italic ">Name: {details.courseName}</p>
+    <p className="font-bold text-sm italic">Semester: {details.semester}</p>
   </div>
 );
 
 function CourseDetail() {
-  let TaAdded = false;
+  const { courseId } = useParams();
   const navigate = useNavigate();
-  const [courseDetails, setCourseDetails] = useState({
-    CourseCode: "CS690",
-    Semester: "Monsoon23-24",
-    Professor: "Dr. Gagan Raj Gupta",
-    CourseName: "Machine Learning",
-    // status: "COURSE_REGISTERED",
-    status: "TA_ASSIGNED",
+  const user = useSelector((state) => state.auth.user);
+  const idNumber = user.idNumber;
+  const { loading, error, data } = useQuery(GET_COURSE_BY_CODE, {
+    variables: { courseCode: courseId, idNumber: idNumber },
   });
 
-  if (courseDetails.status === "COURSE_REGISTERED") {
-    TaAdded = false;
-  } else if (courseDetails.status === "TA_ASSIGNED") {
-    TaAdded = true;
-  }else{
-    TaAdded = false;
+  const [courseDetails, setCourseDetails] = useState(null);
+
+  useEffect(() => {
+    console.log(" Course By Id", data);
+    if (data && data.getCourseByCode && data.getCourseByCode.data) {
+      setCourseDetails(data.getCourseByCode.data);
+    }
+  }, [data]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center self-center gap-10 w-full mt-10">
+        <Loader />
+      </div>
+    );
   }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  if (!courseDetails) {
+    return <p>No course details found.</p>;
+  }
+
+  const TaAdded = courseDetails.status === "TA_ASSIGNED";
 
   const taInfo = (
     <div className="flex flex-col w-full justify-center self-center p-4 sm:p-10 pt-0 gap-2">
-      {[1, 2, 3, 4].map((item) => (
+      {courseDetails.selectedTAs.map((ta, index) => (
         <Card
-          key={item}
+          key={index}
           className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
           src={cat}
         />
