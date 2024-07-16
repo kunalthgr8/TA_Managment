@@ -10,9 +10,11 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const isFaculty = localStorage.getItem("isFaculty");
+    const isFaculty = JSON.parse(localStorage.getItem("isFaculty"));
+    
     if (token && !isAuthenticated) {
       dispatch(login(JSON.parse(token)));
+
       if (isFaculty) {
         dispatch(faculty());
       }
