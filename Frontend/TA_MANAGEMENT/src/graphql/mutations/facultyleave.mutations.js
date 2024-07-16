@@ -1,8 +1,8 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-export const GET_FACULTY_LEAVES = gql`
-    query getLeave($input: FacultyleaveInput) {
-        getLeave(input: $input) {
+export const LEAVE_APPROVE = gql`
+    mutation leaveApprove($input: FacultyLeaveApprove) {
+        leaveApprove(input: $input) {
             status
             message
             data {

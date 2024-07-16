@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useQuery,useMutation } from "@apollo/client";
 import {CREATE_TA_LEAVE} from "../../graphql/mutations/taleave.mutations";
 import { GET_LEAVES } from "../../graphql/queries/taleave.query";
-
+import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from "react-redux";
 
 const TaLeaves = () => {
@@ -86,6 +86,7 @@ const TaLeaves = () => {
         duration: toString(calculateDuration(startDate, endDate)),
         reason: leavesRequest,
         status: "PENDING",
+        id: uuidv4(),
       },
     ]);
   };

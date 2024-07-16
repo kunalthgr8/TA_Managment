@@ -5,6 +5,7 @@ const LeaveTypeDefs = `
     duration: String
     reason: String
     status: String
+    id: ID
   }
 
   type LeaveId {
@@ -34,6 +35,7 @@ const LeaveTypeDefs = `
     duration: String
     reason: String
     status: String
+    id: ID
   }
 
   input leave {

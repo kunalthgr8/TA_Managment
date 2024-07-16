@@ -2,9 +2,10 @@ import {React,useState,useEffect} from "react";
 import NoLeave from "../../assets/NoLeaves.svg";
 import { Button } from "../index";
 import { useSelector } from "react-redux";
-import { useQuery } from "@apollo/client";
+import { useQuery,useMutation } from "@apollo/client";
 import { GET_FACULTY_LEAVES } from "../../graphql/queries/facultyleave.query";
 // import { set } from "mongoose";
+import { LEAVE_APPROVE } from "../../graphql/mutations/facultyleave.mutations";
 
 
 function Leaves() {
@@ -53,10 +54,12 @@ function Leaves() {
   ])
 
   const { data, loading, error } = useQuery(GET_FACULTY_LEAVES, {
-    variables: { input: { courseId: "CS101", idNumber: userData.idNumber } },
+    variables: { input: { courseId: "CS101", idNumber: userData.idNumber }     
+    },
+
   });
   
-
+  console.log("Data Leaves:",data);
   useEffect(() => {
     const notapproved = []
     const approved = []
@@ -89,6 +92,44 @@ function Leaves() {
       // setLeaveHistory(data.getLeave.data.leave);
     }
   }, [data]);
+
+
+  const [leaveApprove,{data:leavedata}] = useMutation(LEAVE_APPROVE,
+    //  {
+    //     variables: { input: { courseId, idNumber, id }},
+    //   }
+      {refetchQueries: [
+        { query: GET_FACULTY_LEAVES, 
+          variables: { input: 
+            {
+              courseId: "CS101",
+              idNumber: "12140970", //idNumber  is not required here that's why some random static idNumber is used
+            },
+          } 
+        },
+      ],
+    }
+  );
+
+  const handleApprove = async (courseId,idNumber,id) => {
+    console.log("Approve", id);
+    const flag = "APPROVED";
+    const response = await leaveApprove({
+      variables: { input: { courseId, idNumber, id , flag}},
+    });
+    console.log("Response of leave approve:",response);
+
+  };
+
+  const handleReject = async (courseId,idNumber,id) => {
+    console.log("Rejected", id);
+    const flag = "REJECTED";
+    const response = await leaveApprove({
+      variables: { input: { courseId, idNumber, id , flag}},
+    });
+    console.log("Response of leave approve:",response);
+
+  };
 
 
 
@@ -150,9 +191,9 @@ function Leaves() {
       <h1 className="text-white font-bold tracking-wider text-xl m-5 flex justify-start self-center w-3/4">
         {leavesRequest} Leave Requests
       </h1>
-      {leaveRequests.map((leave,index) => (
+      {leaveRequests.map((leave) => (
         <div
-          key={index}
+          key={leaveRequests.id}
           className="flex flex-col md:flex-row justify-center self-center bg-slate-100 rounded-lg p-5 gap-4 w-4/5 mb-4"
         >
           <div className="flex flex-col md:flex-row justify-center self-center w-full">
@@ -192,12 +233,14 @@ function Leaves() {
             {isFaculty && (
               <div className="flex flex-col justify-center self-center mt-5 md:mt-0 md:flex-row w-full md:w-5/12 gap-2 md:gap-1 lg:gap-3">
                 <Button
+                  onClick={() => handleApprove("CS101",leave.idNumber,leave.id)}
                   width="flex justify-center self-center w-full"
                   className="bg-green-500 font-bold rounded-3xl p-2 w-11/12 text-white"
                 >
                   Approve
                 </Button>
                 <Button
+                onClick={() => handleReject("CS101",leave.idNumber,leave.id)}
                   width="flex justify-center self-center w-full"
                   className="bg-red-500 font-bold rounded-3xl p-2 w-11/12 text-white"
                 >
@@ -217,9 +260,9 @@ function Leaves() {
         Leave History
       </h1>
       <div className="flex flex-col justify-center items-center self-center bg-slate-100 rounded-lg p-2 pl-5 pr-5 pb-5 gap-4 w-4/5 mb-10">
-        {leaveHistory.map((leave,index) => (
+        {leaveHistory.map((leave) => (
           <div
-            key={index}
+            key={leaveHistory.id}
             className={`flex flex-col md:flex-row justify-between items-center mt-3 w-full gap-5 p-4 bg-white shadow-xl border-2 rounded-md ${
               leave.status === "APPROVED"
                 ? "border-green-500"

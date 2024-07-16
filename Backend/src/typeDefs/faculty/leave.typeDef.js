@@ -5,6 +5,7 @@ const FacultyLeaveTypeDefs = `
     duration: String
     reason: String
     status: String
+    id: ID
   }
 
   type FacultyLeaveApiResponse {
@@ -18,10 +19,22 @@ const FacultyLeaveTypeDefs = `
     idNumber: ID!
   }
 
+  input FacultyLeaveApprove{
+    courseId: ID!
+    idNumber: ID!
+    id: ID!
+    flag: String!
+  }
+
 
   extend type Query {
     getLeave(input: FacultyleaveInput): FacultyLeaveApiResponse
     
+    
+  }
+
+  extend type Mutation{
+    leaveApprove(input: FacultyLeaveApprove): FacultyLeaveApiResponse
   }
 
 `;

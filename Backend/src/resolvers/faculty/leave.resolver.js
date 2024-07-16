@@ -12,6 +12,7 @@ const facultyleaveResolvers = {
         }
         try {
             const response = await Leave.findOne({ courseId });
+            console.log("Response from getLeave",response)
             return {
             status: 201,
             message: "Leave fetched successfully",
@@ -59,6 +60,38 @@ const facultyleaveResolvers = {
         //         throw new ApiError(404, "Error creating leave");
         //     }
         // },
+        leaveApprove: async (_, { input }, context) => {
+            const { courseId, idNumber, id ,flag} = input;
+            // if (!context.user) {
+            //     throw new ApiError(404, "Unauthorized");
+            // }
+            try {
+                const response = await Leave.findOne({ courseId });
+                if (response) {
+                    const leave = response.leave.find((leave) => leave.idNumber === idNumber);
+                    if (leave) {
+                        const leaveDetail = leave.leaves.find((leave) => leave.id === id);
+                        if (leaveDetail) {
+                            leaveDetail.status = flag;
+                            const updatedResponse = await response.save({new: true});
+                            return {
+                                status: 201,
+                                message: "Leave approved successfully",
+                                data: updatedResponse,
+                            };
+                        } else {
+                            throw new ApiError(404, "Leave not found");
+                        }
+                    } else {
+                        throw new ApiError(404, "Leave not found");
+                    }
+                } else {
+                    throw new ApiError(404, "Leave not found");
+                }
+            } catch (error) {
+                throw new ApiError(404, "Error approving leave");
+            }
+        }
     },
 };
 
