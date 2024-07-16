@@ -5,6 +5,7 @@ import projectsTypeDefs from "./TA_Project.typeDef.js";
 import skillsTypeDefs from "./TA_Skills.typeDef.js";
 import socialProfileTypeDefs from "./TA_SocialProfile.typeDef.js";
 import userTypeDefs from "./ta.js";
+import LeaveTypeDefs from "./TA_Leave.typeDef.js";
 
 const TA_TypeDefs = mergeTypeDefs([
   educationTypeDefs,
@@ -12,7 +13,8 @@ const TA_TypeDefs = mergeTypeDefs([
   projectsTypeDefs,
   skillsTypeDefs,
   socialProfileTypeDefs,
-  userTypeDefs
+  userTypeDefs,
+  LeaveTypeDefs,
 ]);
 
 export default TA_TypeDefs;
