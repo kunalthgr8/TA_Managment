@@ -5,6 +5,7 @@ const leaveDetailSchema = new mongoose.Schema({
   endDate: { type: String },
   duration: { type: String },
   reason: { type: String },
+  id: {type: String}, // Added field to store IdNumber
   status: { 
     type: String, 
     enum: ["APPROVED", "PENDING", "REJECTED"], 

@@ -15,9 +15,11 @@ export const CREATE_TA_LEAVE = gql`
                         duration
                         reason
                         status
+                        id
                     }
                 }
             }
         }
     }
 `;
+
