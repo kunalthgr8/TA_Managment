@@ -17,14 +17,24 @@ const ProfileDetails = ({ details }) => (
 );
 
 function CourseDetail() {
-  const TaAdded = true;
+  let TaAdded = false;
   const navigate = useNavigate();
   const [courseDetails, setCourseDetails] = useState({
     CourseCode: "CS690",
     Semester: "Monsoon23-24",
     Professor: "Dr. Gagan Raj Gupta",
     CourseName: "Machine Learning",
+    // status: "COURSE_REGISTERED",
+    status: "TA_ASSIGNED",
   });
+
+  if (courseDetails.status === "COURSE_REGISTERED") {
+    TaAdded = false;
+  } else if (courseDetails.status === "TA_ASSIGNED") {
+    TaAdded = true;
+  }else{
+    TaAdded = false;
+  }
 
   const taInfo = (
     <div className="flex flex-col w-full justify-center self-center p-4 sm:p-10 pt-0 gap-2">
