@@ -44,7 +44,6 @@ const LeaveTypeDefs = `
 
   
   extend type Query {
-    getLeave(input: TAleaveInput): LeaveApiResponse
     getleaveTA(input: TAleaveInput): LeaveApiResponse
     
   }
