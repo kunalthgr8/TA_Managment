@@ -114,7 +114,13 @@ const LeaveHistory = () => {
       {leaves.map((leave) => (
         <div
           key={leave.id}
-          className="flex flex-col md:flex-row justify-between items-center mt-3 w-full gap-5 p-4 bg-white shadow-xl rounded-md"
+          className={`flex flex-col md:flex-row justify-between items-center mt-3 w-full gap-5 p-4 bg-white shadow-xl border-2 rounded-md ${
+            leave.status === "Approved"
+              ? "border-green-500"
+              : leave.status === "Declined"
+              ? "border-red-500"
+              : "border-custom-gray"
+          }`}
         >
           <div className="flex justify-center self-center bg-slate-100 p-4 rounded-lg ">
             <img
