@@ -13,12 +13,12 @@ const courseTypeDef = `
     courses: [CourseDetail]
   }
 
-  type TAType {
-    idNumber: ID!
-    name: String!
-    email: String!
-    phoneNumber: String!
-  }
+  type TADetail {
+  idNumber: String
+  name: String
+  email: String
+  phoneNumber: String
+}
 
   type CourseDetailApiResponse {
     status: Int
@@ -33,10 +33,10 @@ const courseTypeDef = `
   }
 
   type TADetailApiResponse {
-    status: Int
-    message: String
-    data: [TAType]
-  }
+  status: Int
+  message: String
+  data: [TADetail]
+}
 
   input CourseInfo {
     courseName: String!

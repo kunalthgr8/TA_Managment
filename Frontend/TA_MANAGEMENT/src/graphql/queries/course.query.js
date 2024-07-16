@@ -43,10 +43,12 @@ export const GET_TA_BY_COURSE_CODE = gql`
       status
       message
       data {
-        idNumber
-        name
-        email
-        phoneNumber
+        
+          idNumber
+          name
+          email
+          phoneNumber
+        
       }
     }
   }

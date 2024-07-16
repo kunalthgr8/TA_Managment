@@ -1,6 +1,7 @@
 import Courses from "../../models/faculty/courses.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import User from "../../models/ta/ta.js";
 
 const coursesResolvers = {
   Query: {
@@ -50,7 +51,7 @@ const coursesResolvers = {
     },
     getTAByCourseCode: async (_, { courseCode, idNumber }, context) => {
       if (!context.user) {
-        throw new ApiError(404, "Unauthorized");
+        throw new ApiError(401, "Unauthorized");
       }
       try {
         const course = await Courses.findOne({ idNumber });
@@ -63,28 +64,37 @@ const coursesResolvers = {
         if (!foundCourse) {
           throw new ApiError(404, "Course not found");
         }
-        const TADetails = await Promise.all(
-          foundCourse.selectedTAs.map(async (taIdNumber) => {
-            const taDetails = await User.findOne({ idNumber: taIdNumber });
-            if (!taDetails) {
-              throw new ApiError(
-                404,
-                `TA not found with ID number: ${taIdNumber}`
-              );
-            }
-            return taDetails;
-          })
-        );
-
-        if (TADetails.length === 0) {
-          return new ApiResponse(404, "No TAs found", null);
+        const selectedTAs = foundCourse.selectedTAs;
+        if (!selectedTAs || selectedTAs.length === 0) {
+          return new ApiResponse(404, "No TAs found", []);
         }
-
-        return new ApiResponse(200, "TAs fetched successfully", TADetails);
+        const TADetails = await User.find({ idNumber: { $in: selectedTAs } });
+        let TAs = [];
+        TADetails.forEach((ta) => {
+          TAs.push({
+            idNumber: ta.idNumber,
+            name: ta.name,
+            email: ta.email,
+            phoneNumber: ta.phoneNumber,
+          });
+        });
+        console.log("TAs", TAs);
+        // let data = [
+        //   { idNumber: "12140300", name: "random ji", email: "randommen@gmail.com", phoneNumber: "1111111111" },
+        //   { idNumber: "12140360", name: "ptanahi", email: "pta@gmail.com", phoneNumber: "2132435465" }
+        // ]
+        return {
+          status: 200,
+          message: "TAs fetched Successfull",
+          data:  TADetails,
+        };
+        // return new TADetailApiResponse(200,"TAs fetched Successfull", data);
+        // return new ApiResponse(200, "TAs fetched successfully", data);
       } catch (error) {
+        console.error("Error fetching TAs by course code:", error);
         throw new ApiError(
           500,
-          "Error fetching course by code",
+          "Error fetching TAs by course code",
           [],
           error.stack
         );
