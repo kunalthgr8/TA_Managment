@@ -38,8 +38,10 @@ import TaSocialInfo from "./Home/TaInfo/TaSocialInfo";
 import TaLeaves from "./TaLeaves/TaLeaves";
 import RadioButton from "./Signup/RadioButton";
 import ToBeApprovedFor from "./TAList/ToBeApprovedFor";
+import TaCourseDashboard from "./TaCourseDashboard.jsx/TaCourseDashboard";
 
 export {
+  TaCourseDashboard,
   ToBeApprovedFor,
   RadioButton,
   TaLeaves,

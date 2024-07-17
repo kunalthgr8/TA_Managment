@@ -8,8 +8,10 @@ import {CREATE_TA_LEAVE} from "../../graphql/mutations/taleave.mutations";
 import { GET_LEAVES } from "../../graphql/queries/taleave.query";
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const TaLeaves = () => {
+  const { courseId } = useParams();
   const [leavesRequest, setLeavesRequest] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
