@@ -53,7 +53,7 @@ function TaCourseDashboard() {
         </div>
       )}
       {!loading && !error && courses.length > 0 && (
-        <div className="w-full mt-10 flex flex-col justify-center self-center">
+        <div className="w-full mt-10 flex flex-col justify-center self-center gap-5">
           {courses.map((course, index) => (
             <div
               key={index}
