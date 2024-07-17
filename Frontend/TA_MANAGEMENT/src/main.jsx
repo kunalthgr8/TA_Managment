@@ -13,6 +13,7 @@ import {
   Leaves,
   Login,
   Signup,
+  TaCourseDashboard,
   TaLeaves,
   TaList,
   TaPublicView,
@@ -106,7 +107,7 @@ const router = createBrowserRouter([
         element: <TaPublicView />,
       },
       {
-        path: "/taLeaves",
+        path: "/taLeaves/:courseId",
         element: (
           <AuthLayout authentication={true}>
             <TaLeaves />
@@ -118,6 +119,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <ToBeApprovedFor />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/taCourseDashboard",
+        element: (
+          <AuthLayout authentication={true}>
+            <TaCourseDashboard />
           </AuthLayout>
         ),
       },

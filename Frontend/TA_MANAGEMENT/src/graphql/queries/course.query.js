@@ -63,12 +63,6 @@ export const ADD_TA_TO_COURSE = gql`
         semester
         skills
         status
-        # selectedTAs {
-        #   idNumber
-        #   name
-        #   email
-        #   phoneNumber
-        # }
       }
     }
   }

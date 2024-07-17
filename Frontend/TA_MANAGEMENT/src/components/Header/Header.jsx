@@ -75,8 +75,8 @@ function Header() {
       facultyReq: "either",
     },
     {
-      name: "Leave",
-      slug: "/taLeaves",
+      name: "Courses",
+      slug: "/taCourseDashboard",
       color: "text-custom-black",
       authenticationReq: true,
       facultyReq: "Course Added",
