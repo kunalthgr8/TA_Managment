@@ -9,6 +9,7 @@ import {
 } from "../../db/validation.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import Talist from "../../models/ta/talist.js";
 
 const generateTokens = async (user) => {
   if (!user) {
@@ -32,10 +33,48 @@ const authenticate = (context) => {
 
 const taResolver = {
   Query: {
-    getAllUsers: async (_, __, context) => {
+    getAllUsers: async (_, {courseId}, context) => {
       authenticate(context);
+
       try {
-        return await User.find();
+        const response = await Talist.findOne({ courseId });
+        console.log("TA list by course ID",response)
+        if (!response) {
+          return {
+            status: 404,
+            message: "TAs not found",
+            data: [],
+          }
+        }
+        const talist = response.talist
+        const tadetails = await User.find({idNumber: {$in: talist}})
+        console.log("TAs details",tadetails)
+        let TAs = [];
+        tadetails.forEach((ta) => {
+          TAs.push({
+            idNumber: ta.idNumber,
+            name: ta.name,
+            email: ta.email,
+            phoneNumber: ta.phoneNumber,
+            approved: ta.approved.some(id => id === courseId) ? true : false,
+          });
+        });
+        console.log("TAs",TAs )
+        return {
+          status: 201,
+          message: "TAs fetched Successfull",
+          data: TAs,
+        };
+        // const data = tadetails.map((ta) => {
+        //   idNumber: ta.idNumber,
+        //   name: ta.name,
+          // "idNumber": ta.idNumber,
+          // "name": ta.name,
+          // email: ta.email,
+          // phoneNumber: ta.phoneNumber,
+          // approved: ta.approved});
+          
+        // return await User.find();
       } catch (error) {
         console.error("Error fetching users:", error);
         throw new Error("Error fetching users");

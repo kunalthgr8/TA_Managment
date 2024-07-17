@@ -55,8 +55,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     approved: {
-      type: Boolean,
-      default: false,
+      type: [String],
     },
   },
   {

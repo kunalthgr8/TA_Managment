@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 import Wait from "../../assets/wait.svg";
 import { GET_ALL_USERS } from "../../graphql/queries/faculty.query";
 import { useQuery } from "@apollo/client";
+import { useParams } from "react-router-dom";
 
 function TaList() {
+  const { courseId } = useParams();
   const isFaculty = useSelector((state) => state.auth.isFaculty);
   const navigate = useNavigate();
   useEffect(() => {
@@ -15,7 +17,13 @@ function TaList() {
       navigate("/");
     }
   }, [isFaculty]);
-  const { loading, error, data } = useQuery(GET_ALL_USERS);
+
+  const { loading, error, data } = useQuery(GET_ALL_USERS,{
+    variables:{
+      courseId:courseId,
+    }
+  
+  });
   useEffect(()=>{
     
   },[data])
@@ -32,7 +40,7 @@ function TaList() {
       {isFaculty && (
         <div className="flex flex-col justify-center self-center w-4/5">
           <div className="flex w-full xl:w-3/4 flex-col justify-center self-center mt-8 p-10 pt-0 gap-2">
-            {data.getAllUsers.map((item) => (
+            {data.getAllUsers.data.map((item) => (
               <div
                 key={item.idNumber}
                 className="flex w-full flex-col justify-center self-center"

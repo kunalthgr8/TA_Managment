@@ -14,16 +14,17 @@ export const GET_USER = gql`
 `;
 
 export const GET_ALL_USERS = gql`
-  query GetAllUsers {
-    getAllUsers {
-      idNumber
-      name
-      email
-      phoneNumber
-      gender
-      bio
-      refreshToken
-      approved
+  query GetAllUsers($courseId: ID!) {
+    getAllUsers(courseId: $courseId) {
+      status
+      message
+      data {
+        idNumber
+        name
+        email
+        phoneNumber
+        approved
+      } 
     }
   }
 `;

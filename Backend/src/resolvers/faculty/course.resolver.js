@@ -3,6 +3,7 @@ import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import User from "../../models/ta/ta.js";
 import SelectedTa from "../../models/faculty/selectedTa.js";
+import Talist from "../../models/ta/talist.js";
 
 const coursesResolvers = {
   Query: {
@@ -156,58 +157,110 @@ const coursesResolvers = {
       }
 
 
+      // try {
+      //   // Check if TA is already assigned to another course
+      //   const existingTaCourse = await SelectedTa.findOne({ idNumber: taId });
+      //   if (existingTaCourse) {
+      //     throw new ApiError(400, "TA is already assigned to another course");
+      //   }
+
+      //   // Check if TA is approved
+      //   const taDetails = await User.findOne({ idNumber: taId });
+      //   if (!taDetails || taDetails.approved) {
+      //     throw new ApiError(404, "TA is not approved or does not exist");
+      //   }
+
+      //   // Create SelectedTa document for the TA if not already exists
+
+      //   // Add courseCode to the selectedTAs array in Courses collection
+      //   const course = await Courses.findOne({ idNumber });
+      //   if (!course) {
+      //     throw new ApiError(404, "Course not found");
+      //   }
+
+      //   let foundCourse = course.courses.find(
+      //     (c) => c.courseCode === courseCode
+      //   );
+      //   if (!foundCourse) {
+      //     throw new ApiError(404, "Course not found");
+      //   }
+
+      //   foundCourse.selectedTAs.push(taId);
+      //   course.status = "TA_ASSIGNED";
+      //   await course.save();
+      //   let selectedTa = await SelectedTa.findOneAndUpdate(
+      //     { idNumber: taId },
+      //     { $addToSet: { courseCodes: courseCode } },
+      //     { upsert: true, new: true }
+      //   );
+      //   taDetails.approved.push(courseCode);
+      //   await taDetails.save();
+      //   return {
+      //     status: 201,
+      //     message: "TA added to course successfully",
+      //     data: foundCourse,
+      //   };
+      // } catch (error) {
+      //   if (error instanceof ApiError) {
+      //     throw error;
+      //   } else {
+      //     throw new ApiError(500, error.message);
+      //   }
+      // }
+
       try {
-        // Check if TA is already assigned to another course
-        const existingTaCourse = await SelectedTa.findOne({ idNumber: taId });
-        if (existingTaCourse) {
-          throw new ApiError(400, "TA is already assigned to another course");
-        }
-
-        // Check if TA is approved
-        const taDetails = await User.findOne({ idNumber: taId });
-        if (!taDetails || taDetails.approved) {
-          throw new ApiError(404, "TA is not approved or does not exist");
-        }
-
-        // Create SelectedTa document for the TA if not already exists
-
-        // Add courseCode to the selectedTAs array in Courses collection
         const course = await Courses.findOne({ idNumber });
         if (!course) {
           throw new ApiError(404, "Course not found");
         }
-
         let foundCourse = course.courses.find(
           (c) => c.courseCode === courseCode
         );
         if (!foundCourse) {
           throw new ApiError(404, "Course not found");
         }
-
         foundCourse.selectedTAs.push(taId);
-        course.status = "TA_ASSIGNED";
         await course.save();
-        let selectedTa = await SelectedTa.findOneAndUpdate(
-          { idNumber: taId },
-          { $addToSet: { courseCodes: courseCode } },
-          { upsert: true, new: true }
-        );
-        taDetails.approved = true;
+        const taDetails = await User.findOne({ idNumber: taId });
+        if (!taDetails) {
+          throw new ApiError(404, "TA not found");
+        }
+        taDetails.approved.push(courseCode);
         await taDetails.save();
+        const talist = await Talist.findOne({ courseId: courseCode });
+        if (!talist) {
+          const newTalist = new Talist({
+            courseId: courseCode,
+            talist: [taId],
+          });
+          await newTalist.save();
+        } else {
+          talist.talist.push(taId);
+          await talist.save();
+        }
         return {
           status: 201,
           message: "TA added to course successfully",
           data: foundCourse,
         };
       } catch (error) {
-        if (error instanceof ApiError) {
-          throw error;
-        } else {
-          throw new ApiError(500, error.message);
-        }
+        throw new ApiError(500, error.message);
       }
+
     },
   },
 };
 
 export default coursesResolvers;
+
+
+
+
+
+
+
+
+
+
+
+

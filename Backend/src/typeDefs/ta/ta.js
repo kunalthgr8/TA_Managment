@@ -23,8 +23,14 @@ const userTypeDefs = `
         data: User
     }
 
+    type TAListApiResponse {
+        status: Int
+        message: String
+        data: [User]
+    }
+
     extend type Query {
-        getAllUsers: [User]
+        getAllUsers(courseId: ID!): TAListApiResponse
         getUser(idNumber: ID!): User
     }
 

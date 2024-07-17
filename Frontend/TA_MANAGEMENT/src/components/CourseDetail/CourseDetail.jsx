@@ -22,6 +22,7 @@ const ProfileDetails = ({ details, profName }) => (
 
 function CourseDetail() {
   const { courseId } = useParams();
+  const talisturl = `/ta-list/${courseId}`;
   const leavesUrl = `/leaves/${courseId}`;
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
@@ -95,7 +96,7 @@ function CourseDetail() {
       <div className="flex justify-center self-center p-5 w-2/3">
         <Button
           className="bg-custom-purple w-full text-white rounded-xl p-4"
-          onClick={() => navigate("/ta-list")}
+          onClick={() => navigate(talisturl)}
         >
           Add TAs
         </Button>
