@@ -113,7 +113,7 @@ function Leaves() {
           query: GET_FACULTY_LEAVES,
           variables: {
             input: {
-              courseId: "CS101",
+              courseId: courseId,
               idNumber: "12140970", //idNumber  is not required here that's why some random static idNumber is used
             },
           },
@@ -244,7 +244,7 @@ function Leaves() {
               <div className="flex flex-col justify-center self-center mt-5 md:mt-0 md:flex-row w-full md:w-5/12 gap-2 md:gap-1 lg:gap-3">
                 <Button
                   onClick={() =>
-                    handleApprove("CS101", leave.idNumber, leave.id)
+                    handleApprove(courseId, leave.idNumber, leave.id)
                   }
                   width="flex justify-center self-center w-full"
                   className="bg-green-500 font-bold rounded-3xl p-2 w-11/12 text-white"

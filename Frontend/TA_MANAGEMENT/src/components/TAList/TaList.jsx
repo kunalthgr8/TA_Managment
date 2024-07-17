@@ -59,6 +59,7 @@ function TaList() {
                       id: item.idNumber,
                       contact: item.phoneNumber,
                       approved: item.approved || false,
+                      courseId: courseId
                     }}
                   />
                 </div>

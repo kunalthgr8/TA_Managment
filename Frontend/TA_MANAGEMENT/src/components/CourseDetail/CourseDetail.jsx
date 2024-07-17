@@ -8,6 +8,7 @@ import {
   GET_COURSE_BY_CODE,
   GET_TA_BY_COURSE_CODE,
 } from "../../graphql/queries/course.query";
+import { GET_FACULTY_LEAVES } from "../../graphql/queries/facultyleave.query";
 
 const ProfileDetails = ({ details, profName }) => (
   <div className="flex justify-center self-center flex-col gap-4 text-custom-black">
@@ -22,34 +23,36 @@ const ProfileDetails = ({ details, profName }) => (
 
 function CourseDetail() {
   const { courseId } = useParams();
-  const talisturl = `/ta-list/${courseId}` ;
-  const leavesUrl = `/leaves/${courseId}`;
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const idNumber = user.idNumber;
 
-  const { loading, error, data } = useQuery(GET_COURSE_BY_CODE, {
+  const { loading: courseLoading, error: courseError, data: courseData } = useQuery(GET_COURSE_BY_CODE, {
     variables: { courseCode: courseId, idNumber },
   });
 
-  const {
-    loading: taLoading,
-    error: taError,
-    data: taData,
-  } = useQuery(GET_TA_BY_COURSE_CODE, {
+  const { loading: leavesLoading, error: leavesError, data: leavesData } = useQuery(GET_FACULTY_LEAVES, {
+    variables: { input: { courseId, idNumber } },
+  });
+
+  const { loading: taLoading, error: taError, data: taData } = useQuery(GET_TA_BY_COURSE_CODE, {
     variables: { courseCode: courseId, idNumber },
   });
-  console.log("TA DATA: ", taData);
+
   const [courseDetails, setCourseDetails] = useState(null);
+  const [numberOfLeaves, setNumberOfLeaves] = useState(0);
 
   useEffect(() => {
-    if (data && data.getCourseByCode && data.getCourseByCode.data) {
-      setCourseDetails(data.getCourseByCode.data);
+    if (courseData?.getCourseByCode?.data) {
+      setCourseDetails(courseData.getCourseByCode.data);
     }
-    console.log("TA DATA in UseEffect: ", taData);
-  }, [data]);
+    if (leavesData?.getLeave?.data?.leave) {
+      console.log("Leaves Data:", leavesData.getLeave.data.leave[0].leaves);
+      setNumberOfLeaves(leavesData.getLeave.data.leave[0].leaves.length);
+    }
+  }, [courseData, leavesData]);
 
-  if (loading || taLoading) {
+  if (courseLoading || taLoading) {
     return (
       <div className="flex justify-center self-center gap-10 w-full mt-10">
         <Loader />
@@ -57,8 +60,8 @@ function CourseDetail() {
     );
   }
 
-  if (error || taError) {
-    return <p>Error: {error ? error.message : taError.message}</p>;
+  if (courseError || taError) {
+    return <p>Error: {courseError ? courseError.message : taError.message}</p>;
   }
 
   if (!courseDetails) {
@@ -69,48 +72,44 @@ function CourseDetail() {
 
   const taInfo = (
     <div className="flex flex-col w-full justify-center self-center p-4 sm:p-10 pt-0 gap-2">
-      {taData &&
-        taData.getTAByCourseCode &&
-        taData.getTAByCourseCode.data.map((ta, index) => (
-          // <h1> Hellooo</h1>
-          <>
-            <Card
-              key={index}
-              className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
-              src={cat}
-              user={{
-                name: ta.name,
-                email: ta.email,
-                id: ta.idNumber,
-                contact: ta.phoneNumber,
-                approved: true,
-              }}
-            />
-          </>
-        ))}
+      {taData?.getTAByCourseCode?.data.map((ta, index) => (
+        <Card
+          key={index}
+          className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
+          src={cat}
+          user={{
+            name: ta.name,
+            email: ta.email,
+            id: ta.idNumber,
+            contact: ta.phoneNumber,
+            approved: true,
+          }}
+        />
+      ))}
     </div>
   );
 
   const addTaButton = (
-    <div className="flex justify-center self-center  w-full">
+    <div className="flex justify-center self-center w-full">
       <div className="flex justify-center self-center p-5 w-2/3">
         <Button
           className="bg-custom-purple w-full text-white rounded-xl p-4"
-          onClick={() => navigate(talisturl)}
+          onClick={() => navigate(`/ta-list/${courseId}`)}
         >
           Add TAs
         </Button>
       </div>
     </div>
   );
+
   const TaLeavesButton = (
-    <div className="flex justify-center self-center  w-3/4">
+    <div className="flex justify-center self-center w-3/4">
       <div className="flex justify-center self-center p-5 pt-0 w-2/3">
         <Button
           className="bg-red-500 w-full text-white rounded-xl p-4"
-          onClick={() => navigate(leavesUrl)}
+          onClick={() => navigate(`/leaves/${courseId}`)}
         >
-          Show Leaves
+          Show Leaves {`(${numberOfLeaves})`}
         </Button>
       </div>
     </div>
@@ -140,8 +139,7 @@ function CourseDetail() {
         <h1 className="text-xl font-bold ml-5 sm:ml-24 mt-8">
           Teaching Assistant Information
         </h1>
-        {taData && taInfo}
-        
+        {taInfo}
         {addTaButton}
       </div>
     </div>

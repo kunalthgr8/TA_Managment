@@ -8,7 +8,9 @@ import { MdCheck, MdCancel } from "react-icons/md";
 import { ADD_TA_TO_COURSE } from "../../graphql/queries/course.query.js";
 
 function ToBeApprovedFor() {
-  const { taId } = useParams();
+  const { taId,courseId } = useParams();
+  console.log("TA ID:", taId);
+  console.log("Course ID:", courseId);
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.user);
   const [data, setData] = useState({
@@ -45,18 +47,14 @@ function ToBeApprovedFor() {
   }, [courseDetails]);
 
   const handleSubmit = async () => {
-    if (data.courseCode === "" || data.confirmTA === "") {
-      setError("Please fill all the fields");
-      return;
-    }
 
     try {
       setLoading(true);
       const response = await addTaToCourse({
         variables: {
           idNumber: userData?.idNumber,
-          courseCode: data.courseCode,
-          taId: data.confirmTA,
+          courseCode: courseId,
+          taId: taId,
         }
       });
       console.log("Data:", data);
@@ -90,22 +88,11 @@ function ToBeApprovedFor() {
                 <p className="text-sm font-medium text-custom-black">
                   COURSE CODE
                 </p>
-                <select
-                  value={data.courseCode}
-                  onChange={(e) =>
-                    setData({ ...data, courseCode: e.target.value })
-                  }
-                  className="text-sm bg-slate-100 p-2 rounded-lg"
-                >
-                  <option value="" className="text-sm bg-slate-100">
-                    Select Course
-                  </option>
-                  {coursesOptions.map((course) => (
-                    <option key={course.value} value={course.value}>
-                      {course.label}
-                    </option>
-                  ))}
-                </select>
+                <Input
+                  type="text"
+                  placeholder="TA IdNumber"
+                  value={courseId}
+                />
               </div>
               <div className="flex flex-col pb-3 gap-1">
                 <p className="text-sm font-medium text-custom-black">
@@ -115,9 +102,6 @@ function ToBeApprovedFor() {
                   type="text"
                   placeholder="TA IdNumber"
                   value={data.confirmTA}
-                  onChange={(e) =>
-                    setData((prev) => ({ ...prev, confirmTA: e.target.value }))
-                  }
                 />
               </div>
             </div>

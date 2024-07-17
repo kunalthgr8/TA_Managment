@@ -12,6 +12,7 @@ function Card({
     id: "IdNumber",
     contact: "Contact",
     approved: false,
+    courseId
   },
 }) {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ function Card({
             <Button
               width="flex justify-center self-center w-full"
               className="bg-green-500 font-bold rounded-3xl p-2 w-11/12 text-white shadow-lg"
-              onClick={() => navigate(`/approveTa/${user.id}`)}
+              onClick={() => navigate(`/approveTa/${user.id}/${user.courseId}`)}
             >
               Approve
             </Button>

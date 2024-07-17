@@ -115,7 +115,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/approveTa/:taId",
+        path: "/approveTa/:taId/:courseId",
         element: (
           <AuthLayout authentication={true}>
             <ToBeApprovedFor />

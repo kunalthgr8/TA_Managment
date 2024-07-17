@@ -171,20 +171,10 @@ function FacultyDashboard() {
                     <p className="text-xs sm:text-sm font-medium text-red-500">
                       ID Number
                     </p>
-                    {editAbleUser ? (
-                      <Input
-                        type="text"
-                        name="idNumber"
-                        value={info.idNumber}
-                        placeholder="ID Number"
-                        className="text-xs sm:text-sm font-medium text-heading-color border-b border-text-heading"
-                        onChange={handleChange}
-                      />
-                    ) : (
-                      <p className="text-sm font-medium text-heading-color border-b border-text-heading">
-                        {info.idNumber}
-                      </p>
-                    )}
+
+                    <p className="text-sm font-medium text-heading-color border-b border-text-heading">
+                      {info.idNumber}
+                    </p>
                   </div>
                 </div>
               </div>

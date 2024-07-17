@@ -258,7 +258,7 @@ function TaSocialInfo() {
         </div>
       )}
 
-      { !socialLinks && <Button
+      { (socialLinks.length== 0) && <Button
         className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
         width="w-1/4"
         onClick={handleAddAnother}
