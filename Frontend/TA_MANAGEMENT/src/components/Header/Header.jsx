@@ -51,20 +51,6 @@ function Header() {
       facultyReq: "either",
     },
     {
-      name: "TA List",
-      slug: "/ta-list",
-      color: "text-custom-black",
-      authenticationReq: true,
-      facultyReq: "either",
-    },
-    {
-      name: "Leaves",
-      slug: "/leaves",
-      color: "text-custom-black",
-      authenticationReq: true,
-      facultyReq: "Course Added",
-    },
-    {
       name: "Register",
       slug: "/login",
       color: "text-red-500",

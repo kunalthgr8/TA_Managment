@@ -22,6 +22,7 @@ const ProfileDetails = ({ details, profName }) => (
 
 function CourseDetail() {
   const { courseId } = useParams();
+  const leavesUrl = `/leaves/${courseId}`;
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const idNumber = user.idNumber;
@@ -81,7 +82,7 @@ function CourseDetail() {
                 email: ta.email,
                 id: ta.idNumber,
                 contact: ta.phoneNumber,
-                approved: true
+                approved: true,
               }}
             />
           </>
@@ -97,6 +98,18 @@ function CourseDetail() {
           onClick={() => navigate("/ta-list")}
         >
           Add TAs
+        </Button>
+      </div>
+    </div>
+  );
+  const TaLeavesButton = (
+    <div className="flex justify-center self-center  w-3/4">
+      <div className="flex justify-center self-center p-5 pt-0 w-2/3">
+        <Button
+          className="bg-red-500 w-full text-white rounded-xl p-4"
+          onClick={() => navigate(leavesUrl)}
+        >
+          Show Leaves
         </Button>
       </div>
     </div>
@@ -122,10 +135,12 @@ function CourseDetail() {
             profName={capitalizeName(user.name)}
           />
         </div>
+        {TaLeavesButton}
         <h1 className="text-xl font-bold ml-5 sm:ml-24 mt-8">
           Teaching Assistant Information
         </h1>
         {taData && taInfo}
+        
         {addTaButton}
       </div>
     </div>

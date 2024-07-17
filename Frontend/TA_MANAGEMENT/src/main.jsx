@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/leaves",
+        path: "/leaves/:courseId",
         element: (
           <AuthLayout authentication={true}>
             <Leaves />
