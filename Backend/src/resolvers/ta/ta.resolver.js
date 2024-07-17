@@ -93,6 +93,23 @@ const taResolver = {
         throw new Error(error.message || "Error fetching user by ID number");
       }
     },
+    getUserCourses: async (parent, { idNumber }, context) => {
+      authenticate(context);
+      try {
+        const user = await User.findOne({ idNumber });
+        if (!user) {
+          throw new ApiError(404, "User not found with this ID number");
+        }
+        return {
+          status: 201,
+          message: "Courses fetched successfully",
+          data: user,
+        }
+      } catch (error) {
+        console.error("Error fetching user by ID number:", error);
+        throw new Error(error.message || "Error fetching user by ID number");
+      }
+    },
   },
   Mutation: {
     generateAccessAndRefreshToken: async (parent, { idNumber }) => {

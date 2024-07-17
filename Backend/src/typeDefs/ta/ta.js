@@ -32,6 +32,7 @@ const userTypeDefs = `
     extend type Query {
         getAllUsers(courseId: ID!): TAListApiResponse
         getUser(idNumber: ID!): User
+        getUserCourses(idNumber: ID!): ApiResponse
     }
 
     input RegisterInput {

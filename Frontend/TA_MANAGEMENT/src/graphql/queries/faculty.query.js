@@ -13,6 +13,20 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_USER_COURSES = gql`
+  query GetUserCourses($idNumber: ID!) {
+    getUserCourses(idNumber: $idNumber) {
+      status
+      message
+      data {
+        idNumber
+        approved
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ALL_USERS = gql`
   query GetAllUsers($courseId: ID!) {
     getAllUsers(courseId: $courseId) {
