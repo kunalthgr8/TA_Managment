@@ -32,7 +32,7 @@ const TaLeaves = () => {
           { query: GET_LEAVES, 
             variables: { input: 
               {
-                courseId: "CS101",
+                courseId: courseId,
                 idNumber: userData.idNumber,
               },
             } 
@@ -45,7 +45,7 @@ const TaLeaves = () => {
     {
       variables: {
         input: {
-          courseId: "CS101",
+          courseId: courseId,
           idNumber: userData.idNumber,
         },
       },
@@ -99,7 +99,7 @@ const TaLeaves = () => {
         const response = await createLeave({
           variables: {
             input: {
-              courseId: "CS101",
+              courseId: courseId,
               idNumber: userData.idNumber,
               leaves: leaves,
             },

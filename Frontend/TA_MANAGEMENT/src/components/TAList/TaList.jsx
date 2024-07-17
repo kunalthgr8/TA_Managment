@@ -24,6 +24,7 @@ function TaList() {
     }
   
   });
+  console.log("Data of all Users......:",data) 
   useEffect(()=>{
     
   },[data])

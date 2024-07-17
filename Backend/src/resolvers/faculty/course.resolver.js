@@ -87,7 +87,7 @@ const coursesResolvers = {
         return {
           status: 200,
           message: "TAs fetched Successfull",
-          data: TADetails,
+          data: TAs,
         };
       } catch (error) {
         console.error("Error fetching TAs by course code:", error);
@@ -227,17 +227,17 @@ const coursesResolvers = {
         }
         taDetails.approved.push(courseCode);
         await taDetails.save();
-        const talist = await Talist.findOne({ courseId: courseCode });
-        if (!talist) {
-          const newTalist = new Talist({
-            courseId: courseCode,
-            talist: [taId],
-          });
-          await newTalist.save();
-        } else {
-          talist.talist.push(taId);
-          await talist.save();
-        }
+        // const talist = await Talist.findOne({ courseId: courseCode });
+        // if (!talist) {
+        //   const newTalist = new Talist({
+        //     courseId: courseCode,
+        //     talist: [taId],
+        //   });
+        //   await newTalist.save();
+        // } else {
+        //   talist.talist.push(taId);
+        //   await talist.save();
+        // }
         return {
           status: 201,
           message: "TA added to course successfully",
@@ -248,6 +248,37 @@ const coursesResolvers = {
       }
 
     },
+    addTAToCourseList: async (_, { courseCode, taId }, context) => {
+      if (!context.user) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      try {
+        const course = await Talist.findOne({ courseId: courseCode });
+        if (!course) {
+          const newCourse = new Talist({
+            courseId: courseCode,
+            talist: [taId],
+          });
+          const response = await newCourse.save({new: true});
+          return {
+            status: 201,
+            message: "TA added to course successfully",
+            data: response,
+          };
+        } else {
+          course.talist.push(taId);
+          const response = await course.save({new: true});
+          return {
+            status: 201,
+            message: "TA added to course successfully",
+            data: response,
+          };
+        }
+        
+      } catch (error) {
+        throw new ApiError(500, error.message);
+      }
+    }
   },
 };
 

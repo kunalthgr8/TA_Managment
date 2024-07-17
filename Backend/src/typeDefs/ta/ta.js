@@ -11,6 +11,19 @@ const userTypeDefs = `
         approved: [String]
     }
 
+    type UserCourseList {
+        idNumber: ID!
+        name: String!
+        email: String!
+        phoneNumber: String!
+        gender: String
+        bio: String
+        refreshToken: String
+        accessToken: String
+        approved: Boolean
+    }
+
+
     type AuthPayload {
         accessToken: String
         refreshToken: String
@@ -26,7 +39,7 @@ const userTypeDefs = `
     type TAListApiResponse {
         status: Int
         message: String
-        data: [User]
+        data: [UserCourseList]
     }
 
     extend type Query {

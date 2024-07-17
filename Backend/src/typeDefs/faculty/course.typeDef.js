@@ -36,7 +36,18 @@ const courseTypeDef = `
   status: Int
   message: String
   data: [TADetail]
-}
+  }
+
+  type TAList{
+    courseId: String
+    talist: [String]
+  }
+
+  type CourseTaListApiResponse {
+    status: Int
+    message: String
+    data: TAList
+  }
 
   input CourseInfo {
     courseName: String!
@@ -62,6 +73,7 @@ const courseTypeDef = `
     addCourse(input: CourseDetailInput): CourseApiResponse
     deleteFacultyCourse(idNumber: ID!): CourseApiResponse
     addTaToCourse(idNumber: ID!, courseCode: String!, taId:ID! ): CourseDetailApiResponse
+    addTAToCourseList(courseCode: String!, taId:ID! ): CourseTaListApiResponse
   }
 `;
 
