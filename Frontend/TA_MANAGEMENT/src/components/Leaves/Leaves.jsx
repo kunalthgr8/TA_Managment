@@ -253,7 +253,7 @@ function Leaves() {
                 </Button>
                 <Button
                   onClick={() =>
-                    handleReject("CS101", leave.idNumber, leave.id)
+                    handleReject(courseId, leave.idNumber, leave.id)
                   }
                   width="flex justify-center self-center w-full"
                   className="bg-red-500 font-bold rounded-3xl p-2 w-11/12 text-white"
