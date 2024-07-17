@@ -96,7 +96,10 @@ const taResolver = {
     getUserCourses: async (parent, { idNumber }, context) => {
       authenticate(context);
       try {
+        console.log("ID NUMBER", idNumber)
+        console.log("CONTEXT", context.user)
         const user = await User.findOne({ idNumber });
+        console.log("USER", user)
         if (!user) {
           throw new ApiError(404, "User not found with this ID number");
         }

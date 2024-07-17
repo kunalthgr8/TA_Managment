@@ -24,7 +24,6 @@ export const GET_USER_COURSES = gql`
         }
       }
     }
-  }
 `;
 
 export const GET_ALL_USERS = gql`

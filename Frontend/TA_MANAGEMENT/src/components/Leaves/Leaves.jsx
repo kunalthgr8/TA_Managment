@@ -7,9 +7,11 @@ import { GET_FACULTY_LEAVES } from "../../graphql/queries/facultyleave.query";
 // import { set } from "mongoose";
 import { LEAVE_APPROVE } from "../../graphql/mutations/facultyleave.mutations";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Leaves() {
   const { courseId } = useParams();
+  const navigate = useNavigate();
   // const leavesRequest = 2; // Replace with actual data from state if needed
   const [leavesRequest, setLeavesRequest] = useState(0);
   const isFaculty = useSelector((state) => state.auth.isFaculty);
@@ -34,6 +36,9 @@ function Leaves() {
       status: "Pending",
     },
   ]);
+  if (!isFaculty) {
+    navigate("/");
+  }
 
   const [leaveHistory, setLeaveHistory] = useState([
     {

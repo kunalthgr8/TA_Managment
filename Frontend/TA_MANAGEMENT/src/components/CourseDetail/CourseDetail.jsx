@@ -22,7 +22,7 @@ const ProfileDetails = ({ details, profName }) => (
 
 function CourseDetail() {
   const { courseId } = useParams();
-  const talisturl = `/ta-list/${courseId}`;
+  const talisturl = `/ta-list/${courseId}` ;
   const leavesUrl = `/leaves/${courseId}`;
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
