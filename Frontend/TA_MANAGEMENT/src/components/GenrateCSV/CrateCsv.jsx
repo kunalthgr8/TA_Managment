@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Button, Input } from "../index";
@@ -7,11 +8,13 @@ import {
   PREDICT_MUTATION,
 } from "../../graphql/mutations/acadmeic.mutation.js";
 
+
 const CreateCsv = () => {
   const [generateCsv, { data: csvData, loading: csvLoading, error: csvError }] = useMutation(GENERATE_CSV_MUTATION);
   const [trainModel, { data: trainData, loading: trainLoading, error: trainError }] = useMutation(TRAIN_MODEL_MUTATION);
   const [predict, { data: resultListData, loading: resultListLoading, error: resultListError }] = useMutation(PREDICT_MUTATION);
   const [dataTrain, setDataTrain] = useState(null);
+
 
   const [courseData, setCourseData] = useState({ courseName: "", courseId: "" });
 
@@ -20,9 +23,11 @@ const CreateCsv = () => {
     setCourseData((prevState) => ({ ...prevState, [name]: value }));
   };
 
+
   const handleGenerateCsv = async () => {
     try {
       const response = await generateCsv();
+
       console.log("CSV generated:", response.data.generateCsv);
     } catch (err) {
       console.error("Error generating CSV:", err);
@@ -58,6 +63,7 @@ const CreateCsv = () => {
     <div className="flex flex-col justify-center self-center mt-10 gap-5">
       <Button
         onClick={handleGenerateCsv}
+
         disabled={csvLoading}
         className="text-custom-purple w-full bg-white rounded-xl p-4 font-bold border border-custom-purple shadow-md"
       >
@@ -107,6 +113,7 @@ const CreateCsv = () => {
           {resultListError && <p className="text-red-500">Error predicting course data: {resultListError.message}</p>}
         </>
       )}
+
     </div>
   );
 };
