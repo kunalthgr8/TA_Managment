@@ -1,3 +1,4 @@
+
 import { exec } from "child_process";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -6,6 +7,12 @@ import { createObjectCsvWriter } from "csv-writer";
 import Skills from "../../models/ta/skills.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// import {ApiError} from '../../utils/ApiError.js';
+// import {ApiResponse} from '../../utils/ApiResponse.js';
+import { response } from 'express';
+import Talist from '../../models/ta/talist.js';
+
 const academicsResolvers = {
   Mutation: {
     generateCsv: async () => {
@@ -79,13 +86,14 @@ const academicsResolvers = {
           });
         });
 
-        return "Training completed successfully.";
+        
+        return 'Training completed successfully.';
       } catch (error) {
         console.error(error);
         return `Training failed: ${error}`;
       }
     },
-    getIdNumbersByCourse: async (_, { courseName }) => {
+    getIdNumbersByCourse: async (_, { courseName,courseId }) => {
       try {
         const scriptPath =
           "/home/lalit/Desktop/TA/TA_Managment/Backend/predict.py";
@@ -108,7 +116,17 @@ const academicsResolvers = {
           );
         });
 
-        const idNumbers = result.split("\n"); // Assuming the output is newline-separated
+        const idNumbers = result.split('\n'); // Assuming the output is newline-separated
+        const course = await Talist.findOne({ courseId: courseId });
+        if (!course) {
+          const newCourse = new Talist({
+            courseId: courseId,
+            talist: idNumbers,
+          });
+          const response = await newCourse.save({new: true});
+          
+        }
+        console.log(response);
         return idNumbers;
       } catch (error) {
         console.error(error);
