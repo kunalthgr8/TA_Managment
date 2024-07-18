@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 def train_model_and_save():
-    df = pd.read_csv('tadata.csv')
+    df = pd.read_csv('skillsData.csv')
     df["combined"] = df.apply(lambda row: ' '.join([str(row[col]) for col in df.columns if col not in ['idNumber','areaOfSpecialization','primarySkills','patents','publications']]), axis=1)
 
     model = SentenceTransformer("all-MiniLM-L6-v2")

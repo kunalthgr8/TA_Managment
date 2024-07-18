@@ -1,4 +1,4 @@
-ID Number,Area Of Specialization,Primary Skills,Secondary Skills,Primary Programming Skills,Secondary Programming Skills,Software Tools,Hardware Tools,Patents,Publications
+idNumber,areaOfSpecialization,primarySkills,secondarySkills,primaryProgSkills,secondaryProgSkills,softwareTools,hardwareTools,patents,publications
 12140000,"machine Learning, Devops",Nodejs,Devops,Java,Javascript,Git,Arduino,https,https..
 12140001,dosto ko chutiya samjna ,Devops,Nodes,"badh me jaye logo ke dukh, be professioanal ",khud ko bhagwan mnana,Git,arduino,https,https
 12140002,Power Elctronics,"Design, Simulation",AutoCAD,"Python, Java",Cpp,SolidWorks,CNC machines,http,http..

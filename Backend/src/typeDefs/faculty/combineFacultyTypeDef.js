@@ -6,7 +6,7 @@ import csvTypeDef from "./academic.typeDef.js";
 // import selectedTaTypeDef from "./selectedTa.typeDef.js";
 import FacultyLeaveTypeDefs from "./leave.typeDef.js";
 import Faculty from "../../models/faculty/faculty.js";
-import academicsTypeDef from "./academics.typeDef.js.js";
+import academicsTypeDef from "./academics.typeDef.js";
 
 
 const Faculty_TypeDefs = mergeTypeDefs([

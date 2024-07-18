@@ -25,19 +25,19 @@ const academicsResolvers = {
         const csvWriter = createObjectCsvWriter({
           path: join(__dirname, "../../../skillsData.csv"), // updated path
           header: [
-            { id: "idNumber", title: "ID Number" },
-            { id: "areaOfSpecialization", title: "Area Of Specialization" },
-            { id: "primarySkills", title: "Primary Skills" },
-            { id: "secondarySkills", title: "Secondary Skills" },
-            { id: "primaryProgSkills", title: "Primary Programming Skills" },
+            { id: "idNumber", title: "idNumber" },
+            { id: "areaOfSpecialization", title: "areaOfSpecialization" },
+            { id: "primarySkills", title: "primarySkills" },
+            { id: "secondarySkills", title: "secondarySkills" },
+            { id: "primaryProgSkills", title: "primaryProgSkills" },
             {
               id: "secondaryProgSkills",
-              title: "Secondary Programming Skills",
+              title: "secondaryProgSkills",
             },
-            { id: "softwareTools", title: "Software Tools" },
-            { id: "hardwareTools", title: "Hardware Tools" },
-            { id: "patents", title: "Patents" },
-            { id: "publications", title: "Publications" },
+            { id: "softwareTools", title: "softwareTools" },
+            { id: "hardwareTools", title: "hardwareTools" },
+            { id: "patents", title: "patents" },
+            { id: "publications", title: "publications" },
           ],
         });
 
@@ -65,11 +65,12 @@ const academicsResolvers = {
       }
     },
     trainModel: async () => {
+      console.log("Training model... 111111");
       try {
         // const scriptPath = path.join('../../../', 'train.py');
         const scriptPath =
           "/home/lalit/Desktop/TA/TA_Managment/Backend/train.py";
-
+          console.log("Training model...v222222222222");
         // Execute the Python script
         await new Promise((resolve, reject) => {
           exec(`python3 ${scriptPath}`, (error, stdout, stderr) => {
@@ -77,6 +78,7 @@ const academicsResolvers = {
               console.error(`Error: ${error.message}`);
               reject(`Error: ${error.message}`);
             }
+            console.log("Training model...333333333333");
             if (stderr) {
               console.error(`Stderr: ${stderr}`);
               reject(`Stderr: ${stderr}`);
@@ -87,10 +89,16 @@ const academicsResolvers = {
         });
 
         
-        return 'Training completed successfully.';
+        return {
+          status: 201,
+          message: "Training completed successfully",
+        };
       } catch (error) {
         console.error(error);
-        return `Training failed: ${error}`;
+        return {
+          status: 500,
+          message: "Internal Server Error",
+        };
       }
     },
     getIdNumbersByCourse: async (_, { courseName,courseId }) => {
@@ -127,10 +135,16 @@ const academicsResolvers = {
           
         }
         console.log(response);
-        return idNumbers;
+        return {
+          status: 201,
+          message: "TA added to course successfully",
+        };
       } catch (error) {
         console.error(error);
-        return [];
+        return {
+          status: 500,
+          message: "Internal Server Error",
+        };
       }
     },
   },
