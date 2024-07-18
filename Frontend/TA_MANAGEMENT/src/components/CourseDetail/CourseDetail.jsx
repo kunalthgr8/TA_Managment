@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { ProfileLogo, Card, Button, Loader } from "../index";
-import cat from "../../assets/cat.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
+import { ProfileLogo, Card, Button, Loader } from "../index";
+import cat from "../../assets/cat.jpg";
 import {
   GET_COURSE_BY_CODE,
   GET_TA_BY_COURSE_CODE,
@@ -24,8 +24,7 @@ const ProfileDetails = ({ details, profName }) => (
 function CourseDetail() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
-  const idNumber = user.idNumber;
+  const { idNumber, name } = useSelector((state) => state.auth.user);
 
   const { loading: courseLoading, error: courseError, data: courseData } = useQuery(GET_COURSE_BY_CODE, {
     variables: { courseCode: courseId, idNumber },
@@ -68,53 +67,6 @@ function CourseDetail() {
     return <p>No course details found.</p>;
   }
 
-  const TaAdded = courseDetails.status === "TA_ASSIGNED";
-
-  const taInfo = (
-    <div className="flex flex-col w-full justify-center self-center p-4 sm:p-10 pt-0 gap-2">
-      {taData?.getTAByCourseCode?.data.map((ta, index) => (
-        <Card
-          key={index}
-          className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
-          src={cat}
-          user={{
-            name: ta.name,
-            email: ta.email,
-            id: ta.idNumber,
-            contact: ta.phoneNumber,
-            approved: true,
-          }}
-        />
-      ))}
-    </div>
-  );
-
-  const addTaButton = (
-    <div className="flex justify-center self-center w-full">
-      <div className="flex justify-center self-center p-5 w-2/3">
-        <Button
-          className="bg-custom-purple w-full text-white rounded-xl p-4"
-          onClick={() => navigate(`/ta-list/${courseId}`)}
-        >
-          Add TAs
-        </Button>
-      </div>
-    </div>
-  );
-
-  const TaLeavesButton = (
-    <div className="flex justify-center self-center w-3/4">
-      <div className="flex justify-center self-center p-5 pt-0 w-2/3">
-        <Button
-          className="bg-red-500 w-full text-white rounded-xl p-4"
-          onClick={() => navigate(`/leaves/${courseId}`)}
-        >
-          Show Leaves {`(${numberOfLeaves})`}
-        </Button>
-      </div>
-    </div>
-  );
-
   const capitalizeName = (name) =>
     name
       .split(" ")
@@ -130,17 +82,45 @@ function CourseDetail() {
             alt="Professor"
             className="w-[200px] h-[200px] rounded-full flex justify-center self-center"
           />
-          <ProfileDetails
-            details={courseDetails}
-            profName={capitalizeName(user.name)}
-          />
+          <ProfileDetails details={courseDetails} profName={capitalizeName(name)} />
         </div>
-        {TaLeavesButton}
-        <h1 className="text-xl font-bold ml-5 sm:ml-24 mt-8">
-          Teaching Assistant Information
-        </h1>
-        {taInfo}
-        {addTaButton}
+        <div className="flex justify-center self-center w-3/4">
+          <div className="flex justify-center self-center p-5 pt-0 w-2/3">
+            <Button
+              className="bg-red-500 w-full text-white rounded-xl p-4"
+              onClick={() => navigate(`/leaves/${courseId}`)}
+            >
+              Show Leaves {`(${numberOfLeaves})`}
+            </Button>
+          </div>
+        </div>
+        <h1 className="text-xl font-bold ml-5 sm:ml-24 mt-8">Teaching Assistant Information</h1>
+        <div className="flex flex-col w-full justify-center self-center p-4 sm:p-10 pt-0 gap-2">
+          {taData?.getTAByCourseCode?.data.map((ta, index) => (
+            <Card
+              key={index}
+              className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
+              src={cat}
+              user={{
+                name: ta.name,
+                email: ta.email,
+                id: ta.idNumber,
+                contact: ta.phoneNumber,
+                approved: true,
+              }}
+            />
+          ))}
+        </div>
+        <div className="flex justify-center self-center w-full">
+          <div className="flex justify-center self-center p-5 w-2/3">
+            <Button
+              className="bg-custom-purple w-full text-white rounded-xl p-4"
+              onClick={() => navigate(`/ta-list/${courseId}`)}
+            >
+              Add TAs
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

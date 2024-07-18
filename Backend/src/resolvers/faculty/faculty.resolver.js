@@ -158,6 +158,8 @@ const facultyResolvers = {
     },
 
     updateFaculty: async (_, { id, name, email, phoneNumber }) => {
+      console.log("updateFaculty");
+      console.log(id, name, email, phoneNumber);
       authenticate(context);
       if (id !== context.user.idNumber) {
         throw new ApiError(404, "Authneticated");

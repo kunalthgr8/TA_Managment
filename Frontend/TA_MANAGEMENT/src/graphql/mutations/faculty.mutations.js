@@ -51,3 +51,18 @@ export const CHANGE_PASSWORD_FACULTY = gql`
     }
   }
 `;
+
+export const UPDATE_FACULTY = gql`
+  mutation updateFaculty($input: UpdateFacInput!) {
+    updateFaculty(input: $input) {
+      status
+      message
+      data {
+        idNumber
+        name
+        email
+        phoneNumber
+      }
+    }
+  }
+`;

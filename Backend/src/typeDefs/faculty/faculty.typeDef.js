@@ -38,6 +38,14 @@ const facultyTypeDef = `
     password: String!
   }
 
+   input UpdateFacInput {
+    idNumber: ID!
+    name: String
+    email: String
+    password: String
+    phoneNumber: String
+  }
+
   input ChangePasswordInputFaculty {
         idNumber: ID!
         oldPassword: String!
@@ -48,7 +56,7 @@ const facultyTypeDef = `
   extend type Mutation {
     registerFaculty(input: RegisterInput!): FacultyApiResponse
     loginFaculty(input: LoginInput!): FacultyApiResponse
-    updateFaculty(id: ID!, name: String, email: String, phoneNumber: String): Faculty
+    updateFaculty(input: UpdateFacInput!): FacultyApiResponse
     deleteFaculty(id: ID!): Faculty
     logoutFaculty(idNumber: ID!): FacultyApiResponse
     changePasswordFaculty(input: ChangePasswordInputFaculty!): FacultyApiResponse

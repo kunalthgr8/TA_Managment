@@ -35,10 +35,6 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
-      {
         path: "/changePassword",
         element: (
           <AuthLayout authentication={true}>

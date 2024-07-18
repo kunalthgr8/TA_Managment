@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "../index";
 import { useNavigate } from "react-router-dom";
 
@@ -12,15 +13,21 @@ function Card({
     id: "IdNumber",
     contact: "Contact",
     approved: false,
-    courseId
+    courseId: "",
   },
 }) {
   const navigate = useNavigate();
-  console.log(user);
+
+  const handleDetailsClick = () => {
+    navigate(`/taPublicView/${user.id}`);
+  };
+
+  const handleApproveClick = () => {
+    navigate(`/approveTa/${user.id}/${user.courseId}`);
+  };
+
   return (
-    <div
-      className={`flex flex-col md:flex-row justify-center self-center bg-slate-100 rounded-lg p-5 gap-4 w-4/5 ${className}`}
-    >
+    <div className={`flex flex-col md:flex-row justify-center self-center bg-slate-100 rounded-lg p-5 gap-4 w-4/5 ${className}`}>
       <div className="flex flex-col md:flex-row justify-center self-center w-full">
         <div className="flex flex-col justify-center self-center w-full md:flex-row gap-5 md:justify-evenly p-4">
           <img
@@ -52,7 +59,7 @@ function Card({
           <Button
             width="flex justify-center self-center w-full"
             className="bg-custom-gray font-bold rounded-3xl p-2 w-11/12 text-custom-purple shadow-lg"
-            onClick={() => navigate(`/taPublicView/${user.id}`)}
+            onClick={handleDetailsClick}
           >
             Details
           </Button>
@@ -60,7 +67,7 @@ function Card({
             <Button
               width="flex justify-center self-center w-full"
               className="bg-green-500 font-bold rounded-3xl p-2 w-11/12 text-white shadow-lg"
-              onClick={() => navigate(`/approveTa/${user.id}/${user.courseId}`)}
+              onClick={handleApproveClick}
             >
               Approve
             </Button>

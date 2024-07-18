@@ -14,18 +14,11 @@ function Home() {
   const [facultyStatus, setFacultyStatus] = useState("Not Assigned");
   const [taStatus, setTaStatus] = useState("Form Not Filled");
 
-  console.log("If Faculty:", isFaculty);
-  console.log("UserData:", userData);
-
   const { data, loading, error } = useQuery(GET_ALL_COURSES, {
     variables: { idNumber: userData?.idNumber },
   });
-
-  console.log("Data:", data);
-
   useEffect(() => {
     if (data?.getCourses?.data?.courses) {
-      console.log("Course Name:", data.getCourses.data);
       setFacultyStatus("Course Added");
     } else {
       setFacultyStatus("Not Assigned");
@@ -53,20 +46,6 @@ function Home() {
             </div>
           ))}
 
-          {/* <div
-            className="bg-white flex justify-between self-center w-full md:w-3/4 rounded-lg p-5 shadow-xl"
-            onClick={() => navigate("/course-detail/:courseId")}
-          >
-            <h1 className="font-bold text-base">IC200: Operating System</h1>
-            <p className="font-medium text-sm cursor-pointer">Add TA's</p>
-          </div> */}
-          {/* <div
-            className="bg-white flex justify-between self-center w-full md:w-3/4 rounded-lg p-5 shadow-xl"
-            onClick={() => navigate("/course-detail/:courseId")}
-          >
-            <h1 className="font-bold text-base">IC100: Intro to Programming</h1>
-            <p className="font-medium text-sm cursor-pointer">Details</p>
-          </div> */}
           <div className="flex justify-between self-center w-full md:w-3/4 rounded-lg p-5">
             <Button
               width="w-full flex justify-center self-center"
