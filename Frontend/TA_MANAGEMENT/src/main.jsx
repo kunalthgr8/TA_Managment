@@ -7,7 +7,7 @@ import {
   AddCourse,
   ChangePassword,
   CourseDetail,
-  Dashboard,
+  CrateCsv,
   FacultyDashboard,
   Home,
   Leaves,
@@ -49,6 +49,10 @@ const router = createBrowserRouter([
             <Leaves />
           </AuthLayout>
         ),
+      },
+      {
+        path: "/genratecsv",
+        element: <CrateCsv />,
       },
       {
         path: "/login",
