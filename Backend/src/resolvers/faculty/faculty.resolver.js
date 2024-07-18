@@ -157,27 +157,40 @@ const facultyResolvers = {
       }
     },
 
-    updateFaculty: async (_, { id, name, email, phoneNumber }) => {
-      console.log("updateFaculty");
-      console.log(id, name, email, phoneNumber);
+    updateFaculty: async (_, args, context) => {
+      let idNumber = args.input.idNumber;
+      let name = args.input.name;
+      let email = args.input.email;
+      let phoneNumber = args.input.phoneNumber;
       authenticate(context);
-      if (id !== context.user.idNumber) {
-        throw new ApiError(404, "Authneticated");
+      if (idNumber !== context.user.idNumber) {
+        throw new ApiError(404, "UnAuthneticated");
       }
       try {
+        if (!idNumber || !name || !email || !phoneNumber) {
+          throw new ApiError(400, "Please provide all fields");
+        }
+        const user = await Faculty.findOne({ idNumber });
+        if (!user) {
+          throw new ApiError(404, "User not found");
+        }
+
+        validateEmail(email);
+        validateNumber(phoneNumber, 10);
+
         const updatedFaculty = await Faculty.findByIdAndUpdate(
-          id,
+          user._id,
           { name, email, phoneNumber },
           { new: true }
         );
         if (!updatedFaculty) {
           throw new ApiError(404, "Faculty not found");
         }
-        return new ApiResponse(
-          200,
-          updatedFaculty,
-          "Faculty updated successfully"
-        );
+        return {
+          status: 201,
+          message: "Faculty updated successfully",
+          data: updatedFaculty,
+        };
       } catch (error) {
         throw new ApiError(500, "Error updating faculty", [], error.stack);
       }
@@ -233,7 +246,6 @@ const facultyResolvers = {
       { input: { idNumber, oldPassword, newPassword } },
       context
     ) => {
-      
       authenticate(context);
       try {
         if (!idNumber || !oldPassword || !newPassword) {

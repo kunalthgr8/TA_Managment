@@ -147,6 +147,7 @@ function FacultyDashboard() {
           },
         },
       });
+      console.log(data);
       if (data.updateFaculty.status === 201) {
         dispatch(login(data.updateFaculty.data));
       }

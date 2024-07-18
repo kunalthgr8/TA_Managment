@@ -39,12 +39,12 @@ const facultyTypeDef = `
   }
 
    input UpdateFacInput {
-    idNumber: ID!
-    name: String
-    email: String
-    password: String
-    phoneNumber: String
-  }
+  idNumber: ID!
+  name: String
+  email: String
+  phoneNumber: String
+}
+
 
   input ChangePasswordInputFaculty {
         idNumber: ID!

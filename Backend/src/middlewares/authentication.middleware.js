@@ -64,7 +64,6 @@ const authentication = async (req) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     let user = null;
-    console.log("decoded:", decoded.userType);
 
     if (decoded.userType === "TA") {
       user = await TA.findById(decoded?._id).select("-password -refreshToken");
@@ -79,6 +78,7 @@ const authentication = async (req) => {
       throw new ApiError(401, "Unauthorized request -> Invalid Token");
     }
     req.user = user;
+    console.log("req.user:", req.user);
     return user;
   } catch (error) {
     console.error("Error in authentication:", error);
