@@ -197,10 +197,6 @@ const Signup = () => {
             Already have an account?
           </Link>
         </div>
-        <hr className="border-nav-white" />
-        <Button className="p-4 rounded-full bg-gray-300 font-semibold text-gray-700 text-sm">
-          Sign Up By Google
-        </Button>
       </div>
     </div>
   );

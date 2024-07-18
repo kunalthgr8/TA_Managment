@@ -149,17 +149,9 @@ const Login = () => {
           >
             Create a new Account?
           </Link>
-          <Link
-            to="/"
-            className="flex justify-evenly text-sm transition-transform duration-400 ease-out hover:ease-in transform hover:scale-110 text-gray-700 hover:text-nav-white"
-          >
-            Forgot Password?
-          </Link>
+          
         </div>
-        <hr className="border-nav-white" />
-        <Button className="p-4 rounded-full bg-gray-300 font-semibold text-gray-700 text-sm">
-          Sign In By Google
-        </Button>
+        
       </div>
     </div>
   );
