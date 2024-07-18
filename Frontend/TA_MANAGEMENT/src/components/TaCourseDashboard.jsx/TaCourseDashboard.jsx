@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import wait from "../../assets/wait.svg";
 import { useSelector } from "react-redux";
 import { GET_USER_COURSES } from "../../graphql/queries/faculty.query";
+import {Loader} from "../index";
 
 function TaCourseDashboard() {
   const userData = useSelector((state) => state.auth.user);
@@ -36,7 +37,7 @@ function TaCourseDashboard() {
     <>
       {loading && (
         <div className="flex flex-col justify-center self-center mt-10">
-          <p>Loading...</p>
+          <Loader />
         </div>
       )}
       {error && (
