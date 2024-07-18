@@ -11,6 +11,7 @@ const CreateCsv = () => {
   const [generateCsv, { data: csvData, loading: csvLoading, error: csvError }] = useMutation(GENERATE_CSV_MUTATION);
   const [trainModel, { data: trainData, loading: trainLoading, error: trainError }] = useMutation(TRAIN_MODEL_MUTATION);
   const [predict, { data: resultListData, loading: resultListLoading, error: resultListError }] = useMutation(PREDICT_MUTATION);
+  const [dataTrain, setDataTrain] = useState(null);
 
   const [courseData, setCourseData] = useState({ courseName: "", courseId: "" });
 
@@ -31,7 +32,10 @@ const CreateCsv = () => {
   const handleTrainModel = async () => {
     try {
       const response = await trainModel();
+      setDataTrain(response);
+      console.log("TrainData", trainData);
       console.log(response);
+      console.log("DataTrain", dataTrain);
     } catch (error) {
       console.error("Error training model:", error);
     }
@@ -73,8 +77,8 @@ const CreateCsv = () => {
           {trainError && <p className="text-red-500">Error training model: {trainError.message}</p>}
         </>
       )}
-
-      {csvData && trainData && trainData.status === "201" && (
+      
+      {csvData && dataTrain && (
         <>
           <Input
             type="text"

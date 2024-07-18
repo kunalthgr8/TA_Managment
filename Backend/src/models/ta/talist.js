@@ -6,6 +6,6 @@ const talistSchema = new mongoose.Schema({
   talist: [{type:String}],
 });
 
-const Talist = mongoose.model('lalitList', talistSchema);
+const Talist = mongoose.model('talist', talistSchema);
 
 export default Talist;

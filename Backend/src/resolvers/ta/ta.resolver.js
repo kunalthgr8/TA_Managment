@@ -33,53 +33,49 @@ const authenticate = (context) => {
 
 const taResolver = {
   Query: {
-    getAllUsers: async (_, {courseId}, context) => {
+    getAllUsers: async (_, { courseId }, context) => {
       authenticate(context);
-
+    
       try {
         const response = await Talist.findOne({ courseId });
-        console.log("TA list by course ID",response)
+    
+        console.log("TA list by course ID", response);
         if (!response) {
           return {
             status: 404,
             message: "TAs not found",
             data: [],
-          }
+          };
         }
-        const talist = response.talist
-        const tadetails = await User.find({idNumber: {$in: talist}})
-        console.log("TAs details",tadetails)
-        let TAs = [];
-        tadetails.forEach((ta) => {
-          TAs.push({
-            idNumber: ta.idNumber,
-            name: ta.name,
-            email: ta.email,
-            phoneNumber: ta.phoneNumber,
-            approved: ta.approved.some(id => id === courseId) ? true : false,
-          });
-        });
-        console.log("TAs",TAs )
+        const talist = response.talist;
+        console.log("TAs details", talist);
+    
+        const TAs = await Promise.all(
+          talist.map(async (ta) => {
+            const tadetails = await User.findOne({ idNumber: ta });
+    
+            return {
+              idNumber: tadetails.idNumber,
+              name: tadetails.name,
+              email: tadetails.email,
+              phoneNumber: tadetails.phoneNumber,
+              approved: tadetails.approved.some((id) => id === courseId),
+            };
+          })
+        );
+    
+        console.log("TAs", TAs);
         return {
           status: 201,
-          message: "TAs fetched Successfull",
+          message: "TAs fetched Successfully",
           data: TAs,
         };
-        // const data = tadetails.map((ta) => {
-        //   idNumber: ta.idNumber,
-        //   name: ta.name,
-          // "idNumber": ta.idNumber,
-          // "name": ta.name,
-          // email: ta.email,
-          // phoneNumber: ta.phoneNumber,
-          // approved: ta.approved});
-          
-        // return await User.find();
       } catch (error) {
         console.error("Error fetching users:", error);
         throw new Error("Error fetching users");
       }
-    },
+    }
+    ,
     getUser: async (parent, { idNumber }, context) => {
       authenticate(context);
       try {
@@ -96,10 +92,10 @@ const taResolver = {
     getUserCourses: async (parent, { idNumber }, context) => {
       authenticate(context);
       try {
-        console.log("ID NUMBER", idNumber)
-        console.log("CONTEXT", context.user)
+        console.log("ID NUMBER", idNumber);
+        console.log("CONTEXT", context.user);
         const user = await User.findOne({ idNumber });
-        console.log("USER", user)
+        console.log("USER", user);
         if (!user) {
           throw new ApiError(404, "User not found with this ID number");
         }
@@ -107,7 +103,7 @@ const taResolver = {
           status: 201,
           message: "Courses fetched successfully",
           data: user,
-        }
+        };
       } catch (error) {
         console.error("Error fetching user by ID number:", error);
         throw new Error(error.message || "Error fetching user by ID number");
