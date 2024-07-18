@@ -23,7 +23,7 @@ const academicsResolvers = {
 
         // Define the CSV writer
         const csvWriter = createObjectCsvWriter({
-          path: join(__dirname, "../../../public/temp/skillsData.csv"), // updated path
+          path: join(__dirname, "../../../skillsData.csv"), // updated path
           header: [
             { id: "idNumber", title: "ID Number" },
             { id: "areaOfSpecialization", title: "Area Of Specialization" },
