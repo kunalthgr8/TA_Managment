@@ -87,10 +87,16 @@ const academicsResolvers = {
         });
 
         
-        return 'Training completed successfully.';
+        return {
+          status: 201,
+          message: "Training completed successfully",
+        };
       } catch (error) {
         console.error(error);
-        return `Training failed: ${error}`;
+        return {
+          status: 500,
+          message: "Internal Server Error",
+        };
       }
     },
     getIdNumbersByCourse: async (_, { courseName,courseId }) => {
@@ -127,10 +133,16 @@ const academicsResolvers = {
           
         }
         console.log(response);
-        return idNumbers;
+        return {
+          status: 201,
+          message: "TA added to course successfully",
+        };
       } catch (error) {
         console.error(error);
-        return [];
+        return {
+          status: 500,
+          message: "Internal Server Error",
+        };
       }
     },
   },
