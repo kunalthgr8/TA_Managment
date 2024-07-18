@@ -18,6 +18,7 @@ const CrateCsv = () => {
     try {
       const response = await generateCsv();
       if (response.data.generateCsv) {
+        
         console.log("CSV generated:", response.data.generateCsv);
         // Optionally handle the response, e.g., show a success message or prompt a download
       }
@@ -27,16 +28,16 @@ const CrateCsv = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center self-center mt-10">
+    <div className="flex flex-col justify-center self-center mt-10 gap-5">
       <Button
         onClick={handleGenerateCsv}
         disabled={loading}
-        className="text-custom-purple w-full bg-white rounded-xl p-4"
+        className="text-custom-purple w-full bg-white rounded-xl p-4 font-bold border border-custom-purple  shadow-md"
       >
         {loading ? "Generating CSV..." : "Generate CSV"}
       </Button>
-      {error && <p>Error generating CSV: {error.message}</p>}
-      {data && <p>CSV generated successfully: {data.generateCsv}</p>}
+      {error && <p className="text-red-500" >Error generating CSV: {error.message}</p>}
+      {data && <p className="text-white">{data.generateCsv}</p>}
     </div>
   );
 };
