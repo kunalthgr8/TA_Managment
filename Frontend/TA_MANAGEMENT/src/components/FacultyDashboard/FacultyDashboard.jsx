@@ -135,8 +135,6 @@ function FacultyDashboard() {
       }
       setEditAbleUser(false);
     } else {
-      console.log("updating faculty");
-      console.log(info);
       const { data } = await updateFacultyMutation({
         variables: {
           input: {
@@ -147,7 +145,6 @@ function FacultyDashboard() {
           },
         },
       });
-      console.log(data);
       if (data.updateFaculty.status === 201) {
         dispatch(login(data.updateFaculty.data));
       }
