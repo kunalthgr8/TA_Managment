@@ -1,5 +1,8 @@
 // import {ApiError} from '../../utils/ApiError.js';
 // import {ApiResponse} from '../../utils/ApiResponse.js';
+import { response } from 'express';
+import Talist from '../../models/ta/talist.js';
+
 import { exec } from 'child_process';
 const academicsResolvers = {
 //   Query: {
@@ -27,13 +30,14 @@ const academicsResolvers = {
           });
         });
 
+        
         return 'Training completed successfully.';
       } catch (error) {
         console.error(error);
         return `Training failed: ${error}`;
       }
     },
-    getIdNumbersByCourse: async (_, { courseName }) => {
+    getIdNumbersByCourse: async (_, { courseName,courseId }) => {
       try {
         const scriptPath = "/home/lalit/Desktop/TA/TA_Managment/Backend/predict.py";
         
@@ -53,6 +57,16 @@ const academicsResolvers = {
         });
 
         const idNumbers = result.split('\n'); // Assuming the output is newline-separated
+        const course = await Talist.findOne({ courseId: courseId });
+        if (!course) {
+          const newCourse = new Talist({
+            courseId: courseId,
+            talist: idNumbers,
+          });
+          const response = await newCourse.save({new: true});
+          
+        }
+        console.log(response);
         return idNumbers;
       } catch (error) {
         console.error(error);
