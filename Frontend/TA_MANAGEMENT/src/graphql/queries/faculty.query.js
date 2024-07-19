@@ -8,10 +8,14 @@ export const GET_USER = gql`
       phoneNumber
       gender
       bio
-      refreshToken
+      profilePicture {
+        taId
+        picture
+      }
     }
   }
 `;
+
 
 export const GET_USER_COURSES = gql`
   query GetUserCourses($idNumber: ID!) {

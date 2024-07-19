@@ -14,6 +14,8 @@ import { Loader } from "../index.js";
 function TaProfile({ userId }) {
   const navigate = useNavigate();
   const isFaculty = useSelector((state) => state.auth.isFaculty);
+  
+  const [profilePicture, setProfilePicture] = useState(Cat);
 
   useEffect(() => {
     if (!isFaculty) {
@@ -53,6 +55,10 @@ function TaProfile({ userId }) {
         setGenderPronoun("(She/Her)");
       }
     }
+    if(userData?.getUser?.profilePicture?.picture) {
+      setProfilePicture(userData.getUser.profilePicture.picture);
+    }
+    console.log(userData);
   }, [userData]);
 
   if (userLoading || socialLoading)
@@ -65,7 +71,7 @@ function TaProfile({ userId }) {
   return (
     <div className="flex flex-col md:flex-row w-4/5 justify-center gap-5 self-center bg-white p-8 rounded-lg border-2 border-custom-gray shadow-slate-700">
       <div className="flex justify-center self-center">
-        <img src={Cat} alt="TA Profile Picture" className="rounded-xl" />
+        <img src={profilePicture} alt="TA Profile Picture" className="rounded-xl" width="150px" />
       </div>
       <div className="w-3/4 flex flex-col m-5 bg-custom-gray p-4 rounded-xl">
         <h1 className="text-2xl font-bold text-custom-black">
