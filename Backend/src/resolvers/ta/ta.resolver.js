@@ -238,7 +238,7 @@ const taResolver = {
         if (!profileUser) {
           const formattedName = input.name.replace(/\s+/g, "-");
           let profileUrl = null;
-          if (input.gender === "male") {
+          if (input.gender === "Male") {
             profileUrl = `https://avatar.iran.liara.run/public/boy/?username=${formattedName}`;
           } else {
             profileUrl = `https://avatar.iran.liara.run/public/girl/?username=${formattedName}`;
