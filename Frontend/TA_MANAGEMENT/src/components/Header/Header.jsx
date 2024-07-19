@@ -28,7 +28,6 @@ function Header() {
   const onLogout = async () => {
     try {
       const { idNumber } = user;
-      console.log("isFaculty", isFaculty);
       if (!isFaculty) {
         await logoutUser({ variables: { idNumber } });
       } else {

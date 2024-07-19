@@ -9,8 +9,6 @@ import { ADD_TA_TO_COURSE } from "../../graphql/queries/course.query.js";
 
 function ToBeApprovedFor() {
   const { taId,courseId } = useParams();
-  console.log("TA ID:", taId);
-  console.log("Course ID:", courseId);
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.user);
   const [data, setData] = useState({
@@ -33,10 +31,7 @@ function ToBeApprovedFor() {
 
   useEffect(() => {
     if (courseDetails?.getCourses?.data?.courses) {
-      console.log(
-        "Course Name:",
-        courseDetails.getCourses.data.courses[0].courseName
-      );
+      
       setCoursesOptions(
         courseDetails.getCourses.data.courses.map((course) => ({
           value: course.courseCode,
@@ -57,9 +52,7 @@ function ToBeApprovedFor() {
           taId: taId,
         }
       });
-      console.log("Data:", data);
       setLoading(false);
-      console.log("TA Approved Successfully", response);
       navigate("/"); // Navigate to desired route on success
     } catch (error) {
       console.error("Error approving TA:", error);
@@ -71,7 +64,6 @@ function ToBeApprovedFor() {
   const handleCancel = () => {
     navigate("/");
   };
-  console.log("Courses Options:", coursesOptions);
 
   return (
     <div className="flex flex-row w-full justify-center m-10 gap-10">

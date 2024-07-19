@@ -116,7 +116,6 @@ function FacultyDashboard() {
 
   const saveButtonHandler = async () => {
     if (Object.values(info).some((field) => field === "")) {
-      console.log("Please fill all the fields");
       return;
     }
     if (!isFaculty) {

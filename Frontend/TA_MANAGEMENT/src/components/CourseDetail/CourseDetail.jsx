@@ -46,7 +46,6 @@ function CourseDetail() {
       setCourseDetails(courseData.getCourseByCode.data);
     }
     if (leavesData?.getLeave?.data?.leave) {
-      console.log("Leaves Data:", leavesData.getLeave.data.leave[0].leaves);
       setNumberOfLeaves(leavesData.getLeave.data.leave[0].leaves.length);
     }
   }, [courseData, leavesData]);

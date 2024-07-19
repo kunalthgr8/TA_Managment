@@ -27,8 +27,6 @@ const CreateCsv = () => {
   const handleGenerateCsv = async () => {
     try {
       const response = await generateCsv();
-
-      console.log("CSV generated:", response.data.generateCsv);
     } catch (err) {
       console.error("Error generating CSV:", err);
     }
@@ -38,9 +36,6 @@ const CreateCsv = () => {
     try {
       const response = await trainModel();
       setDataTrain(response);
-      console.log("TrainData", trainData);
-      console.log(response);
-      console.log("DataTrain", dataTrain);
     } catch (error) {
       console.error("Error training model:", error);
     }
@@ -48,12 +43,10 @@ const CreateCsv = () => {
 
   const handleSubmitCourse = async () => {
     if (!courseData.courseName || !courseData.courseId) {
-      console.log("Please fill all the fields");
       return;
     }
     try {
       const response = await predict({ variables: { ...courseData } });
-      console.log(response);
     } catch (error) {
       console.error("Error predicting course data:", error);
     }

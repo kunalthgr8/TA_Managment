@@ -24,7 +24,6 @@ function TaList() {
       courseId: courseId,
     },
   });
-  console.log("Data of all Users......:", data);
   useEffect(() => {}, [data]);
   if (loading)
     return (

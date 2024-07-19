@@ -52,7 +52,6 @@ const TaLeaves = () => {
     }
   );
 
-  console.log("LeavesData:",leavesData)
 
   useEffect(() => {
     if (leavesData && 
@@ -62,8 +61,6 @@ const TaLeaves = () => {
       leavesData?.getleaveTA?.data?.leave[0]?.leaves) 
       {
         setGetLeaves(leavesData.getleaveTA.data.leave[0].leaves);
-        console.log("LEAVESDATA:",leavesData)
-        console.log("Leaves data:", leavesData?.getleaveTA?.data?.leave[0]?.leaves);
       }
   }, [leavesData]);
 
@@ -105,7 +102,6 @@ const TaLeaves = () => {
             },
           },
         });
-        console.log(response);
         if (response.data.createLeave.status === 201) {
           // setGetLeaves(response.data.createLeave.data.leave[0].leaves);
           setLeaves([]);
@@ -125,7 +121,6 @@ const TaLeaves = () => {
     else setEndDate(value);
   };
 
-  console.log("GetLeaves..............", getleaves);
   return (
     <div className="flex flex-col justify-center items-center mt-10 gap-5 w-full">
       <SectionTitle title="Request For a Leave" />

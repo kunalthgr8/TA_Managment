@@ -65,7 +65,6 @@ function Leaves() {
     variables: { input: { courseId: courseId, idNumber: userData.idNumber } },
   });
 
-  console.log("Data Leaves:", data);
   useEffect(() => {
     const notapproved = [];
     const approved = [];
@@ -123,21 +122,17 @@ function Leaves() {
   );
 
   const handleApprove = async (courseId, idNumber, id) => {
-    console.log("Approve", id);
     const flag = "APPROVED";
     const response = await leaveApprove({
       variables: { input: { courseId, idNumber, id, flag } },
     });
-    console.log("Response of leave approve:", response);
   };
 
   const handleReject = async (courseId, idNumber, id) => {
-    console.log("Rejected", id);
     const flag = "REJECTED";
     const response = await leaveApprove({
       variables: { input: { courseId, idNumber, id, flag } },
     });
-    console.log("Response of leave approve:", response);
   };
 
   // const leaveRequests = [

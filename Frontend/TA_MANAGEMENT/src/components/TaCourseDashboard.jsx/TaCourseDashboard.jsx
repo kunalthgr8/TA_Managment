@@ -18,7 +18,6 @@ function TaCourseDashboard() {
     variables: { idNumber: idNumber }, // Replace with actual idNumber
   });
 
-  console.log("Data: ", data);
 
   React.useEffect(() => {
     if (!queryLoading) {
@@ -31,7 +30,6 @@ function TaCourseDashboard() {
     }
   }, [data, queryLoading, queryError]);
 
-  console.log("Courses: ", courses);
 
   return (
     <>
