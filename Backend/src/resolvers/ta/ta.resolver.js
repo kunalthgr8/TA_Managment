@@ -10,6 +10,7 @@ import {
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import Talist from "../../models/ta/talist.js";
+import TAPicture from "../../models/ta/taPicture.model.js";
 
 const generateTokens = async (user) => {
   if (!user) {
@@ -35,7 +36,7 @@ const taResolver = {
   Query: {
     getAllUsers: async (_, { courseId }, context) => {
       authenticate(context);
-    
+
       try {
         const response = await Talist.findOne({ courseId });
         if (!response) {
@@ -46,11 +47,11 @@ const taResolver = {
           };
         }
         const talist = response.talist;
-    
+
         const TAs = await Promise.all(
           talist.map(async (ta) => {
             const tadetails = await User.findOne({ idNumber: ta });
-    
+
             return {
               idNumber: tadetails.idNumber,
               name: tadetails.name,
@@ -69,16 +70,21 @@ const taResolver = {
         console.error("Error fetching users:", error);
         throw new Error("Error fetching users");
       }
-    }
-    ,
+    },
     getUser: async (parent, { idNumber }, context) => {
       authenticate(context);
       try {
         const user = await User.findOne({ idNumber });
         if (!user) {
-          throw new ApiError(404, "User not found with this ID number");
+          throw new Error("User not found with this ID number");
         }
-        return user;
+
+        const profilePicture = await TAPicture.findOne({ taId: idNumber });
+
+        return {
+          ...user._doc,
+          profilePicture: profilePicture ? profilePicture : null,
+        };
       } catch (error) {
         console.error("Error fetching user by ID number:", error);
         throw new Error(error.message || "Error fetching user by ID number");
@@ -140,6 +146,7 @@ const taResolver = {
 
         // Save user to database first
         await user.save();
+        let profileUser = await TAPicture.findOne({ taId: idNumber });
 
         // Generate tokens after saving the user
         const { accessToken, refreshToken } = await generateTokens(user);
@@ -223,6 +230,24 @@ const taResolver = {
         );
         if (!updatedUser) {
           throw new ApiError(404, "User not found");
+        }
+        let profileUser = await TAPicture.findOne({ taId: idNumber });
+
+        if (!profileUser) {
+          const formattedName = input.name.replace(/\s+/g, "-");
+          let profileUrl = null;
+          if (input.gender === "male") {
+            profileUrl = `https://avatar.iran.liara.run/public/boy/?username=${formattedName}`;
+          } else {
+            profileUrl = `https://avatar.iran.liara.run/public/girl/?username=${formattedName}`;
+          }
+
+          const generatedPic = new TAPicture({
+            taId: idNumber,
+            picture: profileUrl,
+          });
+
+          await generatedPic.save();
         }
         return {
           status: 201,

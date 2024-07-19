@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Input, Button, RadioButton } from "../../index";
 import Cat from "../../../assets/cat.jpg";
 import { useSelector } from "react-redux";
@@ -6,32 +6,26 @@ import { UPDATE_USER } from "../../../graphql/mutations/user.mutations";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "../../../graphql/queries/user.queries";
 
+const capitalizeName = (name) =>
+  name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
 function TaAboutForm() {
   const userData = useSelector((state) => state.auth.user);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(Cat);
   const [currentAboutValues, setCurrentAboutValues] = useState({
     Name: userData?.name || "User Name",
     Gender: userData?.gender || "Gender",
-    Bio: userData?.bio || "Bio ",
+    Bio: userData?.bio || "Bio",
     Email: userData?.email || "Email",
     Phone: userData?.phoneNumber || "Mobile Number",
     image: null,
   });
-  const [updateUserMutation] = useMutation(UPDATE_USER);
-  const defaultAboutValues = {
-    Name: userData?.name || "User Name",
-    Gender: userData?.gender || "Gender",
-    Bio: userData?.bio || "Bio ",
-    Email: userData?.email || "Email",
-    Phone: userData?.phoneNumber || "Mobile Number",
-    image: null,
-  };
 
-  const capitalizeName = (name) =>
-    name
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+  const [updateUserMutation] = useMutation(UPDATE_USER);
 
   const { data } = useQuery(GET_USER, {
     variables: { idNumber: userData.idNumber },
@@ -39,29 +33,26 @@ function TaAboutForm() {
 
   useEffect(() => {
     if (data) {
-      const { name, gender, bio, email, phoneNumber } = data.getUser;
-      setCurrentAboutValues((prevData) => ({
-        ...prevData,
+      const { name, gender, bio, email, phoneNumber, profilePicture } = data.getUser;
+      setProfilePicture(profilePicture?.picture || Cat);
+      setCurrentAboutValues({
         Name: name,
         Gender: capitalizeName(gender || "Male"),
         Bio: bio,
         Email: email,
         Phone: phoneNumber,
-      }));
+        image: currentAboutValues.image
+      });
     }
   }, [data]);
 
   const handleSave = async () => {
     try {
-      const { data } = await updateUserMutation({
+      await updateUserMutation({
         variables: {
           input: {
             idNumber: userData.idNumber,
-            name: currentAboutValues.Name,
-            gender: currentAboutValues.Gender,
-            bio: currentAboutValues.Bio,
-            email: currentAboutValues.Email,
-            phoneNumber: currentAboutValues.Phone,
+            ...currentAboutValues
           },
         },
       });
@@ -78,35 +69,36 @@ function TaAboutForm() {
   };
 
   const resetForm = () => {
-    setCurrentAboutValues(defaultAboutValues);
+    setCurrentAboutValues({
+      Name: userData?.name || "User Name",
+      Gender: userData?.gender || "Gender",
+      Bio: userData?.bio || "Bio",
+      Email: userData?.email || "Email",
+      Phone: userData?.phoneNumber || "Mobile Number",
+      image: null,
+    });
   };
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value, type } = e.target;
-    if (type === "radio") {
-      setCurrentAboutValues((prevData) => ({
-        ...prevData,
-        Gender: value,
-      }));
-    } else {
-      setCurrentAboutValues({ ...currentAboutValues, [name]: value });
-    }
-  };
+    setCurrentAboutValues((prevData) => ({
+      ...prevData,
+      [name]: type === "radio" ? value : value
+    }));
+  }, []);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = useCallback((e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setCurrentAboutValues({ ...currentAboutValues, image: reader.result });
+        setCurrentAboutValues((prevData) => ({ ...prevData, image: reader.result }));
       };
       reader.readAsDataURL(file);
     }
-  };
+  }, []);
 
-  const editForm = () => {
-    setIsFormVisible(true);
-  };
+  const editForm = () => setIsFormVisible(true);
 
   return (
     <div className="flex flex-col gap-5 m-2 lg:m-5 mt-4">
@@ -117,6 +109,7 @@ function TaAboutForm() {
             currentAboutValues={currentAboutValues}
             capitalizeName={capitalizeName}
             editForm={editForm}
+            profilePicture={profilePicture}
           />
         ) : (
           <ProfileForm
@@ -132,63 +125,52 @@ function TaAboutForm() {
   );
 }
 
-const ProfileDisplay = ({ currentAboutValues, capitalizeName, editForm }) => (
-  <>
-    <div className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl">
-      <div className="flex justify-center self-center">
-        <img
-          src={Cat}
-          alt="Profile Image"
-          width="150px"
-          className="rounded-full"
-        />
-      </div>
-      <div className="flex flex-col gap-2 w-3/4">
-        <h1 className="text-2xl font-bold text-custom-black">
-          {capitalizeName(currentAboutValues.Name)}
-        </h1>
-        <p className="text-base font-medium text-gray-500">
-          {currentAboutValues.Bio}
-        </p>
-        <div className="flex flex-row gap-3 text-lg">
-          <p className="text-sm text-gray-500 cursor-pointer" title="Gender">
-            {currentAboutValues.Gender}
-          </p>
-          <p
-            className="text-sm text-gray-500 cursor-pointer"
-            title="Mobile Number"
-          >
-            {currentAboutValues.Phone}
-          </p>
-          <p className="text-sm text-gray-500 cursor-pointer" title="Email">
-            {currentAboutValues.Email}
-          </p>
-        </div>
-        {currentAboutValues.image && (
-          <img
-            src={currentAboutValues.image}
-            alt="Profile"
-            className="mt-2 ml-5 h-20 w-20 rounded-full object-cover"
-          />
-        )}
-      </div>
-      <Button
-        className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
-        onClick={editForm}
-      >
-        Edit Profile
-      </Button>
+const ProfileDisplay = React.memo(({ profilePicture, currentAboutValues, capitalizeName, editForm }) => (
+  <div className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl">
+    <div className="flex justify-center self-center">
+      <img
+        src={profilePicture || Cat}
+        alt="Profile Image"
+        width="150px"
+        className="rounded-full"
+      />
     </div>
-  </>
-);
+    <div className="flex flex-col gap-2 w-3/4">
+      <h1 className="text-2xl font-bold text-custom-black">
+        {capitalizeName(currentAboutValues.Name)}
+      </h1>
+      <p className="text-base font-medium text-gray-500">
+        {currentAboutValues.Bio}
+      </p>
+      <div className="flex flex-row gap-3 text-lg">
+        <p className="text-sm text-gray-500 cursor-pointer" title="Gender">
+          {currentAboutValues.Gender}
+        </p>
+        <p className="text-sm text-gray-500 cursor-pointer" title="Mobile Number">
+          {currentAboutValues.Phone}
+        </p>
+        <p className="text-sm text-gray-500 cursor-pointer" title="Email">
+          {currentAboutValues.Email}
+        </p>
+      </div>
+      {currentAboutValues.image && (
+        <img
+          src={currentAboutValues.image}
+          alt="Profile"
+          className="mt-2 ml-5 h-20 w-20 rounded-full object-cover"
+        />
+      )}
+    </div>
+    <Button
+      className="bg-custom-black text-sm px-4 py-2 rounded-lg text-white"
+      onClick={editForm}
+    >
+      Edit Profile
+    </Button>
+  </div>
+));
 
-const ProfileForm = ({
-  currentAboutValues,
-  handleChange,
-  handleImageChange,
-  handleSave,
-  handleCancel,
-}) => (
+const ProfileForm = React.memo(({ currentAboutValues, handleChange, handleImageChange, handleSave, handleCancel }) => (
   <>
     <Input
       type="text"
@@ -279,6 +261,6 @@ const ProfileForm = ({
       </Button>
     </div>
   </>
-);
+));
 
 export default TaAboutForm;

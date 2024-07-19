@@ -46,7 +46,10 @@ export const GET_USER = gql`
       phoneNumber
       gender
       bio
-      refreshToken
+      profilePicture {
+        taId
+        picture
+      }
     }
   }
 `;

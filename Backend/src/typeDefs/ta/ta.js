@@ -9,6 +9,12 @@ const userTypeDefs = `
         refreshToken: String
         accessToken: String
         approved: [String]
+        profilePicture: ProfilePicture
+    }
+
+    type ProfilePicture {
+        taId: ID!
+        picture: String
     }
 
     type UserCourseList {
