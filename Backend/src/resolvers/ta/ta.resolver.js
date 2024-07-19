@@ -38,8 +38,6 @@ const taResolver = {
     
       try {
         const response = await Talist.findOne({ courseId });
-    
-        console.log("TA list by course ID", response);
         if (!response) {
           return {
             status: 404,
@@ -48,7 +46,6 @@ const taResolver = {
           };
         }
         const talist = response.talist;
-        console.log("TAs details", talist);
     
         const TAs = await Promise.all(
           talist.map(async (ta) => {
@@ -63,8 +60,6 @@ const taResolver = {
             };
           })
         );
-    
-        console.log("TAs", TAs);
         return {
           status: 201,
           message: "TAs fetched Successfully",
@@ -92,10 +87,7 @@ const taResolver = {
     getUserCourses: async (parent, { idNumber }, context) => {
       authenticate(context);
       try {
-        console.log("ID NUMBER", idNumber);
-        console.log("CONTEXT", context.user);
         const user = await User.findOne({ idNumber });
-        console.log("USER", user);
         if (!user) {
           throw new ApiError(404, "User not found with this ID number");
         }

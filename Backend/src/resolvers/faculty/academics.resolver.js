@@ -17,8 +17,6 @@ const academicsResolvers = {
   Mutation: {
     generateCsv: async () => {
       try {
-        // Fetch all skills data from the database
-        console.log("Generating CSV file...");
         const skillsData = await Skills.find().lean();
 
         // Define the CSV writer
@@ -65,12 +63,10 @@ const academicsResolvers = {
       }
     },
     trainModel: async () => {
-      console.log("Training model... 111111");
       try {
         // const scriptPath = path.join('../../../', 'train.py');
         const scriptPath =
           "/home/lalit/Desktop/TA/TA_Managment/Backend/train.py";
-          console.log("Training model...v222222222222");
         // Execute the Python script
         await new Promise((resolve, reject) => {
           exec(`python3 ${scriptPath}`, (error, stdout, stderr) => {
@@ -78,12 +74,10 @@ const academicsResolvers = {
               console.error(`Error: ${error.message}`);
               reject(`Error: ${error.message}`);
             }
-            console.log("Training model...333333333333");
             if (stderr) {
               console.error(`Stderr: ${stderr}`);
               reject(`Stderr: ${stderr}`);
             }
-            console.log(`Stdout: ${stdout}`);
             resolve(`Training completed successfully.`);
           });
         });
@@ -118,7 +112,6 @@ const academicsResolvers = {
                 console.error(`Stderr: ${stderr}`);
                 reject(`Stderr: ${stderr}`);
               }
-              console.log(`Stdout: ${stdout}`);
               resolve(stdout.trim());
             }
           );
@@ -134,7 +127,6 @@ const academicsResolvers = {
           const response = await newCourse.save({new: true});
           
         }
-        console.log(response);
         return {
           status: 201,
           message: "TA added to course successfully",

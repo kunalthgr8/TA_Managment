@@ -1,6 +1,5 @@
 import Faculty from "../../models/faculty/faculty.js";
 import { ApiError } from "../../utils/ApiError.js";
-// import {ApiResponse} from '../../utils/ApiResponse.js';
 import { AuthenticationError } from "apollo-server";
 import {
   validateAlphabet,
@@ -158,11 +157,11 @@ const facultyResolvers = {
     },
 
     updateFaculty: async (_, args, context) => {
+      authenticate(context);
       let idNumber = args.input.idNumber;
       let name = args.input.name;
       let email = args.input.email;
       let phoneNumber = args.input.phoneNumber;
-      authenticate(context);
       if (idNumber !== context.user.idNumber) {
         throw new ApiError(404, "UnAuthneticated");
       }
