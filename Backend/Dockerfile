@@ -26,14 +26,12 @@ RUN npm install
 
 # Create and activate a virtual environment
 RUN python -m venv /venv
-COPY .env ./
+
 RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
 
-# Set environment variables
-ENV PATH="/venv/bin:$PATH"
 
 # Expose the port the app runs on
 EXPOSE 8000
