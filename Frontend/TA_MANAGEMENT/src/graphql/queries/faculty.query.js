@@ -41,6 +41,7 @@ export const GET_ALL_USERS = gql`
         email
         phoneNumber
         approved
+        profilePicture
       } 
     }
   }

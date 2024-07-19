@@ -24,6 +24,7 @@ function TaList() {
       courseId: courseId,
     },
   });
+  console.log("Get all TAs ",data);
   useEffect(() => {}, [data]);
   if (loading)
     return (
@@ -49,7 +50,7 @@ function TaList() {
                 <div className="flex justify-center self-center w-full">
                   <Card
                     className=" w-full sm:w-4/5 md:w-full sm:m-5 shadow-xl rounded-3xl"
-                    src={cat}
+                    src={ item.profilePicture ||cat}
                     user={{
                       name: item.name,
                       email: item.email,

@@ -27,6 +27,7 @@ const userTypeDefs = `
         refreshToken: String
         accessToken: String
         approved: Boolean
+        profilePicture: String
     }
 
 

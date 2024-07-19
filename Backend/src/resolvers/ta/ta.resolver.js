@@ -51,6 +51,7 @@ const taResolver = {
         const TAs = await Promise.all(
           talist.map(async (ta) => {
             const tadetails = await User.findOne({ idNumber: ta });
+            const profilePicture = await TAPicture.findOne({ taId: ta });
 
             return {
               idNumber: tadetails.idNumber,
@@ -58,6 +59,7 @@ const taResolver = {
               email: tadetails.email,
               phoneNumber: tadetails.phoneNumber,
               approved: tadetails.approved.some((id) => id === courseId),
+              profilePicture: profilePicture ? profilePicture.picture : null,
             };
           })
         );
