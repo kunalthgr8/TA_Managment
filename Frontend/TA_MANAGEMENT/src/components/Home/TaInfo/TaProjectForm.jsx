@@ -1,23 +1,22 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button } from "../../index";
 import { FaLightbulb } from "react-icons/fa6";
 import { MdOutlineEdit, MdDelete } from "react-icons/md";
 import { VscGithub } from "react-icons/vsc";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_PROJECT } from "../../../graphql/mutations/project.mutations";
 import { GET_PROJECT } from "../../../graphql/queries/project.query";
 import { useSelector } from "react-redux";
 
 function TaProjectForm() {
-  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [projects, setProjects] = useState([]);
   const [currentProject, setCurrentProject] = useState({
-    Title: "",
-    Role: "",
+    title: "",
+    role: "",
     description: "",
     githubLink: "",
     liveLink: "",
@@ -30,13 +29,13 @@ function TaProjectForm() {
     skip: !userData.idNumber,
   });
 
-  const [createProject, { data, loading }] = useMutation(CREATE_PROJECT);
+  const [createProject] = useMutation(CREATE_PROJECT);
 
   useEffect(() => {
     if (projectData?.getProjects?.data?.projects) {
       const fetchedProjects = projectData.getProjects.data.projects.map((project) => ({
-        Title: project.title,
-        Role: project.role,
+        title: project.title,
+        role: project.role,
         description: project.description,
         githubLink: project.githubLink,
         liveLink: project.liveLink,
@@ -49,8 +48,8 @@ function TaProjectForm() {
   const resetForm = () => {
     setIsFormVisible(false);
     setCurrentProject({
-      Title: "",
-      Role: "",
+      title: "",
+      role: "",
       description: "",
       githubLink: "",
       liveLink: "",
@@ -59,7 +58,7 @@ function TaProjectForm() {
     setEditIndex(null);
   };
 
-  const handleSave = useCallback(() => {
+  const handleSave = async () => {
     const updatedProjects = [...projects];
     if (editIndex !== null) {
       updatedProjects[editIndex] = currentProject;
@@ -67,75 +66,69 @@ function TaProjectForm() {
       updatedProjects.push(currentProject);
     }
     setProjects(updatedProjects);
-  }, [currentProject, editIndex, projects]);
 
-  useEffect(() => {
-      const updateProjectInBackend = async () => {
-        try {
-          const response = await createProject({
-            variables: {
-              input: {
-                idNumber: userData.idNumber,
-                projects: projects.map((project) => ({
-                  title: project.Title,
-                  role: project.Role,
-                  description: project.description,
-                  githubLink: project.githubLink,
-                  liveLink: project.liveLink,
-                  techstack: project.techStack,
-                })),
-              },
-            },
-          });
-          if (response.data.createProject.status === 201) {
-            setError('Project added successfully');
-            resetForm();
-          }
-        } catch (error) {
-          setError(error.message);
-        }
-      };
-      updateProjectInBackend();
-    
-  }, [projects, userData.idNumber, createProject]);
+    try {
+      const response = await createProject({
+        variables: {
+          input: {
+            idNumber: userData.idNumber,
+            projects: updatedProjects.map((project) => ({
+              title: project.title,
+              role: project.role,
+              description: project.description,
+              githubLink: project.githubLink,
+              liveLink: project.liveLink,
+              techstack: project.techStack,
+            })),
+          },
+        },
+      });
+      if (response.data.createProject.status === 201) {
+        setError("Project added successfully");
+        resetForm();
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
-  const handleChange = useCallback((e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setCurrentProject((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  };
 
-  const handleTechStackChange = useCallback((e, index) => {
+  const handleTechStackChange = (e, index) => {
     const newTechStack = [...currentProject.techStack];
     newTechStack[index] = e.target.value;
     setCurrentProject((prev) => ({ ...prev, techStack: newTechStack }));
-  }, [currentProject.techStack]);
+  };
 
-  const addTechStackField = useCallback(() => {
+  const addTechStackField = () => {
     setCurrentProject((prev) => ({ ...prev, techStack: [...prev.techStack, ""] }));
-  }, []);
+  };
 
-  const removeTechStackField = useCallback((index) => {
+  const removeTechStackField = (index) => {
     setCurrentProject((prev) => ({
       ...prev,
       techStack: prev.techStack.filter((_, i) => i !== index),
     }));
-  }, []);
+  };
 
-  const deleteProject = useCallback((index) => {
+  const deleteProject = (index) => {
     setProjects((prev) => prev.filter((_, i) => i !== index));
-  }, []);
+  };
 
-  const handleEdit = useCallback((index) => {
+  const handleEdit = (index) => {
     setIsFormVisible(true);
     setCurrentProject(projects[index]);
     setEditIndex(index);
-  }, [projects]);
+  };
 
   const handleAddAnother = () => {
     setIsFormVisible(true);
     setCurrentProject({
-      Title: "",
-      Role: "",
+      title: "",
+      role: "",
       description: "",
       githubLink: "",
       liveLink: "",
@@ -154,7 +147,7 @@ function TaProjectForm() {
           <div className="w-full mt-2 mb-3 bg-custom-gray py-3 px-3 rounded-xl">
             <div className="flex justify-between mr-4">
               <div>
-                <h1 className="text-gray-500 text-lg font-semibold tracking-wide">{project.Title}</h1>
+                <h1 className="text-gray-500 text-lg font-semibold tracking-wide">{project.title}</h1>
                 <div className="flex flex-row justify-start self-center gap-3 text-lg">
                   <Link to={project.githubLink} className="text-lg flex justify-center self-center cursor-pointer text-gray-500" title="Github">
                     <VscGithub />
@@ -168,7 +161,7 @@ function TaProjectForm() {
                 <MdDelete className="text-gray-500 text-lg font-semibold cursor-pointer tracking-wide" onClick={() => deleteProject(index)} />
               </div>
             </div>
-            <h2 className="text-custom-black font-medium text-base">{project.Role}</h2>
+            <h2 className="text-custom-black font-medium text-base">{project.role}</h2>
             <p className="text-gray-500 text-xs"><strong>Tech Stack:</strong> {project.techStack.join(", ")}</p>
             <p className="text-gray-500 text-xs">{project.description.substring(0, 40) + "......"}</p>
             <p className="text-right text-custom-purple flex justify-end self-center gap-2 cursor-pointer" onClick={() => handleEdit(index)}>
@@ -180,7 +173,7 @@ function TaProjectForm() {
 
       {isFormVisible && (
         <div className="flex flex-col justify-center self-center gap-4 w-3/4 bg-custom-gray rounded-xl p-4">
-          {["Title", "Role", "description", "githubLink", "liveLink"].map((field) => (
+          {["title", "role", "description", "githubLink", "liveLink"].map((field) => (
             <Input
               key={field}
               type="text"
@@ -218,6 +211,10 @@ function TaProjectForm() {
 
       {!isFormVisible && (
         <p className="text-sm font-medium tracking-wide text-custom-purple pl-4 cursor-pointer w-1/3" onClick={handleAddAnother}>+ Add Another Project</p>
+      )}
+
+      {error && (
+        <div className="text-red-500 mt-2">{error}</div>
       )}
     </div>
   );

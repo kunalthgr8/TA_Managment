@@ -12,124 +12,11 @@ const capitalizeName = (name) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-function TaAboutForm() {
-  const userData = useSelector((state) => state.auth.user);
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(Cat);
-  const [currentAboutValues, setCurrentAboutValues] = useState({
-    Name: userData?.name || "User Name",
-    Gender: userData?.gender || "Gender",
-    Bio: userData?.bio || "Bio",
-    Email: userData?.email || "Email",
-    Phone: userData?.phoneNumber || "Mobile Number",
-    image: null,
-  });
-
-  const [updateUserMutation] = useMutation(UPDATE_USER);
-
-  const { data } = useQuery(GET_USER, {
-    variables: { idNumber: userData.idNumber },
-  });
-
-  useEffect(() => {
-    if (data) {
-      const { name, gender, bio, email, phoneNumber, profilePicture } = data.getUser;
-      setProfilePicture(profilePicture?.picture || Cat);
-      setCurrentAboutValues({
-        Name: name,
-        Gender: capitalizeName(gender || "Male"),
-        Bio: bio,
-        Email: email,
-        Phone: phoneNumber,
-        image: currentAboutValues.image
-      });
-    }
-  }, [data]);
-
-  const handleSave = async () => {
-    try {
-      await updateUserMutation({
-        variables: {
-          input: {
-            idNumber: userData.idNumber,
-            ...currentAboutValues
-          },
-        },
-      });
-      resetForm();
-      setIsFormVisible(false);
-    } catch (error) {
-      console.error("Error updating user:", error);
-    }
-  };
-
-  const handleCancel = () => {
-    resetForm();
-    setIsFormVisible(false);
-  };
-
-  const resetForm = () => {
-    setCurrentAboutValues({
-      Name: userData?.name || "User Name",
-      Gender: userData?.gender || "Gender",
-      Bio: userData?.bio || "Bio",
-      Email: userData?.email || "Email",
-      Phone: userData?.phoneNumber || "Mobile Number",
-      image: null,
-    });
-  };
-
-  const handleChange = useCallback((e) => {
-    const { name, value, type } = e.target;
-    setCurrentAboutValues((prevData) => ({
-      ...prevData,
-      [name]: type === "radio" ? value : value
-    }));
-  }, []);
-
-  const handleImageChange = useCallback((e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCurrentAboutValues((prevData) => ({ ...prevData, image: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  }, []);
-
-  const editForm = () => setIsFormVisible(true);
-
-  return (
-    <div className="flex flex-col gap-5 m-2 lg:m-5 mt-4">
-      <h1 className="text-lg font-bold text-gray-800 pl-4">About</h1>
-      <div className="flex flex-col justify-center self-center gap-4 w-3/4 bg-custom-gray rounded-xl p-4">
-        {!isFormVisible ? (
-          <ProfileDisplay
-            currentAboutValues={currentAboutValues}
-            capitalizeName={capitalizeName}
-            editForm={editForm}
-            profilePicture={profilePicture}
-          />
-        ) : (
-          <ProfileForm
-            currentAboutValues={currentAboutValues}
-            handleChange={handleChange}
-            handleImageChange={handleImageChange}
-            handleSave={handleSave}
-            handleCancel={handleCancel}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
 const ProfileDisplay = React.memo(({ profilePicture, currentAboutValues, capitalizeName, editForm }) => (
   <div className="flex flex-col justify-between self-center gap-4 w-full lg:w-3/4 bg-custom-gray rounded-xl">
     <div className="flex justify-center self-center">
       <img
-        src={profilePicture || Cat}
+        src={profilePicture}
         alt="Profile Image"
         width="150px"
         className="rounded-full"
@@ -172,41 +59,33 @@ const ProfileDisplay = React.memo(({ profilePicture, currentAboutValues, capital
 
 const ProfileForm = React.memo(({ currentAboutValues, handleChange, handleImageChange, handleSave, handleCancel }) => (
   <>
-    <Input
-      type="text"
+    <InputField
       name="Name"
       value={currentAboutValues.Name}
       placeholder="Name"
-      className="rounded-md bg-white"
       label="Name"
-      onChange={handleChange}
+      handleChange={handleChange}
     />
-    <Input
-      type="text"
+    <InputField
       name="Bio"
       value={currentAboutValues.Bio}
       placeholder="Bio"
-      className="rounded-md bg-white"
       label="Bio"
-      onChange={handleChange}
+      handleChange={handleChange}
     />
-    <Input
-      type="text"
+    <InputField
       name="Email"
       value={currentAboutValues.Email}
       placeholder="Email"
-      className="rounded-md bg-white"
       label="Email"
-      onChange={handleChange}
+      handleChange={handleChange}
     />
-    <Input
-      type="text"
+    <InputField
       name="Phone"
       value={currentAboutValues.Phone}
       placeholder="Phone"
-      className="rounded-md bg-white"
       label="Phone"
-      onChange={handleChange}
+      handleChange={handleChange}
     />
     <div className="flex gap-10">
       <RadioButton
@@ -262,5 +141,129 @@ const ProfileForm = React.memo(({ currentAboutValues, handleChange, handleImageC
     </div>
   </>
 ));
+
+const InputField = ({ name, value, placeholder, label, handleChange }) => (
+  <Input
+    type="text"
+    name={name}
+    value={value}
+    placeholder={placeholder}
+    className="rounded-md bg-white"
+    label={label}
+    onChange={handleChange}
+  />
+);
+
+function TaAboutForm() {
+  const userData = useSelector((state) => state.auth.user);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(Cat);
+  const [currentAboutValues, setCurrentAboutValues] = useState({
+    Name: userData?.name || "User Name",
+    Gender: userData?.gender || "Gender",
+    Bio: userData?.bio || "Bio",
+    Email: userData?.email || "Email",
+    Phone: userData?.phoneNumber || "Mobile Number",
+    image: null,
+  });
+
+  const [updateUserMutation] = useMutation(UPDATE_USER);
+
+  const { data } = useQuery(GET_USER, {
+    variables: { idNumber: userData.idNumber },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setProfilePicture(data.getUser.profilePicture?.picture || Cat);
+      setCurrentAboutValues({
+        Name: data.getUser.name,
+        Gender: capitalizeName(data.getUser.gender || "Male"),
+        Bio: data.getUser.bio,
+        Email: data.getUser.email,
+        Phone: data.getUser.phoneNumber,
+        image: currentAboutValues.image,
+      });
+    }
+  }, [data]);
+
+  const handleSave = useCallback(async () => {
+    try {
+      await updateUserMutation({
+        variables: {
+          input: {
+            idNumber: userData.idNumber,
+            ...currentAboutValues,
+          },
+        },
+      });
+      resetForm();
+      setIsFormVisible(false);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  }, [updateUserMutation, userData.idNumber, currentAboutValues]);
+
+  const handleCancel = useCallback(() => {
+    resetForm();
+    setIsFormVisible(false);
+  }, []);
+
+  const resetForm = useCallback(() => {
+    setCurrentAboutValues({
+      Name: userData?.name || "User Name",
+      Gender: userData?.gender || "Gender",
+      Bio: userData?.bio || "Bio",
+      Email: userData?.email || "Email",
+      Phone: userData?.phoneNumber || "Mobile Number",
+      image: null,
+    });
+  }, [userData]);
+
+  const handleChange = useCallback((e) => {
+    const { name, value, type } = e.target;
+    setCurrentAboutValues((prevData) => ({
+      ...prevData,
+      [name]: type === "radio" ? value : value,
+    }));
+  }, []);
+
+  const handleImageChange = useCallback((e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCurrentAboutValues((prevData) => ({ ...prevData, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
+  const editForm = useCallback(() => setIsFormVisible(true), []);
+
+  return (
+    <div className="flex flex-col gap-5 m-2 lg:m-5 mt-4">
+      <h1 className="text-lg font-bold text-gray-800 pl-4">About</h1>
+      <div className="flex flex-col justify-center self-center gap-4 w-3/4 bg-custom-gray rounded-xl p-4">
+        {!isFormVisible ? (
+          <ProfileDisplay
+            currentAboutValues={currentAboutValues}
+            capitalizeName={capitalizeName}
+            editForm={editForm}
+            profilePicture={profilePicture}
+          />
+        ) : (
+          <ProfileForm
+            currentAboutValues={currentAboutValues}
+            handleChange={handleChange}
+            handleImageChange={handleImageChange}
+            handleSave={handleSave}
+            handleCancel={handleCancel}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default TaAboutForm;
