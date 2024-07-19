@@ -18,6 +18,7 @@ const courseTypeDef = `
   name: String
   email: String
   phoneNumber: String
+  profilePicture: String
 }
 
   type CourseDetailApiResponse {

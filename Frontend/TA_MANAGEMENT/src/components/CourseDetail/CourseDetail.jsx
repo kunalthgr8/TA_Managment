@@ -37,6 +37,7 @@ function CourseDetail() {
   const { loading: taLoading, error: taError, data: taData } = useQuery(GET_TA_BY_COURSE_CODE, {
     variables: { courseCode: courseId, idNumber },
   });
+  console.log("TA DATA IN COURSE",taData);
 
   const [courseDetails, setCourseDetails] = useState(null);
   const [numberOfLeaves, setNumberOfLeaves] = useState(0);
@@ -99,7 +100,7 @@ function CourseDetail() {
             <Card
               key={index}
               className="sm:m-5 shadow-xl w-3/4 rounded-3xl flex justify-center self-center"
-              src={cat}
+              src={ ta.profilePicture ||cat}
               user={{
                 name: ta.name,
                 email: ta.email,

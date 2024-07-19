@@ -4,6 +4,7 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import User from "../../models/ta/ta.js";
 import SelectedTa from "../../models/faculty/selectedTa.js";
 import Talist from "../../models/ta/talist.js";
+import TAPicture from "../../models/ta/taPicture.model.js";
 
 const coursesResolvers = {
   Query: {
@@ -59,33 +60,41 @@ const coursesResolvers = {
         if (!course) {
           throw new ApiError(404, "Course not found");
         }
+    
         const foundCourse = course.courses.find(
           (c) => c.courseCode === courseCode
         );
         if (!foundCourse) {
           throw new ApiError(404, "Course not found");
         }
+    
         const selectedTAs = foundCourse.selectedTAs;
         if (!selectedTAs || selectedTAs.length === 0) {
           return {
             status: 200,
-            message: "TAs fetched Successfull",
+            message: "TAs fetched successfully",
             data: [],
           };
         }
+    
         const TADetails = await User.find({ idNumber: { $in: selectedTAs } });
-        let TAs = [];
-        TADetails.forEach((ta) => {
-          TAs.push({
-            idNumber: ta.idNumber,
-            name: ta.name,
-            email: ta.email,
-            phoneNumber: ta.phoneNumber,
-          });
-        });
+    
+        const TAs = await Promise.all(
+          TADetails.map(async (ta) => {
+            const profilePicture = await TAPicture.findOne({ taId: ta.idNumber });
+            return {
+              idNumber: ta.idNumber,
+              name: ta.name,
+              email: ta.email,
+              phoneNumber: ta.phoneNumber,
+              profilePicture: profilePicture ? profilePicture.picture : null,
+            };
+          })
+        );
+    
         return {
           status: 200,
-          message: "TAs fetched Successfull",
+          message: "TAs fetched successfully",
           data: TAs,
         };
       } catch (error) {
@@ -98,6 +107,7 @@ const coursesResolvers = {
         );
       }
     },
+    
   },
   Mutation: {
     addCourse: async (_, { input }, context) => {
@@ -176,7 +186,6 @@ const coursesResolvers = {
       } catch (error) {
         throw new ApiError(500, error.message);
       }
-
     },
     addTAToCourseList: async (_, { courseCode, taId }, context) => {
       if (!context.user) {
@@ -189,8 +198,8 @@ const coursesResolvers = {
             courseId: courseCode,
             talist: [taId],
           });
-          const response = await newCourse.save({new: true});
-          if(!response) {
+          const response = await newCourse.save({ new: true });
+          if (!response) {
             throw new ApiError(500, "Error adding TA to course");
           }
           return {
@@ -200,8 +209,8 @@ const coursesResolvers = {
           };
         } else {
           course.talist.push(taId);
-          const response = await course.save({new: true});
-          if(!response) {
+          const response = await course.save({ new: true });
+          if (!response) {
             throw new ApiError(500, "Error adding TA to course");
           }
           return {
@@ -210,24 +219,11 @@ const coursesResolvers = {
             data: response,
           };
         }
-        
       } catch (error) {
         throw new ApiError(500, error.message);
       }
-    }
+    },
   },
 };
 
 export default coursesResolvers;
-
-
-
-
-
-
-
-
-
-
-
-

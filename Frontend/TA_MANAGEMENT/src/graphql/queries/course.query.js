@@ -47,6 +47,7 @@ export const GET_TA_BY_COURSE_CODE = gql`
         name
         email
         phoneNumber
+        profilePicture
       }
     }
   }
