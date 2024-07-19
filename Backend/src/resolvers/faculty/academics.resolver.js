@@ -64,9 +64,9 @@ const academicsResolvers = {
     },
     trainModel: async () => {
       try {
-        // const scriptPath = path.join('../../../', 'train.py');
-        const scriptPath =
-          "/home/lalit/Desktop/TA/TA_Managment/Backend/train.py";
+        const scriptPath = join(__dirname, "../../../train.py");
+        // const scriptPath =
+        //   "/home/lalit/Desktop/TA/TA_Managment/Backend/train.py";
         // Execute the Python script
         await new Promise((resolve, reject) => {
           exec(`python3 ${scriptPath}`, (error, stdout, stderr) => {
@@ -97,8 +97,9 @@ const academicsResolvers = {
     },
     getIdNumbersByCourse: async (_, { courseName,courseId }) => {
       try {
-        const scriptPath =
-          "/home/lalit/Desktop/TA/TA_Managment/Backend/predict.py";
+        const scriptPath = join(__dirname, "../../../predict.py");
+        // const scriptPath =
+        //   "/home/lalit/Desktop/TA/TA_Managment/Backend/predict.py";
 
         const result = await new Promise((resolve, reject) => {
           exec(
