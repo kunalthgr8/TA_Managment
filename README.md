@@ -55,6 +55,19 @@ The project is divided into two main folders:
 - Node.js
 - MongoDB
 
+## Usage
+
+1. **Register as a TA or Professor**: Visit the registration page and create an account.
+2. **Fill in TA Details**: TAs can enter their professional information after registering.
+3. **Create a Course**: Professors can create courses and specify the required skills for TAs.
+4. **Allocate TAs**: Use the algorithm to generate a ranked list and allocate TAs to courses.
+5. **Manage Leave Requests**: TAs can apply for leaves, and faculty can manage these requests.
+
+## Contribution
+
+Contributions to the project are welcome! Please fork the repository, create a new branch, and submit a pull request with your changes.
+
+
 ### Frontend Setup
 
 1. Navigate to the `frontend` folder.
@@ -71,18 +84,16 @@ The project is divided into two main folders:
    ```bash
    cd backend
 2. Install the dependencies:
-3. Set up environment variables (e.g., database connection string, secret keys).
-- Create a `.env` file in the `backend` folder and add the necessary environment variables:
+Set up environment variables.
 
-## Usage
+3. Create a `.env` file with the following content in the `backend` folder. Replace the placeholder values with your actual credentials and settings:
+  ```env
+  MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.gyxdnnb.mongodb.net
+  ACCESS_TOKEN_SECRET=<your_access_token_secret>
+  ACCESS_TOKEN_EXPIRY=1d
+  REFRESH_TOKEN_SECRET=<your_refresh_token_secret>
+  REFRESH_TOKEN_EXPIRY=7d
+  CORS_ORIGIN=*
+  PORT=8000
 
-1. **Register as a TA or Professor**: Visit the registration page and create an account.
-2. **Fill in TA Details**: TAs can fill in their professional information after registering.
-3. **Create a Course**: Professors can create courses and specify the required skills for TAs.
-4. **Allocate TAs**: Use the algorithm to generate a ranked list and allocate TAs to courses.
-5. **Manage Leave Requests**: TAs can apply for leaves, and faculty can manage these requests.
-
-## Contribution
-
-Contributions to the project are welcome! Please fork the repository, create a new branch, and submit a pull request with your changes.
 
