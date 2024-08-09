@@ -25,7 +25,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, ApolloProvider } from '@ap
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-  uri: 'http://34.84.33.216:8000/graphql',
+  uri: 'https://ta-managment-backnd.vercel.app/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
