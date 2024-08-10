@@ -3,7 +3,7 @@ import zxcvbn from 'zxcvbn';
 const validatePassword = (password) => {
   const result = zxcvbn(password);
   const score = result.score;
-  if (score < 3) {
+  if (score < 1) {
     throw new Error("Enter a Strong Password");
   }
 };

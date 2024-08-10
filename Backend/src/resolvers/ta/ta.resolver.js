@@ -125,7 +125,7 @@ const taResolver = {
           throw new ApiError(400, "Please fill all fields");
         }
 
-        validateAlphabet(name);
+        // validateAlphabet(name);
         validateEmail(email);
         validateNumber(phoneNumber, 10);
         validatePassword(password);
