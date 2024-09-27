@@ -1,5 +1,14 @@
 # TA Management System for IIT Bhilai
 
+# For try Purpose 
+For usage Case try following credentials:
+Student: 
+ID: 12140960
+Password: Kunal1306@
+Faculty: 
+ID: 12140970
+Password: Lalit1306@
+
 ## Overview
 
 The TA Management System is a web-based platform developed to streamline the Teaching Assistant (TA) allocation process at IIT Bhilai. The system addresses the inefficiencies and challenges faced by the institute in matching TAs with courses by providing an automated and efficient solution.
